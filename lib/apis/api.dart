@@ -8,7 +8,6 @@ class MusicAPI {
   String baseUrl = 'http://www.kuwo.cn/api';
   String apiStr = '/api.php?_format=json&_marker=0&api_version=4&ctx=web6dot0';
 
-  // Box settingsBox = Hive.box('settings');
   Map<String, String> endpoints = {
     'playUrl': 'mid=webapi.getLaunchData'
   };
