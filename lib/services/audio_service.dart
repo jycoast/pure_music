@@ -1,22 +1,3 @@
-/*
- *  This file is part of BlackHole (https://github.com/Sangwan5688/BlackHole).
- *
- * BlackHole is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * BlackHole is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with BlackHole.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Copyright (c) 2021-2022, Ankit Sangwan
- */
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -24,10 +5,8 @@ import 'dart:io';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:pure_music/apis/api.dart';
-import 'package:blackhole/Helpers/mediaitem_converter.dart';
-import 'package:blackhole/Screens/Player/audioplayer.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pure_music/utils/mediaitem_converter.dart';
+import 'package:pure_music/pages/player.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -89,26 +68,6 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
         : currentIndex;
   }
 
-  @override
-  Stream<QueueState> get queueState =>
-      Rx.combineLatest3<List<MediaItem>, PlaybackState, List<int>, QueueState>(
-        queue,
-        playbackState,
-        _player!.shuffleIndicesStream.whereType<List<int>>(),
-            (queue, playbackState, shuffleIndices) => QueueState(
-          queue,
-          playbackState.queueIndex,
-          playbackState.shuffleMode == AudioServiceShuffleMode.all
-              ? shuffleIndices
-              : null,
-          playbackState.repeatMode,
-        ),
-      ).where(
-            (state) =>
-        state.shuffleIndices == null ||
-            state.queue.length == state.shuffleIndices!.length,
-      );
-
   AudioPlayerHandlerImpl() {
     _init();
   }
@@ -123,17 +82,11 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
       playbackState.add(playbackState.value.copyWith(speed: speed));
     });
 
-    preferredQuality = Hive.box('settings')
-        .get('streamingQuality', defaultValue: '96 kbps')
-        .toString();
-    resetOnSkip =
-    Hive.box('settings').get('resetOnSkip', defaultValue: false) as bool;
-    // cacheSong =
-    //     Hive.box('settings').get('cacheSong', defaultValue: false) as bool;
-    recommend =
-    Hive.box('settings').get('autoplay', defaultValue: true) as bool;
-    loadStart =
-    Hive.box('settings').get('loadStart', defaultValue: true) as bool;
+    preferredQuality = '96 kbps';
+    resetOnSkip = false;
+
+    recommend = true;
+    loadStart = true;
 
     mediaItem.whereType<MediaItem>().listen((item) {
       if (count != null) {
@@ -158,7 +111,7 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
               await Future.delayed(const Duration(seconds: 10), () {});
             }
             if (item == mediaItem.value) {
-              final List value = await SaavnAPI().getReco(item.id);
+              final List value = await MusicAPI().getReco(item.id);
               value.shuffle();
               // final List value = await SaavnAPI().getRadioSongs(
               //     stationId: stationId!, count: queueLength - index - 20);
@@ -218,8 +171,7 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
         .pipe(queue);
 
     if (loadStart) {
-      final List lastQueueList = await Hive.box('cache')
-          .get('lastQueue', defaultValue: [])?.toList() as List;
+      final List lastQueueList = [];
 
       // final int lastIndex =
       //     await Hive.box('cache').get('lastIndex', defaultValue: 0) as int;
@@ -253,13 +205,14 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
       audioSource =
           AudioSource.uri(Uri.file(mediaItem.extras!['url'].toString()));
     } else {
-      if (downloadsBox.containsKey(mediaItem.id) && useDown) {
-        audioSource = AudioSource.uri(
-          Uri.file(
-            (downloadsBox.get(mediaItem.id) as Map)['path'].toString(),
-          ),
-        );
-      } else {
+    // } else {
+    //   if (downloadsBox.containsKey(mediaItem.id) && useDown) {
+    //     audioSource = AudioSource.uri(
+    //       Uri.file(
+    //         (downloadsBox.get(mediaItem.id) as Map)['path'].toString(),
+    //       ),
+    //     );
+    //   } else {
         // if (cacheSong) {
         //   _audioSource = LockCachingAudioSource(
         //     Uri.parse(
@@ -280,19 +233,15 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
         );
         // }
       }
-    }
-
     _mediaItemExpando[audioSource] = mediaItem;
     return audioSource;
   }
 
   List<AudioSource> _itemsToSources(List<MediaItem> mediaItems) {
-    preferredQuality = Hive.box('settings')
-        .get('streamingQuality', defaultValue: '96 kbps')
-        .toString();
+    preferredQuality ='96 kbps';
     // cacheSong =
     //     Hive.box('settings').get('cacheSong', defaultValue: false) as bool;
-    useDown = Hive.box('settings').get('useDown', defaultValue: true) as bool;
+    useDown = true;
     return mediaItems.map(_itemToSource).toList();
   }
 
@@ -444,10 +393,14 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
   }
 
   @override
-  Future<void> play() => _player!.play();
+  Future<void> play() async {
+    print('播放');
+    _player!.play();
+  }
 
   @override
   Future<void> pause() async {
+    print('暂停键');
     _player!.pause();
     // await Hive.box('cache').put('lastIndex', _player!.currentIndex);
     // await Hive.box('cache').put('lastPos', _player!.position.inSeconds);
@@ -552,6 +505,7 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
 
   @override
   Future<void> click([MediaButton button = MediaButton.media]) async {
+    print('click method invoke!');
     switch (button) {
       case MediaButton.media:
         _handleMediaActionPressed();
@@ -637,4 +591,8 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
       ),
     );
   }
+
+  @override
+  // TODO: implement queueState
+  Stream<QueueState> get queueState => throw UnimplementedError();
 }

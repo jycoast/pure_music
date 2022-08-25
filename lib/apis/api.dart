@@ -34,4 +34,15 @@ class MusicAPI {
     }
     return null;
   }
+
+  Future<List> getReco(String pid) async {
+    final String params = "${endpoints['getReco']}&pid=$pid";
+    final res = await getResponse(params);
+    if (res.statusCode == 200) {
+      final List getMain = json.decode(res.body) as List;
+      // return FormatResponse.formatSongsResponse(getMain, 'song');
+      return getMain;
+    }
+    return List.empty();
+  }
 }
