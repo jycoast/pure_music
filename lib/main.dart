@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pure_music/pages/home_page.dart';
 import 'package:pure_music/utils/music_data_util.dart';
 import 'package:pure_music/widgets/audio_show_veiw.dart';
 
@@ -37,14 +38,25 @@ class _AppTabBarWidgetState extends State<AppTabBarWidget> {
   final PageController _pageController = PageController();
   late List<BottomNavigationBarItem> _items;
   late List<Widget> _pages;
+  final List<BottomNavigationBarItem> bottomNavItems = [
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.home_outlined),
+      label: '首页',
+    ),
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.play_arrow_outlined),
+      label: "播放",
+    ),
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.list),
+      label: "目录",
+    )
+  ];
 
   @override
   void initState() {
-    _items = [
-      AppTabBarItem("单曲"),
-      AppTabBarItem("目录"),
-    ];
-    _pages = [const SinglePage(), const ListPage()];
+    _items = [AppTabBarItem("首页"), AppTabBarItem("播放"), AppTabBarItem("目录")];
+    _pages = [const HomePage(), const SinglePage(), const ListPage()];
     super.initState();
   }
 
@@ -58,10 +70,7 @@ class _AppTabBarWidgetState extends State<AppTabBarWidget> {
         unselectedFontSize: 11,
         selectedItemColor: Colors.redAccent,
         unselectedItemColor: Colors.black45,
-        items: [
-          AppTabBarItem("单曲"),
-          AppTabBarItem("目录"),
-        ],
+        items: bottomNavItems,
         onTap: (int index) {
           _pageController.jumpToPage(index);
         },

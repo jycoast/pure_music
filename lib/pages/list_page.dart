@@ -33,31 +33,6 @@ class _ListPageState extends State<ListPage> with AutomaticKeepAliveClientMixin{
       appBar: AppBar(title: const Text("播放列表"),),
       body: Column(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.black12))
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InkWell(
-                  onTap: ()=> AudioPlayerUtil.previousMusic(),
-                  child: const Icon(Icons.skip_previous_outlined,size: 30,color: Colors.redAccent,),
-                ),
-                InkWell(
-                  onTap: ()=> AudioPlayerUtil.listPlayerHandle(musicModels: _data),
-                  child: const SizedBox(
-                    height: 50,
-                    child: ListAudioButton(),
-                  ),
-                ),
-                InkWell(
-                  onTap: ()=> AudioPlayerUtil.nextMusic(),
-                  child: const Icon(Icons.skip_next_outlined,size: 30,color: Colors.redAccent),
-                ),
-              ],
-            ),
-          ),
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.only(bottom: 60),
@@ -79,6 +54,31 @@ class _ListPageState extends State<ListPage> with AutomaticKeepAliveClientMixin{
                   ));
               },
               separatorBuilder: (ctx,index) => const Divider(height: 0.0,),
+            ),
+          ),
+          Container(
+            decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.black12))
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                InkWell(
+                  onTap: ()=> AudioPlayerUtil.previousMusic(),
+                  child: const Icon(Icons.skip_previous_outlined,size: 30,color: Colors.redAccent,),
+                ),
+                InkWell(
+                  onTap: ()=> AudioPlayerUtil.listPlayerHandle(musicModels: _data),
+                  child: const SizedBox(
+                    height: 50,
+                    child: ListAudioButton(),
+                  ),
+                ),
+                InkWell(
+                  onTap: ()=> AudioPlayerUtil.nextMusic(),
+                  child: const Icon(Icons.skip_next_outlined,size: 30,color: Colors.redAccent),
+                ),
+              ],
             ),
           ),
         ],

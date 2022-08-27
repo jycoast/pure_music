@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pure_music/apis/api.dart';
-import 'package:pure_music/pages/single_page.dart';
-
 import '../utils/music_data_util.dart';
 
 class SearchMusic extends StatefulWidget {
@@ -30,7 +28,7 @@ class SearchAppBarState extends State<SearchMusic> {
     _textEditingController.addListener(() {
       var isVisible = _textEditingController.text.isNotEmpty;
       _updateDelIconVisible(isVisible);
-      // _search(_textEditingController.text);
+      _search(_textEditingController.text);
     });
   }
 
