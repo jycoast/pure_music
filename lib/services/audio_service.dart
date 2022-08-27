@@ -197,6 +197,7 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
     } else {
       await _player!.setAudioSource(_playlist, preload: false);
     }
+    _player?.setUrl('https://le-sycdn.kuwo.cn/e3d6d00cad23543612ccf743776cb367/630998e8/resource/n3/77/97/851025454.mp3');
   }
 
   AudioSource _itemToSource(MediaItem mediaItem) {
@@ -394,8 +395,10 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
 
   @override
   Future<void> play() async {
+    var uri = Uri.parse('https://le-sycdn.kuwo.cn/e3d6d00cad23543612ccf743776cb367/630998e8/resource/n3/77/97/851025454.mp3');
+    // _player!.playFromUri( uri);
     print('播放');
-    _player!.play();
+     _player!.play();
   }
 
   @override

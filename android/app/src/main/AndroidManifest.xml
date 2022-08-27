@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.pure.pure_music">
    <application
+        android:usesCleartextTraffic="true"
         android:label="pureMusic"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
@@ -34,4 +35,7 @@
             android:value="2" />
    </application>
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 </manifest>
