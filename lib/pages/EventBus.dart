@@ -5,4 +5,4 @@ class CustomEvent {
   List<MusicModel> msg;
   CustomEvent(this.msg);
 }
-EventBus eventBus = new EventBus(); // 全局事件总线
+EventBus eventBus = new EventBus();

@@ -5,7 +5,6 @@ import 'package:pure_music/widgets/audio_button.dart';
 import 'package:pure_music/widgets/audio_slider.dart';
 
 import '../utils/audio_player.dart';
-import '../utils/music_data_util.dart';
 import 'list_page.dart';
 
 class DetailPage extends StatelessWidget {

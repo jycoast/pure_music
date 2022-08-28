@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pure_music/apis/api.dart';
 import 'package:pure_music/model/music_model.dart';
 import 'package:pure_music/pages/EventBus.dart';
-import 'package:pure_music/pages/search_music.dart';
+import 'package:pure_music/pages/search_bar.dart';
 import 'package:pure_music/utils/audio_player.dart';
 
 import '../widgets/music_item.dart';
@@ -36,42 +37,47 @@ class PlayListPageState extends State<PlayListPage>
     super.initState();
   }
 
-  List<Widget> _getData() {
-    var templist = data.map((value) {
-      return ListTile(
-        leading: Image.network(value.thumbnail),
-        title: Text(value.name),
-        subtitle: Text(value.author),
-      );
-    });
-    return templist.toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      padding: const EdgeInsets.only(bottom: 60),
-      itemCount: data.length,
-      itemBuilder: (ctx,index) => MusicItem(model: data[index], callback:(type){
-        itemCallback(data[index], type);
-      },),
-      separatorBuilder: (ctx,index) => const Divider(height: 0.0,)
-    );
+        padding: const EdgeInsets.only(bottom: 60),
+        itemCount: data.length,
+        itemBuilder: (ctx, index) {
+          print('index: ' + index.toString());
+          if (index == 29) {
+            LoadNextPage(index);
+          }
+          return MusicItem(
+            model: data[index],
+            callback: (type) {
+              itemCallback(data[index], type);
+            },
+          );
+        },
+        separatorBuilder: (ctx, index) => const Divider(
+              height: 0.0,
+            ));
   }
-  void itemCallback(MusicModel model,int type){
-    if(type == 0){ // 进入详情
+
+  LoadNextPage(index) async {
+    data.addAll(await MusicAPI().search('周杰伦'));
+  }
+
+  void itemCallback(MusicModel model, int type) {
+    if (type == 0) {
+      // 进入详情
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => DetailPage(musicModel: model),
       ));
-    }else{  // 点击按钮
+    } else {
+      // 点击按钮
       AudioPlayerUtil.playerHandle(model: model);
-      if(mounted){
+      if (mounted) {
         setState(() {});
       }
     }
   }
 }
-
 
 class ListAudioButton extends StatefulWidget {
   const ListAudioButton({Key? key}) : super(key: key);

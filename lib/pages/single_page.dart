@@ -11,8 +11,8 @@ class SinglePage extends StatefulWidget {
   State<SinglePage> createState() => _SinglePageState();
 }
 
-class _SinglePageState extends State<SinglePage> with AutomaticKeepAliveClientMixin{
-
+class _SinglePageState extends State<SinglePage>
+    with AutomaticKeepAliveClientMixin {
   late List<MusicModel> _data = [];
 
   @override
@@ -22,36 +22,48 @@ class _SinglePageState extends State<SinglePage> with AutomaticKeepAliveClientMi
   void initState() {
     super.initState();
     // 播放状态监听
-    AudioPlayerUtil.statusListener(key: this, listener: (sate){
-      if(mounted){
-        setState(() {});
-      }
-    });
+    AudioPlayerUtil.statusListener(
+        key: this,
+        listener: (sate) {
+          if (mounted) {
+            setState(() {});
+          }
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("单曲播放"),),
+      appBar: AppBar(
+        title: const Text("单曲播放"),
+        backgroundColor: Colors.lightGreen,
+      ),
       body: ListView.separated(
         padding: const EdgeInsets.only(bottom: 60),
         itemCount: _data.length,
-        itemBuilder: (ctx,index) => MusicItem(model: _data[index],callback:(type){
-          itemCallback(_data[index], type);
-        },),
-        separatorBuilder: (ctx,index) => const Divider(height: 0.0,),
+        itemBuilder: (ctx, index) => MusicItem(
+          model: _data[index],
+          callback: (type) {
+            itemCallback(_data[index], type);
+          },
+        ),
+        separatorBuilder: (ctx, index) => const Divider(
+          height: 0.0,
+        ),
       ),
     );
   }
 
-  void itemCallback(MusicModel model,int type){
-    if(type == 0){ // 进入详情
+  void itemCallback(MusicModel model, int type) {
+    if (type == 0) {
+      // 进入详情
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => DetailPage(musicModel: model),
       ));
-    }else{  // 点击按钮
+    } else {
+      // 点击按钮
       AudioPlayerUtil.playerHandle(model: model);
-      if(mounted){
+      if (mounted) {
         setState(() {});
       }
     }

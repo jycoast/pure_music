@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pure_music/pages/home_page.dart';
-import 'package:pure_music/utils/music_data_util.dart';
+import 'package:pure_music/pages/search_page.dart';
 import 'package:pure_music/widgets/audio_show_veiw.dart';
 
 import 'package:pure_music/pages/single_page.dart';
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.lightGreen,
       ),
       home: const AppTabBarWidget(),
     );
@@ -56,7 +55,7 @@ class _AppTabBarWidgetState extends State<AppTabBarWidget> {
   @override
   void initState() {
     _items = [AppTabBarItem("首页"), AppTabBarItem("播放"), AppTabBarItem("列表")];
-    _pages = [const HomePage(), const SinglePage(), const ListPage()];
+    _pages = [const SearchPage(), const SinglePage(), const ListPage()];
     super.initState();
   }
 

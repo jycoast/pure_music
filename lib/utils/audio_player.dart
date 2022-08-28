@@ -1,5 +1,3 @@
-/// Created by RongCheng on 2022/3/2.
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:pure_music/model/music_model.dart';
 

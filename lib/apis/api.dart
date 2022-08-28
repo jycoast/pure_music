@@ -33,7 +33,7 @@ class MusicAPI {
     var type = 'convert_url';
     var httpsStatus = '1';
     var params =
-        '/v1/www/music/playUrl?mid=226543302&type=convert_url&httpsStatus=1';
+        '/v1/www/music/playUrl?mid='+ mid + '&type=convert_url&httpsStatus=1';
     final res = await getResponse(params);
     if (res.statusCode == 200) {
       final Map playUrlMap = json.decode(res.body) as Map;

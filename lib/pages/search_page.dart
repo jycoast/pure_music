@@ -3,19 +3,18 @@ import 'package:pure_music/pages/detail_page.dart';
 import 'package:pure_music/pages/list_page.dart';
 import 'package:pure_music/pages/play_list_page.dart';
 import 'package:pure_music/utils/audio_player.dart';
-import 'package:pure_music/utils/music_data_util.dart';
 import 'package:pure_music/widgets/music_item.dart';
 import 'package:pure_music/model/music_model.dart';
-import 'package:pure_music/pages/search_music.dart';
+import 'package:pure_music/pages/search_bar.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class SearchPage extends StatefulWidget {
+  const SearchPage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _SinglePageState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SinglePageState extends State<HomePage>
+class _SearchPageState extends State<SearchPage>
     with AutomaticKeepAliveClientMixin {
   String searchValue = "";
 
@@ -34,9 +33,9 @@ class _SinglePageState extends State<HomePage>
             centerTitle: true,
             titleSpacing: 0,
             //清除title左右padding，默认情况下会有一定的padding距离
-            toolbarHeight: 44,
+            toolbarHeight: 50,
             //将高度定到44，设计稿的高度。为了方便适配，
-            backgroundColor: Colors.yellow,
+            backgroundColor: Colors.lightGreen,
             elevation: 0,
             title: SearchBar(hintLabel: '搜索音乐/MV/歌单歌手', )),
         body: PlayListPage()

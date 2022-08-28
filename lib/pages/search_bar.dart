@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pure_music/apis/api.dart';
-import 'package:pure_music/pages/play_list_page.dart';
-import '../model/music_model.dart';
 import 'EventBus.dart';
 
 class SearchBar extends StatefulWidget {
@@ -14,11 +12,7 @@ class SearchBar extends StatefulWidget {
 
 class SearchBarState extends State<SearchBar> {
   late FocusNode _focusNode;
-  ///默认不展示控件
-
   bool _offstage = true;
-
-  ///监听TextField内容变化
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
@@ -42,7 +36,8 @@ class SearchBarState extends State<SearchBar> {
     if (_textEditingController.text != null &&
         _textEditingController.text != '') {
       print('搜索条件：' + _textEditingController.text);
-      eventBus.fire(CustomEvent(await MusicAPI().search(_textEditingController.text)));
+      eventBus.fire(
+          CustomEvent(await MusicAPI().search(_textEditingController.text)));
     }
   }
 
@@ -69,7 +64,7 @@ class SearchBarState extends State<SearchBar> {
                   Icon(
                     Icons.search_sharp,
                     size: 20,
-                    color: Theme.of(context).primaryColor,
+                    color: Colors.grey,
                   ),
                   const Padding(
                     padding: EdgeInsets.only(left: 8),
@@ -81,7 +76,17 @@ class SearchBarState extends State<SearchBar> {
                         autofocus: true,
                         focusNode: _focusNode,
                         style: TextStyle(fontSize: 14, color: Colors.grey),
-                        decoration: InputDecoration(hintText: widget.hintLabel),
+                        decoration: InputDecoration(
+                            hintText: widget.hintLabel,
+                            hintStyle: const TextStyle(height: 1.05),
+                            enabledBorder: new UnderlineInputBorder(
+                              borderSide: BorderSide(color: Color(0x19000000)),
+                            ),
+                            focusedBorder: new UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Color(0x19000000)))
+                            // height: 10,
+                            ),
                         maxLines: 1),
                   ),
                   const Padding(
@@ -92,9 +97,9 @@ class SearchBarState extends State<SearchBar> {
                     child: GestureDetector(
                         onTap: () => {_textEditingController.clear()},
                         child: Icon(
-                          Icons.cancel_outlined,
+                          Icons.cancel_sharp,
                           size: 20,
-                          color: Theme.of(context).primaryColor,
+                          color: Colors.grey,
                         )),
                   ),
                   const Padding(
@@ -113,7 +118,7 @@ class SearchBarState extends State<SearchBar> {
               child: Text("取消",
                   style: TextStyle(
                     fontSize: 16,
-                    color: Color(0xFF3D7DFF),
+                    color: Colors.white,
                   )),
             ),
           ),
