@@ -16,7 +16,6 @@ class MusicAPI {
 
   Future<Response> getResponse(String params) async {
     Uri url = Uri.parse(baseUrl + params);
-    print('接口地址:' + url.toString());
     headers = {
       'User-Agent':
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
@@ -36,7 +35,6 @@ class MusicAPI {
     var params =
         '/v1/www/music/playUrl?mid=226543302&type=convert_url&httpsStatus=1';
     final res = await getResponse(params);
-    print(res.body);
     if (res.statusCode == 200) {
       final Map playUrlMap = json.decode(res.body) as Map;
       return playUrlMap['data']['url'];
@@ -56,22 +54,22 @@ class MusicAPI {
   }
 
   Future<List> search(String key) async {
+    print('search method invoke');
     String params =
-        "/www/search/searchMusicBykeyWord?key=周杰伦pn=1&rn=30&httpsStatus=1&reqId=904fa612-260e-11ed-a6c2-2d5a015b41b4";
-    // final res = await getResponse(params);
-    // if (res.statusCode != 200) {
-    //   print('搜索结果: ' + res.body.toString());
-    //   return List.empty();
-    // }
-    // Map<String, dynamic> resMap = json.decode(res.body);
+        "/www/search/searchMusicBykeyWord?key=周杰伦pn=1&rn=1&httpsStatus=1&reqId=904fa612-260e-11ed-a6c2-2d5a015b41b4";
+    final res = await getResponse(params);
+    if (res.statusCode != 200) {
+      print('搜索失败: ' + res.body.toString());
+      return List.empty();
+    }
+    Map<String, dynamic> resMap = json.decode(res.body);
     List<MusicModel> list = [];
-    // for (Map<String, dynamic> map in resMap['data']['list']) {
-    //   var rid = map['rid'];
-    //   var url = await getPlayUrl(rid);
-    //   map.putIfAbsent('url', () => url);
-    //   // MusicModel model = MusicModel.fromMap(map);
-    //   // list.add(model);
-    // }
+    for (Map<String, dynamic> map in resMap['data']['list']) {
+      map['url'] = await getPlayUrl(map['rid'].toString());
+      print(map);
+      MusicModel model = MusicModel.fromMap(map);
+      list.add(model);
+    }
     return list;
   }
 }

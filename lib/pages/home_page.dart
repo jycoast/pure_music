@@ -43,7 +43,7 @@ class _SinglePageState extends State<HomePage>
             //将高度定到44，设计稿的高度。为了方便适配，
             backgroundColor: Colors.white,
             elevation: 0,
-            title: SearchWidget()),
+            title: SearchBar(hintLabel: '搜索音乐/MV/歌单歌手',)),
         body: Column(children: [
           Expanded(child: ListView.separated(
             padding: const EdgeInsets.all(8),

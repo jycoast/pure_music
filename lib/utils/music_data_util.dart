@@ -2,7 +2,7 @@ import 'package:pure_music/model/music_model.dart';
 
 class MusicDataUtil{
 
-  static List<MusicModel> getMusicData(){
+  static List<MusicModel> getMusicData() {
     List<MusicModel> list = [];
     for(Map<String,dynamic> map in _json){
       MusicModel model = MusicModel.fromMap(map);
@@ -13,18 +13,11 @@ class MusicDataUtil{
 
   static final List<Map<String,dynamic>> _json = [
     {
-      "id":1,
+      "rid":1,
       "name":"城南花已开",
-      "author":"三亩地",
-      "thumbnail":"https://p1.music.126.net/i-7ktILRPImJ0NwiH8DABg==/109951162885959979.jpg",
+      "artist":"三亩地",
+      "pic":"https://p1.music.126.net/i-7ktILRPImJ0NwiH8DABg==/109951162885959979.jpg",
       "url":"https://le-sycdn.kuwo.cn/2e2d2d736db02827e9dfe536a431dfb7/630a36d8/resource/n3/77/97/851025454.mp3"
-    },
-    {
-      "id":2,
-      "name":"My Soul",
-      "author":"July",
-      "thumbnail":"https://p1.music.126.net/NFl1s5Hl3E37dCaFIDHfNw==/727876697598920.jpg",
-      "url":"https://music.163.com/song/media/outer/url?id=5308028.mp3"
     }
   ];
 }

@@ -49,13 +49,13 @@ class _AppTabBarWidgetState extends State<AppTabBarWidget> {
     ),
     const BottomNavigationBarItem(
       icon: Icon(Icons.list),
-      label: "目录",
+      label: "列表",
     )
   ];
 
   @override
   void initState() {
-    _items = [AppTabBarItem("首页"), AppTabBarItem("播放"), AppTabBarItem("目录")];
+    _items = [AppTabBarItem("首页"), AppTabBarItem("播放"), AppTabBarItem("列表")];
     _pages = [const HomePage(), const SinglePage(), const ListPage()];
     super.initState();
   }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pure_music/apis/api.dart';
-import '../utils/music_data_util.dart';
 
-class SearchMusic extends StatefulWidget {
-  SearchMusic({Key? key, required this.hintLabel}) : super(key: key);
+class SearchBar extends StatefulWidget {
+  SearchBar({Key? key, required this.hintLabel}) : super(key: key);
 
   final String hintLabel;
 
@@ -13,9 +12,11 @@ class SearchMusic extends StatefulWidget {
   }
 }
 
-class SearchAppBarState extends State<SearchMusic> {
+class SearchAppBarState extends State<SearchBar> {
   late FocusNode _focusNode;
+
   ///默认不展示控件
+
   bool _offstage = true;
 
   ///监听TextField内容变化
@@ -28,23 +29,21 @@ class SearchAppBarState extends State<SearchMusic> {
     _textEditingController.addListener(() {
       var isVisible = _textEditingController.text.isNotEmpty;
       _updateDelIconVisible(isVisible);
-      _search(_textEditingController.text);
+      searchMusic();
     });
   }
 
   _updateDelIconVisible(bool isVisible) {
-    print('_updateDelIconVisible invoke');
     setState(() {
       _offstage = !isVisible;
     });
   }
 
-  _search(String text) async {
-    print('搜索文字:' + text);
-    MusicAPI().search(text);
-    // SinglePage().createState().mounted;
-    // List value = await MusicAPI().search(text);
-    // print(value);
+  void searchMusic() async {
+    print('搜索条件：' + _textEditingController.text);
+    if (_textEditingController.text != null && _textEditingController.text != '') {
+      List res = await MusicAPI().search(_textEditingController.text);
+    }
   }
 
   @override
@@ -64,38 +63,44 @@ class SearchAppBarState extends State<SearchMusic> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // paddingOnly(const EdgeInsets.only(left: 8)),
-                  // Image.asset(
-                  //   "assets/images/p8.png",
-                  //   width: 16,
-                  //   height: 16,
-                  // ),
-
-                  // paddingOnly(const EdgeInsets.only(left: 8)),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 8),
+                  ),
+                  Icon(
+                    Icons.search_sharp,
+                    size: 20,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 8),
+                  ),
                   Expanded(
                     flex: 1,
                     child: TextField(
                       controller: _textEditingController,
                       autofocus: true,
                       focusNode: _focusNode,
-                      style: TextStyle(fontSize: 14, color: Colors.black),
-                      decoration: InputDecoration(),
-                      maxLines: 1,
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                      decoration: InputDecoration(hintText: widget.hintLabel),
+                      maxLines: 1
                     ),
                   ),
-                  // paddingOnly(const EdgeInsets.only(right: 8)),
+                  const Padding(
+                    padding: EdgeInsets.only(right: 8),
+                  ),
                   Offstage(
                     offstage: _offstage,
                     child: GestureDetector(
-                      onTap: () => {_textEditingController.clear()},
-                      // child: Image.asset(
-                      //   "images/home_search_cancel.png",
-                      //   width: 16,
-                      //   height: 16,
-                      // ),
-                    ),
+                        onTap: () => {_textEditingController.clear()},
+                        child: Icon(
+                          Icons.cancel_outlined,
+                          size: 20,
+                          color: Theme.of(context).primaryColor,
+                        )),
                   ),
-                  // paddingOnly(const EdgeInsets.only(right: 8),
+                  const Padding(
+                    padding: EdgeInsets.only(right: 8),
+                  ),
                 ],
               ),
             ),
@@ -107,7 +112,7 @@ class SearchAppBarState extends State<SearchMusic> {
             child: Container(
               padding: const EdgeInsets.only(left: 16, right: 16),
               child: Text("取消",
-                  style: TextStyle(fontSize: 16, color: Color(0xFF3D7DFF))),
+                  style: TextStyle(fontSize: 16, color: Color(0xFF3D7DFF), )),
             ),
           ),
         ],
@@ -120,4 +125,5 @@ class SearchAppBarState extends State<SearchMusic> {
     super.dispose();
     _focusNode.unfocus();
   }
+
 }

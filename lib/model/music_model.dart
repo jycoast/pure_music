@@ -8,10 +8,10 @@ class MusicModel{
   late String url;
 
   MusicModel.fromMap(Map<String,dynamic> json){
-    id = json["id"];
-    name = json["name"];
-    author = json["author"];
-    thumbnail = json["thumbnail"];
-    url = json["url"];
+    id = json["rid"]!;
+    name = json["name"].toString();
+    author = json["artist"].toString();
+    thumbnail = json["pic"].toString();
+    url = json["url"].toString();
   }
 }
