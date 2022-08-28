@@ -53,10 +53,9 @@ class MusicAPI {
     return List.empty();
   }
 
-  Future<List> search(String key) async {
-    print('search method invoke');
+  Future<List<MusicModel>> search(String key) async {
     String params =
-        "/www/search/searchMusicBykeyWord?key=周杰伦pn=1&rn=1&httpsStatus=1&reqId=904fa612-260e-11ed-a6c2-2d5a015b41b4";
+        "/www/search/searchMusicBykeyWord?key=" + key + "pn=1&rn=30&httpsStatus=1&reqId=904fa612-260e-11ed-a6c2-2d5a015b41b4";
     final res = await getResponse(params);
     if (res.statusCode != 200) {
       print('搜索失败: ' + res.body.toString());
@@ -66,7 +65,6 @@ class MusicAPI {
     List<MusicModel> list = [];
     for (Map<String, dynamic> map in resMap['data']['list']) {
       map['url'] = await getPlayUrl(map['rid'].toString());
-      print(map);
       MusicModel model = MusicModel.fromMap(map);
       list.add(model);
     }

@@ -39,7 +39,7 @@ class DetailPage extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(size.width * 0.3),
-                child: Image.asset("assets/images/p${musicModel.id}.jpg",
+                child: Image.network(musicModel.thumbnail,
                     width: size.width * 0.6,
                     height: size.width * 0.6,
                     fit: BoxFit.cover),
@@ -72,7 +72,7 @@ class DetailPage extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: () =>
-                          AudioPlayerUtil.listPlayerHandle(musicModels: MusicDataUtil.getMusicData()),
+                          AudioPlayerUtil.listPlayerHandle(musicModels: List.filled(1, musicModel)),
                       child: const SizedBox(
                         height: 50,
                         child: ListAudioButton(),

@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:pure_music/model/music_model.dart';
+import 'package:pure_music/pages/search_music.dart';
 import 'package:pure_music/utils/audio_player.dart';
-import 'package:pure_music/utils/music_data_util.dart';
 
 class ListPage extends StatefulWidget {
   const ListPage({Key? key}) : super(key: key);
@@ -14,20 +14,17 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> with AutomaticKeepAliveClientMixin{
 
-  late List<MusicModel> _data;
+  List<MusicModel> _data = [];
 
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
-    // TODO: implement initState
-    _data = MusicDataUtil.getMusicData();
     super.initState();
   }
 
   @override
-  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("播放列表"),),
@@ -46,7 +43,7 @@ class _ListPageState extends State<ListPage> with AutomaticKeepAliveClientMixin{
                     child: Row(
                       children: [
                         const SizedBox(width: 15,),
-                        Image.asset("assets/images/p${model.id}.jpg",width: 40,height: 40,fit: BoxFit.fitWidth,),
+                        Image.network(model.thumbnail, width: 40,height: 40,fit: BoxFit.fitWidth,),
                         const SizedBox(width: 10,),
                         Text(model.name,style: const TextStyle(color: Colors.black87,fontSize: 17),)
                       ],

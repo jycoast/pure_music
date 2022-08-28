@@ -1,5 +1,3 @@
-/// Created by RongCheng on 2022/3/2.
-
 class MusicModel{
   late int id;
   late String name;
@@ -13,5 +11,10 @@ class MusicModel{
     author = json["artist"].toString();
     thumbnail = json["pic"].toString();
     url = json["url"].toString();
+  }
+
+  @override
+  String toString() {
+    return 'MusicModel{id: $id, name: $name, author: $author, thumbnail: $thumbnail, url: $url}';
   }
 }

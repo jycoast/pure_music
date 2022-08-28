@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:pure_music/apis/api.dart';
+import 'package:pure_music/pages/play_list_page.dart';
+import '../model/music_model.dart';
+import 'EventBus.dart';
 
 class SearchBar extends StatefulWidget {
   SearchBar({Key? key, required this.hintLabel}) : super(key: key);
-
   final String hintLabel;
 
   @override
-  State<StatefulWidget> createState() {
-    return SearchAppBarState();
-  }
+  State<StatefulWidget> createState() => SearchBarState();
 }
 
-class SearchAppBarState extends State<SearchBar> {
+class SearchBarState extends State<SearchBar> {
   late FocusNode _focusNode;
-
   ///默认不展示控件
 
   bool _offstage = true;
@@ -40,9 +39,10 @@ class SearchAppBarState extends State<SearchBar> {
   }
 
   void searchMusic() async {
-    print('搜索条件：' + _textEditingController.text);
-    if (_textEditingController.text != null && _textEditingController.text != '') {
-      List res = await MusicAPI().search(_textEditingController.text);
+    if (_textEditingController.text != null &&
+        _textEditingController.text != '') {
+      print('搜索条件：' + _textEditingController.text);
+      eventBus.fire(CustomEvent(await MusicAPI().search(_textEditingController.text)));
     }
   }
 
@@ -77,13 +77,12 @@ class SearchAppBarState extends State<SearchBar> {
                   Expanded(
                     flex: 1,
                     child: TextField(
-                      controller: _textEditingController,
-                      autofocus: true,
-                      focusNode: _focusNode,
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                      decoration: InputDecoration(hintText: widget.hintLabel),
-                      maxLines: 1
-                    ),
+                        controller: _textEditingController,
+                        autofocus: true,
+                        focusNode: _focusNode,
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                        decoration: InputDecoration(hintText: widget.hintLabel),
+                        maxLines: 1),
                   ),
                   const Padding(
                     padding: EdgeInsets.only(right: 8),
@@ -112,7 +111,10 @@ class SearchAppBarState extends State<SearchBar> {
             child: Container(
               padding: const EdgeInsets.only(left: 16, right: 16),
               child: Text("取消",
-                  style: TextStyle(fontSize: 16, color: Color(0xFF3D7DFF), )),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF3D7DFF),
+                  )),
             ),
           ),
         ],
@@ -125,5 +127,4 @@ class SearchAppBarState extends State<SearchBar> {
     super.dispose();
     _focusNode.unfocus();
   }
-
 }

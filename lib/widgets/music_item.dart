@@ -16,7 +16,6 @@ class MusicItem extends StatelessWidget {
         height: 80,
         child: Row(
           children: [
-            Image.asset("assets/images/p${model.id}.jpg",width: 64,height: 64,fit: BoxFit.fitWidth,),
             const SizedBox(width: 10,),
             Expanded(
               child: ListView(

@@ -19,6 +19,9 @@ dependencies:
   rxdart: ^0.27.5
   get_it: ^7.2.0
   audioplayers: ^0.20.1
+  # 事件总线
+  event_bus: ^2.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

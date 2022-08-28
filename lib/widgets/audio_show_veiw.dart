@@ -57,7 +57,7 @@ class _AudioShowViewState extends State<AudioShowView> {
             const SizedBox(width: 8,),
             ClipRRect(
               borderRadius: BorderRadius.circular(3),
-              child: Image.asset("assets/images/p${AudioPlayerUtil.musicModel!.id}.jpg",width: 40,height: 40,fit: BoxFit.fitWidth,),
+              child: Image.network(AudioPlayerUtil.musicModel!.thumbnail ,width: 40,height: 40,fit: BoxFit.fitWidth,),
             ),
             const SizedBox(width: 8,),
             Expanded(

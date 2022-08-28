@@ -1,12 +1,8 @@
-/// Created by RongCheng on 2022/3/2.
-
 import 'package:flutter/material.dart';
 import 'package:pure_music/pages/detail_page.dart';
 import 'package:pure_music/utils/audio_player.dart';
-import 'package:pure_music/utils/music_data_util.dart';
 import 'package:pure_music/widgets/music_item.dart';
 import 'package:pure_music/model/music_model.dart';
-import 'package:pure_music/pages/search_music.dart';
 
 class SinglePage extends StatefulWidget {
   const SinglePage({Key? key}) : super(key: key);
@@ -17,16 +13,14 @@ class SinglePage extends StatefulWidget {
 
 class _SinglePageState extends State<SinglePage> with AutomaticKeepAliveClientMixin{
 
-  late List<MusicModel> _data;
+  late List<MusicModel> _data = [];
 
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
-    _data = MusicDataUtil.getMusicData();
     super.initState();
-
     // 播放状态监听
     AudioPlayerUtil.statusListener(key: this, listener: (sate){
       if(mounted){
@@ -36,7 +30,6 @@ class _SinglePageState extends State<SinglePage> with AutomaticKeepAliveClientMi
   }
 
   @override
-  // ignore: must_call_super
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("单曲播放"),),

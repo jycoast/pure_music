@@ -236,7 +236,7 @@ class AudioPlayerUtil{
     print(model.url);
     await _audioPlayer.play(model.url);
     _musicModel = model;
-    // _showTipView(true);
+    _showTipView(true);
   }
 
   // 跳转
