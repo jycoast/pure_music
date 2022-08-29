@@ -14,17 +14,15 @@ class MusicPlayer extends StatefulWidget {
 }
 
 class _MusicPlayerState extends State<MusicPlayer> {
-
-  final AudioPlayerHandler audioHandler = GetIt.asNewInstance() as AudioPlayerHandler;
+  final AudioPlayerHandler audioHandler = AudioPlayerHandlerImpl();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('music player'),
-        ),
-        bottomNavigationBar: ControlButtons(audioHandler)
-    );
+        // appBar: AppBar(
+        //   title: Text('music player'),
+        // ),
+        bottomNavigationBar: ControlButtons(audioHandler));
   }
 }
 
@@ -35,7 +33,8 @@ class ControlButtons extends StatelessWidget {
   final List buttons;
   final Color? dominantColor;
 
-  const ControlButtons(this.audioHandler, {
+  const ControlButtons(
+    this.audioHandler, {
     this.shuffle = false,
     this.miniplayer = false,
     this.buttons = const ['Previous', 'Play/Pause', 'Next'],
@@ -47,14 +46,13 @@ class ControlButtons extends StatelessWidget {
     // final MediaItem mediaItem = new MediaItem(id: '11', title: '测试');
 
     // final bool online = mediaItem.extras!['url'].toString().startsWith('http');
-
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            height: miniplayer ? 40.0 : 65.0,
-            width: miniplayer ? 40.0 : 65.0,
+            height: miniplayer ? 100.0 : 205.0,
+            width: miniplayer ? 400.0 : 200.0,
             child: StreamBuilder<PlaybackState>(
               stream: audioHandler.playbackState,
               builder: (context, snapshot) {
@@ -71,39 +69,39 @@ class ControlButtons extends StatelessWidget {
                           width: miniplayer ? 40.0 : 65.0,
                           child: CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              Theme
-                                  .of(context)
-                                  .iconTheme
-                                  .color!,
+                              Theme.of(context).iconTheme.color!,
                             ),
                           ),
                         ),
                       ),
+                    Center(
+                      child: Text('11')
+                      //   child: IconButton(
+                      // icon: const Icon(Icons.skip_previous_sharp),
+                      // iconSize: miniplayer ? 24.0 : 45.0,
+                      // tooltip: '上一曲',
+                      // // color: ,
+                      // onPressed: audioHandler.skipToPrevious,
+                    ),
                     if (miniplayer)
                       Center(
                         child: playing
                             ? IconButton(
-                          tooltip: '暂停',
-                          onPressed: audioHandler.pause,
-                          icon: const Icon(
-                            Icons.pause_rounded,
-                          ),
-                          color: Theme
-                              .of(context)
-                              .iconTheme
-                              .color,
-                        )
+                                tooltip: '暂停',
+                                onPressed: audioHandler.pause,
+                                icon: const Icon(
+                                  Icons.pause_rounded,
+                                ),
+                                color: Theme.of(context).iconTheme.color,
+                              )
                             : IconButton(
-                          tooltip: '播放',
-                          onPressed: audioHandler.play,
-                          icon: const Icon(
-                            Icons.play_arrow_rounded,
-                          ),
-                          color: Theme
-                              .of(context)
-                              .iconTheme
-                              .color,
-                        ),
+                                tooltip: '播放',
+                                onPressed: audioHandler.play,
+                                icon: const Icon(
+                                  Icons.play_arrow_rounded,
+                                ),
+                                color: Theme.of(context).iconTheme.color,
+                              ),
                       )
                     else
                       Center(
@@ -113,30 +111,43 @@ class ControlButtons extends StatelessWidget {
                           child: Center(
                             child: playing
                                 ? FloatingActionButton(
-                              elevation: 10,
-                              tooltip: '暂停',
-                              backgroundColor: Colors.white,
-                              onPressed: audioHandler.pause,
-                              child: const Icon(
-                                Icons.pause_rounded,
-                                size: 40.0,
-                                color: Colors.black,
-                              ),
-                            )
+                                    elevation: 10,
+                                    tooltip: '暂停',
+                                    backgroundColor: Colors.white,
+                                    onPressed: audioHandler.pause,
+                                    child: const Icon(
+                                      Icons.pause_rounded,
+                                      size: 40.0,
+                                      color: Colors.black,
+                                    ),
+                                  )
                                 : FloatingActionButton(
-                              elevation: 10,
-                              tooltip: '播放',
-                              backgroundColor: Colors.white,
-                              onPressed: audioHandler.play,
-                              child: const Icon(
-                                Icons.play_arrow_rounded,
-                                size: 40.0,
-                                color: Colors.black,
-                              ),
-                            ),
+                                    elevation: 10,
+                                    tooltip: '播放',
+                                    backgroundColor: Colors.white,
+                                    onPressed: audioHandler.play,
+                                    child: const Icon(
+                                      Icons.play_arrow_rounded,
+                                      size: 40.0,
+                                      color: Colors.black,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
+                    // StreamBuilder<QueueState>(
+                    //   stream: audioHandler.queueState,
+                    //   builder: (context, snapshot) {
+                    //     return IconButton(
+                    //       icon: const Icon(Icons.skip_next_rounded),
+                    //       iconSize: miniplayer ? 24.0 : 45.0,
+                    //       tooltip: '下一曲',
+                    //       color: dominantColor ??
+                    //           Theme.of(context).iconTheme.color,
+                    //       onPressed: audioHandler.skipToNext,
+                    //     );
+                    //   },
+                    // )
                   ],
                 );
               },
@@ -160,24 +171,26 @@ abstract class AudioPlayerHandler implements AudioHandler {
 
 class QueueState {
   static const QueueState empty =
-  QueueState([], 0, [], AudioServiceRepeatMode.none);
+      QueueState([], 0, [], AudioServiceRepeatMode.none);
 
   final List<MediaItem> queue;
   final int? queueIndex;
   final List<int>? shuffleIndices;
   final AudioServiceRepeatMode repeatMode;
 
-  const QueueState(this.queue,
-      this.queueIndex,
-      this.shuffleIndices,
-      this.repeatMode,);
+  const QueueState(
+    this.queue,
+    this.queueIndex,
+    this.shuffleIndices,
+    this.repeatMode,
+  );
 
   bool get hasPrevious =>
       repeatMode != AudioServiceRepeatMode.none || (queueIndex ?? 0) > 0;
 
   bool get hasNext =>
       repeatMode != AudioServiceRepeatMode.none ||
-          (queueIndex ?? 0) + 1 < queue.length;
+      (queueIndex ?? 0) + 1 < queue.length;
 
   List<int> get indices =>
       shuffleIndices ?? List.generate(queue.length, (i) => i);
