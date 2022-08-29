@@ -60,7 +60,7 @@ class PlayListPageState extends State<PlayListPage>
   }
 
   LoadNextPage(index) async {
-    data.addAll(await MusicAPI().search('周杰伦'));
+    data.addAll(await MusicAPI().searchBykeyWord('周杰伦'));
   }
 
   void itemCallback(MusicModel model, int type) {

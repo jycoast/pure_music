@@ -37,7 +37,7 @@ class SearchBarState extends State<SearchBar> {
         _textEditingController.text != '') {
       print('搜索条件：' + _textEditingController.text);
       eventBus.fire(
-          CustomEvent(await MusicAPI().search(_textEditingController.text)));
+          CustomEvent(await MusicAPI().searchBykeyWord(_textEditingController.text)));
     }
   }
 

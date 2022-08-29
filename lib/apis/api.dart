@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
@@ -11,8 +12,15 @@ class MusicAPI {
   Map<String, String> headers = {};
   String baseUrl = 'http://www.kuwo.cn/api';
   String apiStr = '/api.php?_format=json&_marker=0&api_version=4&ctx=web6dot0';
+  String reqId = "904fa612-260e-11ed-a6c2-2d5a015b41b4";
+  int httpsStatus = 1;
+  String type = 'convert_url';
 
-  Map<String, String> endpoints = {'playUrl': 'mid=webapi.getLaunchData'};
+  Map<String, String> endpoints = {
+    'searchUrl': '/www/search/searchMusicBykeyWord',
+    'playUrl': '/v1/www/music/playUrl',
+    'homeData': '/www/artist/artistInfo' //http://www.kuwo.cn/api/www/artist/artistInfo?category=11&pn=1&rn=6&httpsStatus=1&reqId=1659e180-278b-11ed-b257-e7c7f69ecd4c
+  };
 
   Future<Response> getResponse(String params) async {
     Uri url = Uri.parse(baseUrl + params);
@@ -30,10 +38,8 @@ class MusicAPI {
   }
 
   Future<String?> getPlayUrl(String mid) async {
-    var type = 'convert_url';
-    var httpsStatus = '1';
     var params =
-        '/v1/www/music/playUrl?mid='+ mid + '&type=convert_url&httpsStatus=1';
+        '${endpoints['playUrl']}?mid=$mid&type=$type&httpsStatus=$httpsStatus';
     final res = await getResponse(params);
     if (res.statusCode == 200) {
       final Map playUrlMap = json.decode(res.body) as Map;
@@ -53,21 +59,40 @@ class MusicAPI {
     return List.empty();
   }
 
-  Future<List<MusicModel>> search(String key) async {
-    String params =
-        "/www/search/searchMusicBykeyWord?key=" + key + "pn=1&rn=30&httpsStatus=1&reqId=904fa612-260e-11ed-a6c2-2d5a015b41b4";
-    final res = await getResponse(params);
-    if (res.statusCode != 200) {
-      print('搜索失败: ' + res.body.toString());
+  Future<List<MusicModel>> searchBykeyWord(String key,
+      {int pn = 1, int rn = 30}) async {
+    if (key == "") {
       return List.empty();
     }
-    Map<String, dynamic> resMap = json.decode(res.body);
-    List<MusicModel> list = [];
-    for (Map<String, dynamic> map in resMap['data']['list']) {
-      map['url'] = await getPlayUrl(map['rid'].toString());
-      MusicModel model = MusicModel.fromMap(map);
-      list.add(model);
+    final params =
+        "${endpoints['playUrl']}?key=$key&pn=$pn&rn=$rn&httpsStatus=$httpsStatus&reqId=$reqId";
+    try {
+      final res = await getResponse(params);
+      Map<String, dynamic> resMap = json.decode(res.body);
+      List<MusicModel> list = [];
+      for (Map<String, dynamic> map in resMap['data']['list']) {
+        map['url'] = await getPlayUrl(map['rid'].toString());
+        MusicModel model = MusicModel.fromMap(map);
+        list.add(model);
+      }
+      return list;
+    } catch (e) {
+      log('Error in fetchAlbumSongs: $e');
+      return List.empty();
     }
-    return list;
+  }
+
+  Future<Map> fetchHomePageData() async {
+    Map result = {};
+    try {
+      final res = await getResponse(endpoints['homeData']!);
+      if (res.statusCode == 200) {
+        final Map data = json.decode(res.body) as Map;
+        // result = await FormatResponse.formatHomePageData(data);
+      }
+    } catch (e) {
+      log('Error in fetchHomePageData: $e');
+    }
+    return result;
   }
 }
