@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pure_music/pages/detail_page.dart';
 import 'package:pure_music/utils/audio_player.dart';
 import 'package:pure_music/widgets/music_item.dart';
 import 'package:pure_music/model/music_model.dart';
+
+import 'detail_page.dart';
 
 class SinglePage extends StatefulWidget {
   const SinglePage({Key? key}) : super(key: key);

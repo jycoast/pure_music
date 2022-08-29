@@ -1,9 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:pure_music/pages/detail_page.dart';
 import 'dart:ui' as ui show window;
-
 import 'package:pure_music/utils/audio_player.dart';
+import '../CustomWidgets/detail_page.dart';
 
 
 class AudioShowView extends StatefulWidget {

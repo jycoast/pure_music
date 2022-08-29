@@ -65,7 +65,7 @@ class MusicAPI {
       return List.empty();
     }
     final params =
-        "${endpoints['playUrl']}?key=$key&pn=$pn&rn=$rn&httpsStatus=$httpsStatus&reqId=$reqId";
+        "${endpoints['searchUrl']}?key=$key&pn=$pn&rn=$rn&httpsStatus=$httpsStatus&reqId=$reqId";
     try {
       final res = await getResponse(params);
       Map<String, dynamic> resMap = json.decode(res.body);

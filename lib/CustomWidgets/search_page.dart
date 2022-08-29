@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pure_music/pages/detail_page.dart';
-import 'package:pure_music/pages/list_page.dart';
-import 'package:pure_music/pages/play_list_page.dart';
+import 'package:pure_music/CustomWidgets/play_list_page.dart';
+import 'package:pure_music/CustomWidgets/search_bar.dart';
 import 'package:pure_music/utils/audio_player.dart';
-import 'package:pure_music/widgets/music_item.dart';
 import 'package:pure_music/model/music_model.dart';
-import 'package:pure_music/pages/search_bar.dart';
+
+import 'detail_page.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);

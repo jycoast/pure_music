@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:pure_music/model/music_model.dart';
-import 'package:pure_music/pages/search_bar.dart';
 import 'package:pure_music/utils/audio_player.dart';
+
+import 'custom_physics.dart';
 
 class ListPage extends StatefulWidget {
   const ListPage({Key? key}) : super(key: key);
@@ -35,6 +36,7 @@ class _ListPageState extends State<ListPage>
           children: [
             Expanded(
               child: ListView.separated(
+                physics: const CustomPhysics(),
                 padding: const EdgeInsets.only(bottom: 60),
                 itemCount: _data.length,
                 itemBuilder: (ctx, index) {

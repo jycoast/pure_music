@@ -6,9 +6,10 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:pure_music/apis/api.dart';
 import 'package:pure_music/utils/mediaitem_converter.dart';
-import 'package:pure_music/pages/player.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
+
+import '../CustomWidgets/player.dart';
 
 class AudioPlayerHandlerImpl extends BaseAudioHandler
     with QueueHandler, SeekHandler

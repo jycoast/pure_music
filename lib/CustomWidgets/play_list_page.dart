@@ -3,11 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pure_music/apis/api.dart';
 import 'package:pure_music/model/music_model.dart';
-import 'package:pure_music/pages/EventBus.dart';
-import 'package:pure_music/pages/search_bar.dart';
 import 'package:pure_music/utils/audio_player.dart';
 
 import '../widgets/music_item.dart';
+import 'EventBus.dart';
 import 'detail_page.dart';
 
 class PlayListPage extends StatefulWidget {

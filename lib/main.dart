@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pure_music/pages/search_page.dart';
 import 'package:pure_music/widgets/audio_show_veiw.dart';
 
-import 'package:pure_music/pages/single_page.dart';
-import 'package:pure_music/pages/list_page.dart';
+import 'CustomWidgets/list_page.dart';
+import 'CustomWidgets/search_page.dart';
+import 'CustomWidgets/single_page.dart';
+
 
 void main() {
   runApp(const MyApp());
