@@ -13,10 +13,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pure_music/services/audio_service.dart';
 import 'package:pure_music/theme/app_theme.dart';
 import 'package:pure_music/utils/config.dart';
+import 'package:pure_music/utils/handle_native.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import 'CustomWidgets/player.dart';
 import 'Screens/Home/home.dart';
+import 'Screens/Library/nowplaying.dart';
+import 'Screens/Login/pref.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,14 +48,14 @@ Future<void> setOptimalDisplayMode() async {
   final List<DisplayMode> sameResolution = supported
       .where(
         (DisplayMode m) => m.width == active.width && m.height == active.height,
-  )
+      )
       .toList()
     ..sort(
-          (DisplayMode a, DisplayMode b) => b.refreshRate.compareTo(a.refreshRate),
+      (DisplayMode a, DisplayMode b) => b.refreshRate.compareTo(a.refreshRate),
     );
 
   final DisplayMode mostOptimalMode =
-  sameResolution.isNotEmpty ? sameResolution.first : active;
+      sameResolution.isNotEmpty ? sameResolution.first : active;
 
   await FlutterDisplayMode.setPreferredMode(mostOptimalMode);
 }
@@ -119,7 +122,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     final String lang =
-    Hive.box('settings').get('lang', defaultValue: 'English') as String;
+        Hive.box('settings').get('lang', defaultValue: 'Chinese') as String;
     final Map<String, String> codes = {
       'Chinese': 'zh',
       'Czech': 'cs',
@@ -149,7 +152,7 @@ class _MyAppState extends State<MyApp> {
 
     // For sharing or opening urls/text coming from outside the app while the app is in the memory
     _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen(
-          (String value) {
+      (String value) {
         handleSharedText(value, navigatorKey);
       },
       onError: (err) {
@@ -159,7 +162,7 @@ class _MyAppState extends State<MyApp> {
 
     // For sharing or opening urls/text coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialText().then(
-          (String? value) {
+      (String? value) {
         if (value != null) handleSharedText(value, navigatorKey);
       },
     );
@@ -242,13 +245,13 @@ class _MyAppState extends State<MyApp> {
       ],
       routes: {
         '/': (context) => initialFuntion(),
-        // '/pref': (context) => const PrefScreen(),
+        '/pref': (context) => const PrefScreen(),
         // '/setting': (context) => const SettingPage(),
         // '/about': (context) => AboutScreen(),
         // '/playlists': (context) => PlaylistScreen(),
-        // '/nowplaying': (context) => NowPlaying(),
+        '/nowplaying': (context) => NowPlaying(),
         // '/recent': (context) => RecentlyPlayed(),
-        // '/downloads': (context) => const Downloads(),
+        //  '/downloads': (context) => const Downloads(),
       },
       navigatorKey: navigatorKey,
       // onGenerateRoute: (RouteSettings settings) {

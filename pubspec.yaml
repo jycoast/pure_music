@@ -43,6 +43,9 @@ dependencies:
   flutter_displaymode: ^0.4.0
   # 使 flutter 应用程序能够接收来自其他应用程序的共享照片、文本或 url。使 flutter 应用程序能够接收来自其他应用程序的共享照片、文本或 url
   receive_sharing_intent: ^1.4.5
+  share_plus: ^4.0.10
+  flip_card: ^0.6.0
+  sliding_up_panel: ^2.0.0+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
