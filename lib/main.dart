@@ -56,7 +56,7 @@ class _AppTabBarWidgetState extends State<AppTabBarWidget> {
   @override
   void initState() {
     _items = [AppTabBarItem("首页"), AppTabBarItem("播放"), AppTabBarItem("列表")];
-    _pages = [const SearchPage(), const SinglePage(), const ListPage()];
+    _pages = [const SearchPage2(), const SinglePage(), const ListPage()];
     super.initState();
   }
 

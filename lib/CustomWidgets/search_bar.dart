@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:pure_music/apis/api.dart';
 import 'EventBus.dart';
 
-class SearchBar extends StatefulWidget {
-  SearchBar({Key? key, required this.hintLabel}) : super(key: key);
+class SearchBar2 extends StatefulWidget {
+  SearchBar2({Key? key, required this.hintLabel}) : super(key: key);
   final String hintLabel;
 
   @override
-  State<StatefulWidget> createState() => SearchBarState();
+  State<StatefulWidget> createState() => SearchBar2State();
 }
 
-class SearchBarState extends State<SearchBar> {
+class SearchBar2State extends State<SearchBar2> {
   late FocusNode _focusNode;
   bool _offstage = true;
   final TextEditingController _textEditingController = TextEditingController();

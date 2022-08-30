@@ -30,6 +30,16 @@ dependencies:
   palette_generator: ^0.3.3+1
   cached_network_image: ^3.2.1
   on_audio_query: ^2.6.1
+  url_launcher: ^6.1.5
+  file_picker: ^5.0.1
+  permission_handler: ^9.2.0
+  #在 Android、iOS 和 macOS 中创建和提取 ZIP 存档文件。递归压缩目录或给定文件列表中的所有文件
+  flutter_archive: ^4.2.2
+  supabase: ^0.2.15
+  device_info_plus: ^4.1.0
+  material_design_icons_flutter: 5.0.5955-rc.1
+  package_info_plus: ^1.4.0
+  salomon_bottom_bar: ^3.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -43,3 +53,11 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+
+msix_config:
+  display_name: BlackHole
+  publisher_display_name: Ankit Sangwan
+  identity_name: com.shadow.blackhole
+  icons_background_color: transparent
+  logo_path: assets/ic_launcher.png
+  file_extension: .mp3, .m4a
