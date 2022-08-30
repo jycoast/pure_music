@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pure_music/CustomWidgets/player.dart';
 
+import '../services/Player/audioplayer.dart';
 import 'gradient_containers.dart';
 
 class MiniPlayer extends StatefulWidget {
@@ -127,22 +128,22 @@ class _MiniPlayerState extends State<MiniPlayer> {
                             children: [
                               ListTile(
                                 dense: useDense,
-                                // onTap: () {
-                                //   Navigator.of(context).push(
-                                //     PageRouteBuilder(
-                                //       opaque: false,
-                                //       pageBuilder: (_, __, ___) =>
-                                //           const PlayScreen(
-                                //         songsList: [],
-                                //         index: 1,
-                                //         offline: null,
-                                //         fromMiniplayer: true,
-                                //         fromDownloads: false,
-                                //         recommend: false,
-                                //       ),
-                                //     ),
-                                //   );
-                                // },
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    PageRouteBuilder(
+                                      opaque: false,
+                                      pageBuilder: (_, __, ___) =>
+                                          const PlayScreen(
+                                        songsList: [],
+                                        index: 1,
+                                        offline: null,
+                                        fromMiniplayer: true,
+                                        fromDownloads: false,
+                                        recommend: false,
+                                      ),
+                                    ),
+                                  );
+                                },
                                 title: Text(
                                   mediaItem.title,
                                   maxLines: 1,

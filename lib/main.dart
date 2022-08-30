@@ -19,6 +19,7 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'CustomWidgets/player.dart';
 import 'Screens/Home/home.dart';
 import 'Screens/Library/nowplaying.dart';
+import 'Screens/Library/recent.dart';
 import 'Screens/Login/pref.dart';
 
 Future<void> main() async {
@@ -250,7 +251,7 @@ class _MyAppState extends State<MyApp> {
         // '/about': (context) => AboutScreen(),
         // '/playlists': (context) => PlaylistScreen(),
         '/nowplaying': (context) => NowPlaying(),
-        // '/recent': (context) => RecentlyPlayed(),
+        '/recent': (context) => RecentlyPlayed(),
         //  '/downloads': (context) => const Downloads(),
       },
       navigatorKey: navigatorKey,
