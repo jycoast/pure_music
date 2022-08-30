@@ -190,7 +190,7 @@ class OfflineAudioQuery {
                       fit: BoxFit.cover,
                       height: height,
                       width: width,
-                      image: const AssetImage('assets/cover.jpg'),
+                      image: const AssetImage('assets/images/cover.jpg'),
                     );
               },
             ),
@@ -207,7 +207,7 @@ class OfflineAudioQuery {
                 fit: BoxFit.cover,
                 height: height,
                 width: width,
-                image: const AssetImage('assets/cover.jpg'),
+                image: const AssetImage('assets/images/cover.jpg'),
               ),
         );
       },

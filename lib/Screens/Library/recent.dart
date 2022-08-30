@@ -109,7 +109,7 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
                                       errorWidget: (context, _, __) =>
                                           const Image(
                                         fit: BoxFit.cover,
-                                        image: AssetImage('assets/cover.jpg'),
+                                        image: AssetImage('assets/images/cover.jpg'),
                                       ),
                                       imageUrl: _songs[index]['image']
                                           .toString()
@@ -117,7 +117,7 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
                                       placeholder: (context, url) =>
                                           const Image(
                                         fit: BoxFit.cover,
-                                        image: AssetImage('assets/cover.jpg'),
+                                        image: AssetImage('assets/images/cover.jpg'),
                                       ),
                                     ),
                                   ),

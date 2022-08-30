@@ -324,8 +324,8 @@ class _HomePageState extends State<HomePage> {
                         alignment: Alignment.topCenter,
                         image: AssetImage(
                           Theme.of(context).brightness == Brightness.dark
-                              ? 'assets/header-dark.jpg'
-                              : 'assets/header.jpg',
+                              ? 'assets/images/header-dark.jpg'
+                              : 'assets/images/header.jpg',
                         ),
                       ),
                     ),
@@ -870,17 +870,17 @@ class _HomePageState extends State<HomePage> {
                       selectedColor:
                       Theme.of(context).colorScheme.secondary,
                     ),
+                    // SalomonBottomBarItem(
+                    //   icon: const Icon(Icons.trending_up_rounded),
+                    //   title: Text(
+                    //     AppLocalizations.of(context)!.topCharts,
+                    //   ),
+                    //   selectedColor:
+                    //   Theme.of(context).colorScheme.secondary,
+                    // ),
                     SalomonBottomBarItem(
-                      icon: const Icon(Icons.trending_up_rounded),
-                      title: Text(
-                        AppLocalizations.of(context)!.topCharts,
-                      ),
-                      selectedColor:
-                      Theme.of(context).colorScheme.secondary,
-                    ),
-                    SalomonBottomBarItem(
-                      icon: const Icon(MdiIcons.youtube),
-                      title: Text(AppLocalizations.of(context)!.youTube),
+                      icon: const Icon(MdiIcons.playCircleOutline),
+                      title: Text(AppLocalizations.of(context)!.play),
                       selectedColor:
                       Theme.of(context).colorScheme.secondary,
                     ),

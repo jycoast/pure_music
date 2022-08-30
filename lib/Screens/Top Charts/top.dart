@@ -272,7 +272,7 @@ class _TopPageState extends State<TopPage>
                     child: Stack(
                       children: [
                         const Image(
-                          image: AssetImage('assets/cover.jpg'),
+                          image: AssetImage('assets/images/cover.jpg'),
                         ),
                         if (showList[index]['image_url_small'] != '')
                           CachedNetworkImage(
@@ -281,11 +281,11 @@ class _TopPageState extends State<TopPage>
                                 showList[index]['image_url_small'].toString(),
                             errorWidget: (context, _, __) => const Image(
                               fit: BoxFit.cover,
-                              image: AssetImage('assets/cover.jpg'),
+                              image: AssetImage('assets/images/cover.jpg'),
                             ),
                             placeholder: (context, url) => const Image(
                               fit: BoxFit.cover,
-                              image: AssetImage('assets/cover.jpg'),
+                              image: AssetImage('assets/images/cover.jpg'),
                             ),
                           ),
                       ],

@@ -227,7 +227,7 @@ class _PlayScreenState extends State<PlayScreen> {
     getTemporaryDirectory().then((tempDir) async {
       final File file = File('${tempDir.path}/cover.jpg');
       if (!await file.exists()) {
-        final byteData = await rootBundle.load('assets/cover.jpg');
+        final byteData = await rootBundle.load('cover.jpg');
         await file.writeAsBytes(
           byteData.buffer
               .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
@@ -1307,7 +1307,7 @@ class NowPlayingStream extends StatelessWidget {
                             ? const SizedBox.square(
                                 dimension: 50,
                                 child: Image(
-                                  image: AssetImage('assets/cover.jpg'),
+                                  image: AssetImage('assets/images/cover.jpg'),
                                 ),
                               )
                             : SizedBox.square(
@@ -1331,7 +1331,7 @@ class NowPlayingStream extends StatelessWidget {
                                                 const Image(
                                           fit: BoxFit.cover,
                                           image: AssetImage(
-                                            'assets/cover.jpg',
+                                            'assets/images/cover.jpg',
                                           ),
                                         ),
                                         placeholder:
@@ -1339,7 +1339,7 @@ class NowPlayingStream extends StatelessWidget {
                                                 const Image(
                                           fit: BoxFit.cover,
                                           image: AssetImage(
-                                            'assets/cover.jpg',
+                                            'assets/images/cover.jpg',
                                           ),
                                         ),
                                         imageUrl:
