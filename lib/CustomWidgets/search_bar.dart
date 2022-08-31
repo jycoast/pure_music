@@ -1,135 +1,239 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pure_music/apis/api.dart';
-import 'EventBus.dart';
 
-class SearchBar2 extends StatefulWidget {
-  SearchBar2({Key? key, required this.hintLabel}) : super(key: key);
-  final String hintLabel;
+class SearchBar extends StatefulWidget {
+  final bool isYt;
+  final Widget body;
+  final bool autofocus;
+  final bool liveSearch;
+  final bool showClose;
+  final Widget? leading;
+  final String? hintText;
+  final TextEditingController controller;
+  final Function(String)? onQueryChanged;
+  final Function(String) onSubmitted;
+  const SearchBar({
+    super.key,
+    this.leading,
+    this.hintText,
+    this.showClose = true,
+    this.autofocus = false,
+    this.onQueryChanged,
+    required this.body,
+    required this.isYt,
+    required this.controller,
+    required this.liveSearch,
+    required this.onSubmitted,
+  });
 
   @override
-  State<StatefulWidget> createState() => SearchBar2State();
+  State<SearchBar> createState() => _SearchBarState();
 }
 
-class SearchBar2State extends State<SearchBar2> {
-  late FocusNode _focusNode;
-  bool _offstage = true;
-  final TextEditingController _textEditingController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode = FocusNode();
-    _textEditingController.addListener(() {
-      var isVisible = _textEditingController.text.isNotEmpty;
-      _updateDelIconVisible(isVisible);
-      searchMusic();
-    });
-  }
-
-  _updateDelIconVisible(bool isVisible) {
-    setState(() {
-      _offstage = !isVisible;
-    });
-  }
-
-  void searchMusic() async {
-    if (_textEditingController.text != null &&
-        _textEditingController.text != '') {
-      print('搜索条件：' + _textEditingController.text);
-      eventBus.fire(
-          CustomEvent(await MusicAPI().searchBykeyWord(_textEditingController.text)));
-    }
-  }
+class _SearchBarState extends State<SearchBar> {
+  String tempQuery = '';
+  String query = '';
+  final ValueNotifier<bool> hide = ValueNotifier<bool>(true);
+  final ValueNotifier<List> suggestionsList = ValueNotifier<List>([]);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 30,
-      child: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Container(
-              height: double.infinity,
-              margin: const EdgeInsets.only(left: 16),
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(4)),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 8),
-                  ),
-                  Icon(
-                    Icons.search_sharp,
-                    size: 20,
-                    color: Colors.grey,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 8),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: TextField(
-                        controller: _textEditingController,
-                        autofocus: true,
-                        focusNode: _focusNode,
-                        style: TextStyle(fontSize: 14, color: Colors.grey),
-                        decoration: InputDecoration(
-                            hintText: widget.hintLabel,
-                            hintStyle: const TextStyle(height: 1.05),
-                            enabledBorder: new UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color(0x19000000)),
+    return Stack(
+      children: [
+        widget.body,
+        ValueListenableBuilder(
+          valueListenable: hide,
+          builder: (
+            BuildContext context,
+            bool hidden,
+            Widget? child,
+          ) {
+            return Visibility(
+              visible: !hidden,
+              child: GestureDetector(
+                onTap: () {
+                  hide.value = true;
+                },
+              ),
+            );
+          },
+        ),
+        Column(
+          children: [
+            Card(
+              margin: const EdgeInsets.fromLTRB(
+                18.0,
+                10.0,
+                18.0,
+                15.0,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                  10.0,
+                ),
+              ),
+              elevation: 8.0,
+              child: SizedBox(
+                height: 52.0,
+                child: Center(
+                  child: TextField(
+                    controller: widget.controller,
+                    textAlignVertical: TextAlignVertical.center,
+                    decoration: InputDecoration(
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1.5,
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      fillColor: Theme.of(context).colorScheme.secondary,
+                      prefixIcon: widget.leading,
+                      suffixIcon: widget.showClose
+                          ? ValueListenableBuilder(
+                              valueListenable: hide,
+                              builder: (
+                                BuildContext context,
+                                bool hidden,
+                                Widget? child,
+                              ) {
+                                return Visibility(
+                                  visible: !hidden,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.close_rounded),
+                                    onPressed: () {
+                                      widget.controller.text = '';
+                                      suggestionsList.value = [];
+                                    },
+                                  ),
+                                );
+                              },
+                            )
+                          : null,
+                      border: InputBorder.none,
+                      hintText: widget.hintText,
+                    ),
+                    autofocus: widget.autofocus,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.search,
+                    onChanged: (val) {
+                      if (widget.liveSearch) {
+                        tempQuery = val;
+                        hide.value = false;
+                        if (widget.isYt) {
+                          Future.delayed(
+                            const Duration(
+                              milliseconds: 400,
                             ),
-                            focusedBorder: new UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Color(0x19000000)))
-                            // height: 10,
+                            () async {
+                              if (tempQuery == val &&
+                                  tempQuery.trim() != '' &&
+                                  tempQuery != query) {
+                                query = tempQuery;
+                                suggestionsList.value =
+                                    await widget.onQueryChanged!(tempQuery)
+                                        as List;
+                              }
+                            },
+                          );
+                        } else {
+                          Future.delayed(
+                            const Duration(
+                              milliseconds: 600,
                             ),
-                        maxLines: 1),
+                            () async {
+                              if (tempQuery == val &&
+                                  tempQuery.trim() != '' &&
+                                  tempQuery != query) {
+                                query = tempQuery;
+                                if (widget.onQueryChanged == null) {
+                                  widget.onSubmitted(tempQuery);
+                                } else {
+                                  widget.onQueryChanged!(tempQuery);
+                                }
+                              }
+                            },
+                          );
+                        }
+                      }
+                    },
+                    onSubmitted: (submittedQuery) {
+                      if (submittedQuery.trim() != '') {
+                        query = submittedQuery;
+                        widget.onSubmitted(submittedQuery);
+                        if (!hide.value) hide.value = true;
+                      }
+                    },
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(right: 8),
-                  ),
-                  Offstage(
-                    offstage: _offstage,
-                    child: GestureDetector(
-                        onTap: () => {_textEditingController.clear()},
-                        child: Icon(
-                          Icons.cancel_sharp,
-                          size: 20,
-                          color: Colors.grey,
-                        )),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(right: 8),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-          GestureDetector(
-            onTap: () {
-              _focusNode.unfocus();
-            },
-            child: Container(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Text("取消",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  )),
+            ValueListenableBuilder(
+              valueListenable: hide,
+              builder: (
+                BuildContext context,
+                bool hidden,
+                Widget? child,
+              ) {
+                return Visibility(
+                  visible: !hidden,
+                  child: ValueListenableBuilder(
+                    valueListenable: suggestionsList,
+                    builder: (
+                      BuildContext context,
+                      List suggestedList,
+                      Widget? child,
+                    ) {
+                      return suggestedList.isEmpty
+                          ? const SizedBox()
+                          : Card(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 18.0,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  10.0,
+                                ),
+                              ),
+                              elevation: 8.0,
+                              child: SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height - 250.0,
+                                child: ListView.builder(
+                                  physics: const BouncingScrollPhysics(),
+                                  padding: const EdgeInsets.only(
+                                    top: 10,
+                                    bottom: 10,
+                                  ),
+                                  shrinkWrap: true,
+                                  itemExtent: 70.0,
+                                  itemCount: suggestedList.length,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      leading:
+                                          const Icon(CupertinoIcons.search),
+                                      title: Text(
+                                        suggestedList[index].toString(),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      onTap: () {
+                                        widget.onSubmitted(
+                                          suggestedList[index].toString(),
+                                        );
+                                        hide.value = true;
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                    },
+                  ),
+                );
+              },
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      ],
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _focusNode.unfocus();
   }
 }

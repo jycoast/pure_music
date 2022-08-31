@@ -72,7 +72,7 @@ Future<void> startService() async {
       androidShowNotificationBadge: true,
       // androidStopForegroundOnPause: Hive.box('settings')
       // .get('stopServiceOnPause', defaultValue: true) as bool,
-      notificationColor: Colors.grey[900],
+      notificationColor: Colors.lightGreen,
     ),
   );
   GetIt.I.registerSingleton<AudioPlayerHandler>(audioHandler);

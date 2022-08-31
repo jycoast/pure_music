@@ -3,10 +3,9 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'dart:convert';
-
 import '../model/music_model.dart';
 
-class MusicAPI {
+class KwMusicAPI {
   Map<String, String> headers = {};
   String baseUrl = 'http://www.kuwo.cn/api';
   String apiStr = '/api.php?_format=json&_marker=0&api_version=4&ctx=web6dot0';

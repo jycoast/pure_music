@@ -18,6 +18,7 @@ import '../../CustomWidgets/miniplayer.dart';
 import '../../CustomWidgets/search_page.dart';
 import '../../CustomWidgets/snackbar.dart';
 import '../../CustomWidgets/textinput_dialog.dart';
+import '../../Search/search.dart';
 import '../../services/ext_storage_provider.dart';
 import '../../utils/backup_restore.dart';
 import '../../utils/supabase.dart';
@@ -285,24 +286,24 @@ class _HomePageState extends State<HomePage> {
                   stretch: true,
                   expandedHeight: MediaQuery.of(context).size.height * 0.2,
                   flexibleSpace: FlexibleSpaceBar(
-                    title: RichText(
-                      text: TextSpan(
-                        text: AppLocalizations.of(context)!.appTitle,
-                        style: const TextStyle(
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: appVersion == null ? '' : '\nv$appVersion',
-                            style: const TextStyle(
-                              fontSize: 7.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.end,
-                    ),
+                    // title: RichText(
+                    //   text: TextSpan(
+                    //     text: AppLocalizations.of(context)!.appTitle,
+                    //     style: const TextStyle(
+                    //       fontSize: 30.0,
+                    //       fontWeight: FontWeight.w500,
+                    //     ),
+                    //     children: <TextSpan>[
+                    //       TextSpan(
+                    //         text: appVersion == null ? '' : '\nv$appVersion',
+                    //         style: const TextStyle(
+                    //           fontSize: 7.0,
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    //   textAlign: TextAlign.end,
+                    // ),
                     titlePadding: const EdgeInsets.only(bottom: 40.0),
                     centerTitle: true,
                     background: ShaderMask(
@@ -324,8 +325,8 @@ class _HomePageState extends State<HomePage> {
                         alignment: Alignment.topCenter,
                         image: AssetImage(
                           Theme.of(context).brightness == Brightness.dark
-                              ? 'assets/header-dark.jpg'
-                              : 'assets/header.jpg',
+                              ? 'assets/images/cover.jpg'
+                              : 'assets/images/cover.jpg',
                         ),
                       ),
                     ),
@@ -435,24 +436,24 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Column(
-                    children: <Widget>[
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 30, 5, 20),
-                        child: Center(
-                          child: Text(
-                            AppLocalizations.of(context)!.madeBy,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // SliverFillRemaining(
+                //   hasScrollBody: false,
+                //   child: Column(
+                //     children: <Widget>[
+                //       const Spacer(),
+                //       Padding(
+                //         padding: const EdgeInsets.fromLTRB(5, 30, 5, 20),
+                //         child: Center(
+                //           child: Text(
+                //             AppLocalizations.of(context)!.madeBy,
+                //             textAlign: TextAlign.center,
+                //             style: const TextStyle(fontSize: 12),
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -784,17 +785,17 @@ class _HomePageState extends State<HomePage> {
                                                     ],
                                                   ),
                                                 ),
-                                                // onTap: () => Navigator.push(
-                                                //   context,
-                                                //   MaterialPageRoute(
-                                                //     builder: (context) =>
-                                                //     const SearchPage2(
-                                                //       query: '',
-                                                //       fromHome: true,
-                                                //       autofocus: true,
-                                                //     ),
-                                                //   ),
-                                                // ),
+                                                onTap: () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                    const SearchPage(
+                                                      query: '',
+                                                      fromHome: true,
+                                                      autofocus: true,
+                                                    ),
+                                                  ),
+                                                ),
                                               );
                                             },
                                           ),
@@ -871,16 +872,8 @@ class _HomePageState extends State<HomePage> {
                       Theme.of(context).colorScheme.secondary,
                     ),
                     SalomonBottomBarItem(
-                      icon: const Icon(Icons.trending_up_rounded),
-                      title: Text(
-                        AppLocalizations.of(context)!.topCharts,
-                      ),
-                      selectedColor:
-                      Theme.of(context).colorScheme.secondary,
-                    ),
-                    SalomonBottomBarItem(
-                      icon: const Icon(MdiIcons.youtube),
-                      title: Text(AppLocalizations.of(context)!.youTube),
+                      icon: const Icon(MdiIcons.playCircleOutline),
+                      title: Text(AppLocalizations.of(context)!.play),
                       selectedColor:
                       Theme.of(context).colorScheme.secondary,
                     ),

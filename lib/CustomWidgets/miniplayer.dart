@@ -188,7 +188,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
                                                   const Image(
                                                 fit: BoxFit.cover,
                                                 image: AssetImage(
-                                                  'assets/cover.jpg',
+                                                  'assets/images/cover.jpg',
                                                 ),
                                               ),
                                               placeholder: (
@@ -198,7 +198,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
                                                   const Image(
                                                 fit: BoxFit.cover,
                                                 image: AssetImage(
-                                                  'assets/cover.jpg',
+                                                  'assets/images/cover.jpg',
                                                 ),
                                               ),
                                               imageUrl:
