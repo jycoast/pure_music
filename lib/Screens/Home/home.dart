@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:pure_music/CustomWidgets/empty_screen.dart';
 import 'package:pure_music/utils/extensions.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -803,9 +804,8 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ];
                                   },
-                                  body: Text('bodybody'),
-                                  // TODO
-                                  // body: SaavnHomePage(),
+                                    // TODO
+                                    body: SizedBox()
                                 ),
                                 if (!rotated || screenWidth > 1050)
                                   Builder(

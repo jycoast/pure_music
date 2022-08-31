@@ -62,22 +62,21 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> fetchResults() async {
-    // this fetches top 5 songs results
-    // final Map result = await SaavnAPI().fetchSongSearchResults(
-    //   searchQuery: query == '' ? widget.query : query,
-    //   count: 5,
-    // );
-    // final List songResults = result['songs'] as List;
-    // if (songResults.isNotEmpty) searchedData['Songs'] = songResults;
-    // fetched = true;
-    // // this fetches albums, playlists, artists, etc
-    // final List<Map> value =
-    //     await SaavnAPI().fetchSearchResults(query == '' ? widget.query : query);
-    //
-    // searchedData.addEntries(value[0].entries);
-    // position = value[1];
-    // sortedKeys = position.keys.toList()..sort();
-    // albumFetched = true;
+    // 搜索音乐
+    final Map result = await KwMusicAPI().fetchSongSearchResults(
+      searchQuery: query == '' ? widget.query : query,
+      count: 5,
+    );
+    final List songResults = result['songs'] as List;
+    if (songResults.isNotEmpty) searchedData['Songs'] = songResults;
+    fetched = true;
+    // 搜索专辑等其他信息
+    final List<Map> value =
+        await KwMusicAPI().fetchSearchResults(query == '' ? widget.query : query);
+    searchedData.addEntries(value[0].entries);
+    position = value[1];
+    sortedKeys = position.keys.toList()..sort();
+    albumFetched = true;
     setState(
       () {},
     );

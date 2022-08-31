@@ -92,4 +92,45 @@ class KwMusicAPI {
     }
     return result;
   }
+
+  Future<Map> fetchSongSearchResults({
+    required String searchQuery,
+    int count = 20,
+    int page = 1,
+  }) async {
+    final String params =
+        "p=$page&q=$searchQuery&n=$count&${endpoints['getResults']}";
+    try {
+      final res = await getResponse(params);
+      if (res.statusCode == 200) {
+        final Map getMain = json.decode(res.body) as Map;
+        final List responseList = getMain['results'] as List;
+        return {
+          'songs': responseList,
+          'error': '',
+        };
+      } else {
+        return {
+          'songs': List.empty(),
+          'error': res.body,
+        };
+      }
+    } catch (e) {
+      log('Error in fetchSongSearchResults: $e');
+      return {
+        'songs': List.empty(),
+        'error': e,
+      };
+    }
+  }
+
+  Future<List<Map>> fetchSearchResults(String searchQuery) async {
+    final Map<String, List> result = {};
+    final Map<int, String> position = {};
+    List searchedAlbumList = [];
+    List searchedPlaylistList = [];
+    List searchedArtistList = [];
+    List searchedTopQueryList = [];
+    return [result, position];
+  }
 }
