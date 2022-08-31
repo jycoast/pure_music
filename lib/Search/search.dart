@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive/hive.dart';
+import 'package:pure_music/Screens/Common/song_list.dart';
 import 'package:pure_music/apis/api.dart';
 
 import '../CustomWidgets/copy_clipboard.dart';
@@ -311,30 +312,30 @@ class _SearchPageState extends State<SearchPage> {
                                                               }
                                                               if (key ==
                                                                   'Songs') {
-                                                                // Navigator.push(
-                                                                //   context,
-                                                                //   PageRouteBuilder(
-                                                                //     opaque:
-                                                                //         false,
-                                                                //     pageBuilder: (
-                                                                //       _,
-                                                                //       __,
-                                                                //       ___,
-                                                                //     ) =>
-                                                                //         SongsListPage(
-                                                                //       listItem: {
-                                                                //         'id': query ==
-                                                                //                 ''
-                                                                //             ? widget.query
-                                                                //             : query,
-                                                                //         'title':
-                                                                //             key,
-                                                                //         'type':
-                                                                //             'songs',
-                                                                //       },
-                                                                //     ),
-                                                                //   ),
-                                                                // );
+                                                                Navigator.push(
+                                                                  context,
+                                                                  PageRouteBuilder(
+                                                                    opaque:
+                                                                        false,
+                                                                    pageBuilder: (
+                                                                      _,
+                                                                      __,
+                                                                      ___,
+                                                                    ) =>
+                                                                        SongsListPage(
+                                                                      listItem: {
+                                                                        'id': query ==
+                                                                                ''
+                                                                            ? widget.query
+                                                                            : query,
+                                                                        'title':
+                                                                            key,
+                                                                        'type':
+                                                                            'songs',
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                );
                                                               }
                                                             },
                                                             child: Row(

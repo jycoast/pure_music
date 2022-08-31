@@ -96,160 +96,160 @@ class _HomePageState extends State<HomePage> {
     return true;
   }
 
-  Widget checkVersion() {
-    if (!checked && Theme.of(context).platform == TargetPlatform.android) {
-      checked = true;
-      final SupaBase db = SupaBase();
-      final DateTime now = DateTime.now();
-      final List lastLogin = now
-          .toUtc()
-          .add(const Duration(hours: 5, minutes: 30))
-          .toString()
-          .split('.')
-        ..removeLast()
-        ..join('.');
-      updateUserDetails('lastLogin', '${lastLogin[0]} IST');
-      final String offset =
-      now.timeZoneOffset.toString().replaceAll('.000000', '');
-
-      updateUserDetails(
-        'timeZone',
-        'Zone: ${now.timeZoneName}, Offset: $offset',
-      );
-
-      PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-        appVersion = packageInfo.version;
-        updateUserDetails('version', packageInfo.version);
-
-        if (checkUpdate) {
-          db.getUpdate().then((Map value) async {
-            if (compareVersion(
-              value['LatestVersion'] as String,
-              appVersion!,
-            )) {
-              List? abis =
-              await Hive.box('settings').get('supportedAbis') as List?;
-
-              if (abis == null) {
-                final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-                final AndroidDeviceInfo androidDeviceInfo =
-                await deviceInfo.androidInfo;
-                abis = androidDeviceInfo.supportedAbis;
-                await Hive.box('settings').put('supportedAbis', abis);
-              }
-
-              ShowSnackBar().showSnackBar(
-                context,
-                AppLocalizations.of(context)!.updateAvailable,
-                duration: const Duration(seconds: 15),
-                action: SnackBarAction(
-                  textColor: Theme.of(context).colorScheme.secondary,
-                  label: AppLocalizations.of(context)!.update,
-                  onPressed: () {
-                    Navigator.pop(context);
-                    if (abis!.contains('arm64-v8a')) {
-                      launchUrl(
-                        Uri.parse(value['arm64-v8a'] as String),
-                        mode: LaunchMode.externalApplication,
-                      );
-                    } else {
-                      if (abis.contains('armeabi-v7a')) {
-                        launchUrl(
-                          Uri.parse(value['armeabi-v7a'] as String),
-                          mode: LaunchMode.externalApplication,
-                        );
-                      } else {
-                        launchUrl(
-                          Uri.parse(value['universal'] as String),
-                          mode: LaunchMode.externalApplication,
-                        );
-                      }
-                    }
-                  },
-                ),
-              );
-            }
-          });
-        }
-        if (autoBackup) {
-          final List<String> checked = [
-            AppLocalizations.of(
-              context,
-            )!
-                .settings,
-            AppLocalizations.of(
-              context,
-            )!
-                .downs,
-            AppLocalizations.of(
-              context,
-            )!
-                .playlists,
-          ];
-          final List playlistNames = Hive.box('settings').get(
-            'playlistNames',
-            defaultValue: ['Favorite Songs'],
-          ) as List;
-          final Map<String, List> boxNames = {
-            AppLocalizations.of(
-              context,
-            )!
-                .settings: ['settings'],
-            AppLocalizations.of(
-              context,
-            )!
-                .cache: ['cache'],
-            AppLocalizations.of(
-              context,
-            )!
-                .downs: ['downloads'],
-            AppLocalizations.of(
-              context,
-            )!
-                .playlists: playlistNames,
-          };
-          final String autoBackPath = Hive.box('settings').get(
-            'autoBackPath',
-            defaultValue: '',
-          ) as String;
-          if (autoBackPath == '') {
-            ExtStorageProvider.getExtStorage(
-              dirName: 'BlackHole/Backups',
-            ).then((value) {
-              Hive.box('settings').put('autoBackPath', value);
-              createBackup(
-                context,
-                checked,
-                boxNames,
-                path: value,
-                fileName: 'BlackHole_AutoBackup',
-                showDialog: false,
-              );
-            });
-          } else {
-            createBackup(
-              context,
-              checked,
-              boxNames,
-              path: autoBackPath,
-              fileName: 'BlackHole_AutoBackup',
-              showDialog: false,
-            );
-          }
-        }
-      });
-      if (Hive.box('settings').get('proxyIp') == null) {
-        Hive.box('settings').put('proxyIp', '103.47.67.134');
-      }
-      if (Hive.box('settings').get('proxyPort') == null) {
-        Hive.box('settings').put('proxyPort', 8080);
-      }
-      // downloadChecker();
-      return const SizedBox();
-    } else {
-      return const SizedBox();
-    }
-  }
+  // Widget checkVersion() {
+  //   if (!checked && Theme.of(context).platform == TargetPlatform.android) {
+  //     checked = true;
+  //     final SupaBase db = SupaBase();
+  //     final DateTime now = DateTime.now();
+  //     final List lastLogin = now
+  //         .toUtc()
+  //         .add(const Duration(hours: 5, minutes: 30))
+  //         .toString()
+  //         .split('.')
+  //       ..removeLast()
+  //       ..join('.');
+  //     updateUserDetails('lastLogin', '${lastLogin[0]} IST');
+  //     final String offset =
+  //     now.timeZoneOffset.toString().replaceAll('.000000', '');
+  //
+  //     updateUserDetails(
+  //       'timeZone',
+  //       'Zone: ${now.timeZoneName}, Offset: $offset',
+  //     );
+  //
+  //     PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+  //       appVersion = packageInfo.version;
+  //       updateUserDetails('version', packageInfo.version);
+  //
+  //       if (checkUpdate) {
+  //         db.getUpdate().then((Map value) async {
+  //           if (compareVersion(
+  //             value['LatestVersion'] as String,
+  //             appVersion!,
+  //           )) {
+  //             List? abis =
+  //             await Hive.box('settings').get('supportedAbis') as List?;
+  //
+  //             if (abis == null) {
+  //               final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  //               final AndroidDeviceInfo androidDeviceInfo =
+  //               await deviceInfo.androidInfo;
+  //               abis = androidDeviceInfo.supportedAbis;
+  //               await Hive.box('settings').put('supportedAbis', abis);
+  //             }
+  //
+  //             ShowSnackBar().showSnackBar(
+  //               context,
+  //               AppLocalizations.of(context)!.updateAvailable,
+  //               duration: const Duration(seconds: 15),
+  //               action: SnackBarAction(
+  //                 textColor: Theme.of(context).colorScheme.secondary,
+  //                 label: AppLocalizations.of(context)!.update,
+  //                 onPressed: () {
+  //                   Navigator.pop(context);
+  //                   if (abis!.contains('arm64-v8a')) {
+  //                     launchUrl(
+  //                       Uri.parse(value['arm64-v8a'] as String),
+  //                       mode: LaunchMode.externalApplication,
+  //                     );
+  //                   } else {
+  //                     if (abis.contains('armeabi-v7a')) {
+  //                       launchUrl(
+  //                         Uri.parse(value['armeabi-v7a'] as String),
+  //                         mode: LaunchMode.externalApplication,
+  //                       );
+  //                     } else {
+  //                       launchUrl(
+  //                         Uri.parse(value['universal'] as String),
+  //                         mode: LaunchMode.externalApplication,
+  //                       );
+  //                     }
+  //                   }
+  //                 },
+  //               ),
+  //             );
+  //           }
+  //         });
+  //       }
+  //       if (autoBackup) {
+  //         final List<String> checked = [
+  //           AppLocalizations.of(
+  //             context,
+  //           )!
+  //               .settings,
+  //           AppLocalizations.of(
+  //             context,
+  //           )!
+  //               .downs,
+  //           AppLocalizations.of(
+  //             context,
+  //           )!
+  //               .playlists,
+  //         ];
+  //         final List playlistNames = Hive.box('settings').get(
+  //           'playlistNames',
+  //           defaultValue: ['Favorite Songs'],
+  //         ) as List;
+  //         final Map<String, List> boxNames = {
+  //           AppLocalizations.of(
+  //             context,
+  //           )!
+  //               .settings: ['settings'],
+  //           AppLocalizations.of(
+  //             context,
+  //           )!
+  //               .cache: ['cache'],
+  //           AppLocalizations.of(
+  //             context,
+  //           )!
+  //               .downs: ['downloads'],
+  //           AppLocalizations.of(
+  //             context,
+  //           )!
+  //               .playlists: playlistNames,
+  //         };
+  //         final String autoBackPath = Hive.box('settings').get(
+  //           'autoBackPath',
+  //           defaultValue: '',
+  //         ) as String;
+  //         if (autoBackPath == '') {
+  //           ExtStorageProvider.getExtStorage(
+  //             dirName: 'BlackHole/Backups',
+  //           ).then((value) {
+  //             Hive.box('settings').put('autoBackPath', value);
+  //             createBackup(
+  //               context,
+  //               checked,
+  //               boxNames,
+  //               path: value,
+  //               fileName: 'BlackHole_AutoBackup',
+  //               showDialog: false,
+  //             );
+  //           });
+  //         } else {
+  //           createBackup(
+  //             context,
+  //             checked,
+  //             boxNames,
+  //             path: autoBackPath,
+  //             fileName: 'BlackHole_AutoBackup',
+  //             showDialog: false,
+  //           );
+  //         }
+  //       }
+  //     });
+  //     if (Hive.box('settings').get('proxyIp') == null) {
+  //       Hive.box('settings').put('proxyIp', '103.47.67.134');
+  //     }
+  //     if (Hive.box('settings').get('proxyPort') == null) {
+  //       Hive.box('settings').put('proxyPort', 8080);
+  //     }
+  //     // downloadChecker();
+  //     return const SizedBox();
+  //   } else {
+  //     return const SizedBox();
+  //   }
+  // }
 
   final ScrollController _scrollController = ScrollController();
   final PageController _pageController = PageController();
@@ -503,17 +503,18 @@ class _HomePageState extends State<HomePage> {
                             : Builder(
                           builder: (context) => Transform.rotate(
                             angle: 22 / 7 * 2,
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.horizontal_split_rounded,
-                              ),
-                              // color: Theme.of(context).iconTheme.color,
-                              onPressed: () {
-                                Scaffold.of(context).openDrawer();
-                              },
-                              tooltip: MaterialLocalizations.of(context)
-                                  .openAppDrawerTooltip,
-                            ),
+                            // 首页导航
+                            // child: IconButton(
+                            //   icon: const Icon(
+                            //     Icons.horizontal_split_rounded,
+                            //   ),
+                            //   // color: Theme.of(context).iconTheme.color,
+                            //   onPressed: () {
+                            //     Scaffold.of(context).openDrawer();
+                            //   },
+                            //   tooltip: MaterialLocalizations.of(context)
+                            //       .openAppDrawerTooltip,
+                            // ),
                           ),
                         ),
                         destinations: [
@@ -552,7 +553,7 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Stack(
                               children: [
-                                checkVersion(),
+                                // checkVersion(),
                                 NestedScrollView(
                                   physics: const BouncingScrollPhysics(),
                                   controller: _scrollController,
@@ -561,138 +562,139 @@ class _HomePageState extends State<HomePage> {
                                       bool innerBoxScrolled,
                                       ) {
                                     return <Widget>[
-                                      SliverAppBar(
-                                        expandedHeight: 135,
-                                        backgroundColor: Colors.transparent,
-                                        elevation: 0,
-                                        // pinned: true,
-                                        toolbarHeight: 65,
-                                        // floating: true,
-                                        automaticallyImplyLeading: false,
-                                        flexibleSpace: LayoutBuilder(
-                                          builder: (
-                                              BuildContext context,
-                                              BoxConstraints constraints,
-                                              ) {
-                                            return FlexibleSpaceBar(
-                                              // collapseMode: CollapseMode.parallax,
-                                              background: GestureDetector(
-                                                onTap: () async {
-                                                  await showTextInputDialog(
-                                                    context: context,
-                                                    title: 'Name',
-                                                    initialText: name,
-                                                    keyboardType:
-                                                    TextInputType.name,
-                                                    onSubmitted: (value) {
-                                                      Hive.box('settings').put(
-                                                        'name',
-                                                        value.trim(),
-                                                      );
-                                                      name = value.trim();
-                                                      Navigator.pop(context);
-                                                      updateUserDetails(
-                                                        'name',
-                                                        value.trim(),
-                                                      );
-                                                    },
-                                                  );
-                                                  setState(() {});
-                                                },
-                                                child: Column(
-                                                  mainAxisSize:
-                                                  MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    const SizedBox(
-                                                      height: 60,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                          const EdgeInsets
-                                                              .only(
-                                                            left: 15.0,
-                                                          ),
-                                                          child: Text(
-                                                            AppLocalizations.of(
-                                                              context,
-                                                            )!
-                                                                .homeGreet,
-                                                            style: TextStyle(
-                                                              letterSpacing: 2,
-                                                              color: Theme.of(
-                                                                context,
-                                                              )
-                                                                  .colorScheme
-                                                                  .secondary,
-                                                              fontSize: 30,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .bold,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                      const EdgeInsets.only(
-                                                        left: 15.0,
-                                                      ),
-                                                      child: Row(
-                                                        crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .end,
-                                                        children: [
-                                                          ValueListenableBuilder(
-                                                            valueListenable:
-                                                            Hive.box(
-                                                              'settings',
-                                                            ).listenable(),
-                                                            builder: (
-                                                                BuildContext
-                                                                context,
-                                                                Box box,
-                                                                Widget? child,
-                                                                ) {
-                                                              return Text(
-                                                                (box.get('name') ==
-                                                                    null ||
-                                                                    box.get('name') ==
-                                                                        '')
-                                                                    ? 'Guest'
-                                                                    : box
-                                                                    .get(
-                                                                  'name',
-                                                                )
-                                                                    .split(
-                                                                  ' ',
-                                                                )[0]
-                                                                    .toString()
-                                                                    .capitalize(),
-                                                                style:
-                                                                const TextStyle(
-                                                                  letterSpacing:
-                                                                  2,
-                                                                  fontSize: 20,
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                                ),
-                                                              );
-                                                            },
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
+                                      // SliverAppBar(
+                                      //   expandedHeight: 0,
+                                      //   backgroundColor: Colors.transparent,
+                                      //   elevation: 0,
+                                      //   // pinned: true,
+                                      //   toolbarHeight: 0,
+                                      //   // floating: true,
+                                      //   automaticallyImplyLeading: false,
+                                      //   flexibleSpace: LayoutBuilder(
+                                      //     builder: (
+                                      //         BuildContext context,
+                                      //         BoxConstraints constraints,
+                                      //         ) {
+                                      //       return FlexibleSpaceBar(
+                                      //         // collapseMode: CollapseMode.parallax,
+                                      //         background: GestureDetector(
+                                      //           onTap: () async {
+                                      //             await showTextInputDialog(
+                                      //               context: context,
+                                      //               title: 'Name',
+                                      //               initialText: name,
+                                      //               keyboardType:
+                                      //               TextInputType.name,
+                                      //               onSubmitted: (value) {
+                                      //                 Hive.box('settings').put(
+                                      //                   'name',
+                                      //                   value.trim(),
+                                      //                 );
+                                      //                 name = value.trim();
+                                      //                 Navigator.pop(context);
+                                      //                 updateUserDetails(
+                                      //                   'name',
+                                      //                   value.trim(),
+                                      //                 );
+                                      //               },
+                                      //             );
+                                      //             setState(() {});
+                                      //           },
+                                      //           child: Column(
+                                      //             mainAxisSize:
+                                      //             MainAxisSize.min,
+                                      //             children: <Widget>[
+                                      //               const SizedBox(
+                                      //                 height: 60,
+                                      //               ),
+                                      //              // 问候语
+                                      //               // Row(
+                                      //               //   children: [
+                                      //               //     Padding(
+                                      //               //       padding:
+                                      //               //       const EdgeInsets
+                                      //               //           .only(
+                                      //               //         left: 15.0,
+                                      //               //       ),
+                                      //               //       child: Text(
+                                      //               //         AppLocalizations.of(
+                                      //               //           context,
+                                      //               //         )!
+                                      //               //             .homeGreet,
+                                      //               //         style: TextStyle(
+                                      //               //           letterSpacing: 2,
+                                      //               //           color: Theme.of(
+                                      //               //             context,
+                                      //               //           )
+                                      //               //               .colorScheme
+                                      //               //               .secondary,
+                                      //               //           fontSize: 30,
+                                      //               //           fontWeight:
+                                      //               //           FontWeight
+                                      //               //               .bold,
+                                      //               //         ),
+                                      //               //       ),
+                                      //               //     ),
+                                      //               //   ],
+                                      //               // ),
+                                      //               // Padding(
+                                      //               //   padding:
+                                      //               //   const EdgeInsets.only(
+                                      //               //     left: 15.0,
+                                      //               //   ),
+                                      //               //   child: Row(
+                                      //               //     crossAxisAlignment:
+                                      //               //     CrossAxisAlignment
+                                      //               //         .end,
+                                      //               //     children: [
+                                      //               //       ValueListenableBuilder(
+                                      //               //         valueListenable:
+                                      //               //         Hive.box(
+                                      //               //           'settings',
+                                      //               //         ).listenable(),
+                                      //               //         builder: (
+                                      //               //             BuildContext
+                                      //               //             context,
+                                      //               //             Box box,
+                                      //               //             Widget? child,
+                                      //               //             ) {
+                                      //               //           return Text(
+                                      //               //             (box.get('name') ==
+                                      //               //                 null ||
+                                      //               //                 box.get('name') ==
+                                      //               //                     '')
+                                      //               //                 ? 'Guest'
+                                      //               //                 : box
+                                      //               //                 .get(
+                                      //               //               'name',
+                                      //               //             )
+                                      //               //                 .split(
+                                      //               //               ' ',
+                                      //               //             )[0]
+                                      //               //                 .toString()
+                                      //               //                 .capitalize(),
+                                      //               //             style:
+                                      //               //             const TextStyle(
+                                      //               //               letterSpacing:
+                                      //               //               2,
+                                      //               //               fontSize: 20,
+                                      //               //               fontWeight:
+                                      //               //               FontWeight
+                                      //               //                   .w500,
+                                      //               //             ),
+                                      //               //           );
+                                      //               //         },
+                                      //               //       ),
+                                      //               //     ],
+                                      //               //   ),
+                                      //               // ),
+                                      //             ],
+                                      //           ),
+                                      //         ),
+                                      //       );
+                                      //     },
+                                      //   ),
+                                      // ),
                                       SliverAppBar(
                                         automaticallyImplyLeading: false,
                                         pinned: true,
@@ -707,34 +709,17 @@ class _HomePageState extends State<HomePage> {
                                             builder: (context, child) {
                                               return GestureDetector(
                                                 child: AnimatedContainer(
-                                                  width: (!_scrollController
-                                                      .hasClients ||
-                                                      _scrollController
-                                                      // ignore: invalid_use_of_protected_member
-                                                          .positions
-                                                          .length >
-                                                          1)
-                                                      ? MediaQuery.of(context)
+                                                  width: (MediaQuery.of(context)
                                                       .size
                                                       .width
-                                                      : max(
-                                                    MediaQuery.of(context)
-                                                        .size
-                                                        .width -
-                                                        _scrollController
-                                                            .offset
-                                                            .roundToDouble(),
-                                                    MediaQuery.of(context)
-                                                        .size
-                                                        .width -
-                                                        75,
                                                   ),
                                                   height: 52.0,
                                                   duration: const Duration(
                                                     milliseconds: 150,
                                                   ),
                                                   padding:
-                                                  const EdgeInsets.all(2.0),
+                                                  const EdgeInsets.only(
+                                                    left:2.0, right: 2.0, top: 2.0, bottom: 2.0),
                                                   // margin: EdgeInsets.zero,
                                                   decoration: BoxDecoration(
                                                     borderRadius:
@@ -807,30 +792,31 @@ class _HomePageState extends State<HomePage> {
                                     // TODO
                                     body: SizedBox()
                                 ),
-                                if (!rotated || screenWidth > 1050)
-                                  Builder(
-                                    builder: (context) => Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 8.0,
-                                        left: 4.0,
-                                      ),
-                                      child: Transform.rotate(
-                                        angle: 22 / 7 * 2,
-                                        child: IconButton(
-                                          icon: const Icon(
-                                            Icons.horizontal_split_rounded,
-                                          ),
-                                          // color: Theme.of(context).iconTheme.color,
-                                          onPressed: () {
-                                            Scaffold.of(context).openDrawer();
-                                          },
-                                          tooltip:
-                                          MaterialLocalizations.of(context)
-                                              .openAppDrawerTooltip,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                // 导航菜单 TODO
+                                // if (!rotated || screenWidth > 1050)
+                                //   Builder(
+                                //     builder: (context) => Padding(
+                                //       padding: const EdgeInsets.only(
+                                //         top: 8.0,
+                                //         left: 4.0,
+                                //       ),
+                                //       child: Transform.rotate(
+                                //         angle: 22 / 7 * 2,
+                                //         child: IconButton(
+                                //           icon: const Icon(
+                                //             Icons.horizontal_split_rounded,
+                                //           ),
+                                //           // color: Theme.of(context).iconTheme.color,
+                                //           onPressed: () {
+                                //             Scaffold.of(context).openDrawer();
+                                //           },
+                                //           tooltip:
+                                //           MaterialLocalizations.of(context)
+                                //               .openAppDrawerTooltip,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   ),
                               ],
                             ),
                             TopCharts(
@@ -871,12 +857,12 @@ class _HomePageState extends State<HomePage> {
                       selectedColor:
                       Theme.of(context).colorScheme.secondary,
                     ),
-                    SalomonBottomBarItem(
-                      icon: const Icon(MdiIcons.playCircleOutline),
-                      title: Text(AppLocalizations.of(context)!.play),
-                      selectedColor:
-                      Theme.of(context).colorScheme.secondary,
-                    ),
+                    // SalomonBottomBarItem(
+                    //   icon: const Icon(MdiIcons.playCircleOutline),
+                    //   title: Text(AppLocalizations.of(context)!.play),
+                    //   selectedColor:
+                    //   Theme.of(context).colorScheme.secondary,
+                    // ),
                     SalomonBottomBarItem(
                       icon: const Icon(Icons.my_library_music_rounded),
                       title: Text(AppLocalizations.of(context)!.library),
