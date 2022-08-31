@@ -9,7 +9,7 @@ import '../../CustomWidgets/empty_screen.dart';
 import '../../CustomWidgets/gradient_containers.dart';
 import '../../CustomWidgets/miniplayer.dart';
 import '../../CustomWidgets/player.dart';
-import '../../services/Player/audioplayer.dart';
+import '../Player/audioplayer.dart';
 
 class NowPlaying extends StatefulWidget {
   @override

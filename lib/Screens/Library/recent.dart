@@ -6,7 +6,7 @@ import 'package:hive/hive.dart';
 import '../../CustomWidgets/empty_screen.dart';
 import '../../CustomWidgets/gradient_containers.dart';
 import '../../CustomWidgets/miniplayer.dart';
-import '../../services/Player/audioplayer.dart';
+import '../Player/audioplayer.dart';
 
 class RecentlyPlayed extends StatefulWidget {
   @override

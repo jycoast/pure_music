@@ -4,8 +4,6 @@ import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'dart:convert';
 
-import 'package:pure_music/widgets/music_item.dart';
-
 import '../model/music_model.dart';
 
 class MusicAPI {

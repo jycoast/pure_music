@@ -1,7 +1,7 @@
-// import 'dart:async';
-// import 'dart:io';
-// import 'dart:math';
-// import 'dart:ui' as ui;
+import 'dart:async';
+import 'dart:io';
+import 'dart:math';
+import 'dart:ui' as ui;
 //
 // import 'package:audio_service/audio_service.dart';
 // import 'package:blackhole/CustomWidgets/add_playlist.dart';
@@ -21,901 +21,919 @@
 // import 'package:blackhole/Helpers/mediaitem_converter.dart';
 // import 'package:blackhole/Screens/Common/song_list.dart';
 // import 'package:blackhole/Screens/Search/albums.dart';
-// import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:flip_card/flip_card.dart';
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart' show rootBundle;
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-// import 'package:get_it/get_it.dart';
-// import 'package:hive/hive.dart';
-// import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-// import 'package:on_audio_query/on_audio_query.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:rxdart/rxdart.dart';
-// import 'package:share_plus/share_plus.dart';
-// import 'package:sliding_up_panel/sliding_up_panel.dart';
-// import 'package:url_launcher/url_launcher.dart';
-//
-// class PlayScreen extends StatefulWidget {
-//   final List songsList;
-//   final bool fromMiniplayer;
-//   final bool? offline;
-//   final int index;
-//   final bool recommend;
-//   final bool fromDownloads;
-//   const PlayScreen({
-//     super.key,
-//     required this.index,
-//     required this.songsList,
-//     required this.fromMiniplayer,
-//     required this.offline,
-//     required this.recommend,
-//     required this.fromDownloads,
-//   });
-//   @override
-//   _PlayScreenState createState() => _PlayScreenState();
-// }
-//
-// class _PlayScreenState extends State<PlayScreen> {
-//   bool fromMiniplayer = false;
-//   final String preferredQuality = Hive.box('settings')
-//       .get('streamingQuality', defaultValue: '96 kbps')
-//       .toString();
-//   final String repeatMode =
-//       Hive.box('settings').get('repeatMode', defaultValue: 'None').toString();
-//   final bool enforceRepeat =
-//       Hive.box('settings').get('enforceRepeat', defaultValue: false) as bool;
-//   final String gradientType = Hive.box('settings')
-//       .get('gradientType', defaultValue: 'halfDark')
-//       .toString();
-//   final bool getLyricsOnline =
-//       Hive.box('settings').get('getLyricsOnline', defaultValue: true) as bool;
-//
-//   List<MediaItem> globalQueue = [];
-//   int globalIndex = 0;
-//   List response = [];
-//   bool offline = false;
-//   bool fromDownloads = false;
-//   String defaultCover = '';
-//   final MyTheme currentTheme = GetIt.I<MyTheme>();
-//   final ValueNotifier<List<Color?>?> gradientColor =
-//       ValueNotifier<List<Color?>?>(GetIt.I<MyTheme>().playGradientColor);
-//   final PanelController _panelController = PanelController();
-//   final AudioPlayerHandler audioHandler = GetIt.I<AudioPlayerHandler>();
-//   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
-//
-//   void sleepTimer(int time) {
-//     audioHandler.customAction('sleepTimer', {'time': time});
-//   }
-//
-//   void sleepCounter(int count) {
-//     audioHandler.customAction('sleepCounter', {'count': count});
-//   }
-//
-//   late Duration _time;
-//
-//   Future<void> main() async {
-//     await Hive.openBox('Favorite Songs');
-//   }
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     main();
-//     response = widget.songsList;
-//     globalIndex = widget.index;
-//     if (globalIndex == -1) {
-//       globalIndex = 0;
-//     }
-//     fromDownloads = widget.fromDownloads;
-//     if (widget.offline == null) {
-//       if (audioHandler.mediaItem.value?.extras!['url'].startsWith('http')
-//           as bool) {
-//         offline = false;
-//       } else {
-//         offline = true;
-//       }
-//     } else {
-//       offline = widget.offline!;
-//     }
-//
-//     fromMiniplayer = widget.fromMiniplayer;
-//     if (!fromMiniplayer) {
-//       if (!Platform.isAndroid) {
-//         // Don't know why but it fixes the playback issue with iOS Side
-//         audioHandler.stop();
-//       }
-//       if (offline) {
-//         fromDownloads
-//             ? setDownValues(response)
-//             : (Platform.isWindows || Platform.isLinux)
-//                 ? setOffDesktopValues(response)
-//                 : setOffValues(response);
-//       } else {
-//         setValues(response);
-//         updateNplay();
-//       }
-//     }
-//   }
-//
-//   Future<MediaItem> setTags(SongModel response, Directory tempDir) async {
-//     String playTitle = response.title;
-//     playTitle == ''
-//         ? playTitle = response.displayNameWOExt
-//         : playTitle = response.title;
-//     String playArtist = response.artist!;
-//     playArtist == '<unknown>'
-//         ? playArtist = 'Unknown'
-//         : playArtist = response.artist!;
-//
-//     final String playAlbum = response.album!;
-//     final int playDuration = response.duration ?? 180000;
-//     final String imagePath = '${tempDir.path}/${response.displayNameWOExt}.jpg';
-//
-//     final MediaItem tempDict = MediaItem(
-//       id: response.id.toString(),
-//       album: playAlbum,
-//       duration: Duration(milliseconds: playDuration),
-//       title: playTitle.split('(')[0],
-//       artist: playArtist,
-//       genre: response.genre,
-//       artUri: Uri.file(imagePath),
-//       extras: {
-//         'url': response.data,
-//         'date_added': response.dateAdded,
-//         'date_modified': response.dateModified,
-//         'size': response.size,
-//         'year': response.getMap['year'],
-//       },
-//     );
-//     return tempDict;
-//   }
-//
-//   void setOffDesktopValues(List response) {
-//     getTemporaryDirectory().then((tempDir) async {
-//       final File file = File('${tempDir.path}/cover.jpg');
-//       if (!await file.exists()) {
-//         final byteData = await rootBundle.load('assets/cover.jpg');
-//         await file.writeAsBytes(
-//           byteData.buffer
-//               .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
-//         );
-//       }
-//       globalQueue.addAll(
-//         response.map(
-//           (song) => MediaItem(
-//             id: song['id'].toString(),
-//             album: song['album'].toString(),
-//             artist: song['artist'].toString(),
-//             duration: Duration(
-//               seconds: int.parse(
-//                 (song['duration'] == null || song['duration'] == 'null')
-//                     ? '180'
-//                     : song['duration'].toString(),
-//               ),
-//             ),
-//             title: song['title'].toString(),
-//             artUri: Uri.file(file.path),
-//             genre: song['genre'].toString(),
-//             extras: {
-//               'url': song['path'].toString(),
-//               'subtitle': song['subtitle'],
-//               'quality': song['quality'],
-//             },
-//           ),
-//         ),
-//       );
-//       updateNplay();
-//     });
-//   }
-//
-//   void setOffValues(List response) {
-//     getTemporaryDirectory().then((tempDir) async {
-//       final File file = File('${tempDir.path}/cover.jpg');
-//       if (!await file.exists()) {
-//         final byteData = await rootBundle.load('assets/cover.jpg');
-//         await file.writeAsBytes(
-//           byteData.buffer
-//               .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
-//         );
-//       }
-//       for (int i = 0; i < response.length; i++) {
-//         globalQueue.add(
-//           await setTags(response[i] as SongModel, tempDir),
-//         );
-//       }
-//       updateNplay();
-//     });
-//   }
-//
-//   void setDownValues(List response) {
-//     globalQueue.addAll(
-//       response.map(
-//         (song) => MediaItemConverter.downMapToMediaItem(song as Map),
-//       ),
-//     );
-//     updateNplay();
-//   }
-//
-//   void setValues(List response) {
-//     globalQueue.addAll(
-//       response.map(
-//         (song) => MediaItemConverter.mapToMediaItem(
-//           song as Map,
-//           autoplay: widget.recommend,
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Future<void> updateNplay() async {
-//     await audioHandler.setShuffleMode(AudioServiceShuffleMode.none);
-//     await audioHandler.updateQueue(globalQueue);
-//     await audioHandler.skipToQueueItem(globalIndex);
-//     await audioHandler.play();
-//     if (enforceRepeat) {
-//       switch (repeatMode) {
-//         case 'None':
-//           audioHandler.setRepeatMode(AudioServiceRepeatMode.none);
-//           break;
-//         case 'All':
-//           audioHandler.setRepeatMode(AudioServiceRepeatMode.all);
-//           break;
-//         case 'One':
-//           audioHandler.setRepeatMode(AudioServiceRepeatMode.one);
-//           break;
-//         default:
-//           break;
-//       }
-//     } else {
-//       audioHandler.setRepeatMode(AudioServiceRepeatMode.none);
-//       Hive.box('settings').put('repeatMode', 'None');
-//     }
-//   }
-//
-//   void updateBackgroundColors(List<Color?> value) {
-//     gradientColor.value = value;
-//     return;
-//   }
-//
-//   String format(String msg) {
-//     return '${msg[0].toUpperCase()}${msg.substring(1)}: '.replaceAll('_', ' ');
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     BuildContext? scaffoldContext;
-//
-//     return Dismissible(
-//       direction: DismissDirection.down,
-//       background: const ColoredBox(color: Colors.transparent),
-//       key: const Key('playScreen'),
-//       onDismissed: (direction) {
-//         Navigator.pop(context);
-//       },
-//       child: StreamBuilder<MediaItem?>(
-//         stream: audioHandler.mediaItem,
-//         builder: (context, snapshot) {
-//           final MediaItem? mediaItem = snapshot.data;
-//           if (mediaItem == null) return const SizedBox();
-//           mediaItem.artUri.toString().startsWith('file')
-//               ? getColors(
-//                   imageProvider: FileImage(
-//                     File(
-//                       mediaItem.artUri!.toFilePath(),
-//                     ),
-//                   ),
-//                   // useDominantAndDarkerColors: gradientType == 'halfLight' ||
-//                   //     gradientType == 'fullLight' ||
-//                   //     gradientType == 'fullMix',
-//                 ).then((value) => updateBackgroundColors(value))
-//               : getColors(
-//                   imageProvider: CachedNetworkImageProvider(
-//                     mediaItem.artUri.toString(),
-//                   ),
-//                   // useDominantAndDarkerColors: gradientType == 'halfLight' ||
-//                   //     gradientType == 'fullLight' ||
-//                   //     gradientType == 'fullMix',
-//                 ).then((value) => updateBackgroundColors(value));
-//           return ValueListenableBuilder(
-//             valueListenable: gradientColor,
-//             child: SafeArea(
-//               child: Scaffold(
-//                 resizeToAvoidBottomInset: false,
-//                 backgroundColor: Colors.transparent,
-//                 appBar: AppBar(
-//                   elevation: 0,
-//                   backgroundColor: Colors.transparent,
-//                   centerTitle: true,
-//                   leading: IconButton(
-//                     icon: const Icon(Icons.expand_more_rounded),
-//                     tooltip: AppLocalizations.of(context)!.back,
-//                     onPressed: () {
-//                       Navigator.pop(context);
-//                     },
-//                   ),
-//                   actions: [
-//                     IconButton(
-//                       icon: const Icon(Icons.lyrics_rounded),
-//                       //     Image.asset(
-//                       //   'assets/lyrics.png',
-//                       // ),
-//                       tooltip: AppLocalizations.of(context)!.lyrics,
-//                       onPressed: () => cardKey.currentState!.toggleCard(),
-//                     ),
-//                     if (!offline)
-//                       IconButton(
-//                         icon: const Icon(Icons.share_rounded),
-//                         tooltip: AppLocalizations.of(context)!.share,
-//                         onPressed: () {
-//                           Share.share(
-//                             mediaItem.extras!['perma_url'].toString(),
-//                           );
-//                         },
-//                       ),
-//                     PopupMenuButton(
-//                       icon: const Icon(
-//                         Icons.more_vert_rounded,
-//                       ),
-//                       shape: const RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.all(
-//                           Radius.circular(15.0),
-//                         ),
-//                       ),
-//                       onSelected: (int? value) {
-//                         if (value == 10) {
-//                           final Map details =
-//                               MediaItemConverter.mediaItemToMap(mediaItem);
-//                           details['duration'] =
-//                               '${int.parse(details["duration"].toString()) ~/ 60}:${int.parse(details["duration"].toString()) % 60}';
-//                           // style: Theme.of(context).textTheme.caption,
-//                           if (mediaItem.extras?['size'] != null) {
-//                             details.addEntries([
-//                               MapEntry(
-//                                 'date_modified',
-//                                 DateTime.fromMillisecondsSinceEpoch(
-//                                   int.parse(
-//                                         mediaItem.extras!['date_modified']
-//                                             .toString(),
-//                                       ) *
-//                                       1000,
-//                                 ).toString().split('.').first,
-//                               ),
-//                               MapEntry(
-//                                 'size',
-//                                 '${((mediaItem.extras!['size'] as int) / (1024 * 1024)).toStringAsFixed(2)} MB',
-//                               ),
-//                             ]);
-//                           }
-//                           PopupDialog().showPopup(
-//                             context: context,
-//                             child: SingleChildScrollView(
-//                               physics: const BouncingScrollPhysics(),
-//                               padding: const EdgeInsets.all(25.0),
-//                               child: Column(
-//                                 crossAxisAlignment: CrossAxisAlignment.start,
-//                                 children: details.keys.map((e) {
-//                                   return SelectableText.rich(
-//                                     TextSpan(
-//                                       children: <TextSpan>[
-//                                         TextSpan(
-//                                           text: format(
-//                                             e.toString(),
-//                                           ),
-//                                           style: TextStyle(
-//                                             fontWeight: FontWeight.w600,
-//                                             color: Theme.of(context)
-//                                                 .textTheme
-//                                                 .bodyText1!
-//                                                 .color,
-//                                           ),
-//                                         ),
-//                                         TextSpan(
-//                                           text: details[e].toString(),
-//                                           style: const TextStyle(
-//                                             fontWeight: FontWeight.normal,
-//                                           ),
-//                                         ),
-//                                       ],
-//                                     ),
-//                                     showCursor: true,
-//                                     cursorColor: Colors.black,
-//                                     cursorRadius: const Radius.circular(5),
-//                                   );
-//                                 }).toList(),
-//                               ),
-//                             ),
-//                           );
-//                         }
-//                         if (value == 5) {
-//                           Navigator.push(
-//                             context,
-//                             PageRouteBuilder(
-//                               opaque: false,
-//                               pageBuilder: (_, __, ___) => SongsListPage(
-//                                 listItem: {
-//                                   'type': 'album',
-//                                   'id': mediaItem.extras?['album_id'],
-//                                   'title': mediaItem.album,
-//                                   'image': mediaItem.artUri,
-//                                 },
-//                               ),
-//                             ),
-//                           );
-//                         }
-//                         if (value == 4) {
-//                           showDialog(
-//                             context: context,
-//                             builder: (context) {
-//                               return const Equalizer();
-//                             },
-//                           );
-//                         }
-//                         if (value == 3) {
-//                           launchUrl(
-//                             Uri.parse(
-//                               mediaItem.genre == 'YouTube'
-//                                   ? 'https://youtube.com/watch?v=${mediaItem.id}'
-//                                   : 'https://www.youtube.com/results?search_query=${mediaItem.title} by ${mediaItem.artist}',
-//                             ),
-//                             mode: LaunchMode.externalApplication,
-//                           );
-//                         }
-//                         if (value == 1) {
-//                           showDialog(
-//                             context: context,
-//                             builder: (context) {
-//                               return SimpleDialog(
-//                                 shape: RoundedRectangleBorder(
-//                                   borderRadius: BorderRadius.circular(15.0),
-//                                 ),
-//                                 title: Text(
-//                                   AppLocalizations.of(context)!.sleepTimer,
-//                                   style: TextStyle(
-//                                     color:
-//                                         Theme.of(context).colorScheme.secondary,
-//                                   ),
-//                                 ),
-//                                 contentPadding: const EdgeInsets.all(10.0),
-//                                 children: [
-//                                   ListTile(
-//                                     title: Text(
-//                                       AppLocalizations.of(context)!.sleepDur,
-//                                     ),
-//                                     subtitle: Text(
-//                                       AppLocalizations.of(context)!.sleepDurSub,
-//                                     ),
-//                                     dense: true,
-//                                     onTap: () {
-//                                       Navigator.pop(context);
-//                                       setTimer(
-//                                         context,
-//                                         scaffoldContext,
-//                                       );
-//                                     },
-//                                   ),
-//                                   ListTile(
-//                                     title: Text(
-//                                       AppLocalizations.of(context)!.sleepAfter,
-//                                     ),
-//                                     subtitle: Text(
-//                                       AppLocalizations.of(context)!
-//                                           .sleepAfterSub,
-//                                     ),
-//                                     dense: true,
-//                                     isThreeLine: true,
-//                                     onTap: () {
-//                                       Navigator.pop(context);
-//                                       setCounter();
-//                                     },
-//                                   ),
-//                                 ],
-//                               );
-//                             },
-//                           );
-//                         }
-//                         if (value == 0) {
-//                           AddToPlaylist().addToPlaylist(context, mediaItem);
-//                         }
-//                       },
-//                       itemBuilder: (context) => offline
-//                           ? [
-//                               if (mediaItem.extras?['album_id'] != null)
-//                                 PopupMenuItem(
-//                                   value: 5,
-//                                   child: Row(
-//                                     children: [
-//                                       Icon(
-//                                         Icons.album_rounded,
-//                                         color:
-//                                             Theme.of(context).iconTheme.color,
-//                                       ),
-//                                       const SizedBox(width: 10.0),
-//                                       Text(
-//                                         AppLocalizations.of(context)!.viewAlbum,
-//                                       ),
-//                                     ],
-//                                   ),
-//                                 ),
-//                               PopupMenuItem(
-//                                 value: 1,
-//                                 child: Row(
-//                                   children: [
-//                                     Icon(
-//                                       CupertinoIcons.timer,
-//                                       color: Theme.of(context).iconTheme.color,
-//                                     ),
-//                                     const SizedBox(width: 10.0),
-//                                     Text(
-//                                       AppLocalizations.of(context)!.sleepTimer,
-//                                     ),
-//                                   ],
-//                                 ),
-//                               ),
-//                               if (Hive.box('settings').get(
-//                                 'supportEq',
-//                                 defaultValue: false,
-//                               ) as bool)
-//                                 PopupMenuItem(
-//                                   value: 4,
-//                                   child: Row(
-//                                     children: [
-//                                       Icon(
-//                                         Icons.equalizer_rounded,
-//                                         color:
-//                                             Theme.of(context).iconTheme.color,
-//                                       ),
-//                                       const SizedBox(width: 10.0),
-//                                       Text(
-//                                         AppLocalizations.of(context)!.equalizer,
-//                                       ),
-//                                     ],
-//                                   ),
-//                                 ),
-//                               PopupMenuItem(
-//                                 value: 10,
-//                                 child: Row(
-//                                   children: [
-//                                     Icon(
-//                                       Icons.info_rounded,
-//                                       color: Theme.of(context).iconTheme.color,
-//                                     ),
-//                                     const SizedBox(width: 10.0),
-//                                     Text(
-//                                       AppLocalizations.of(context)!.songInfo,
-//                                     ),
-//                                   ],
-//                                 ),
-//                               ),
-//                             ]
-//                           : [
-//                               if (mediaItem.extras?['album_id'] != null)
-//                                 PopupMenuItem(
-//                                   value: 5,
-//                                   child: Row(
-//                                     children: [
-//                                       const Icon(
-//                                         Icons.album_rounded,
-//                                       ),
-//                                       const SizedBox(width: 10.0),
-//                                       Text(
-//                                         AppLocalizations.of(context)!.viewAlbum,
-//                                       ),
-//                                     ],
-//                                   ),
-//                                 ),
-//                               PopupMenuItem(
-//                                 value: 0,
-//                                 child: Row(
-//                                   children: [
-//                                     Icon(
-//                                       Icons.playlist_add_rounded,
-//                                       color: Theme.of(context).iconTheme.color,
-//                                     ),
-//                                     const SizedBox(width: 10.0),
-//                                     Text(
-//                                       AppLocalizations.of(context)!
-//                                           .addToPlaylist,
-//                                     ),
-//                                   ],
-//                                 ),
-//                               ),
-//                               PopupMenuItem(
-//                                 value: 1,
-//                                 child: Row(
-//                                   children: [
-//                                     Icon(
-//                                       CupertinoIcons.timer,
-//                                       color: Theme.of(context).iconTheme.color,
-//                                     ),
-//                                     const SizedBox(width: 10.0),
-//                                     Text(
-//                                       AppLocalizations.of(context)!.sleepTimer,
-//                                     ),
-//                                   ],
-//                                 ),
-//                               ),
-//                               if (Hive.box('settings').get(
-//                                 'supportEq',
-//                                 defaultValue: false,
-//                               ) as bool)
-//                                 PopupMenuItem(
-//                                   value: 4,
-//                                   child: Row(
-//                                     children: [
-//                                       Icon(
-//                                         Icons.equalizer_rounded,
-//                                         color:
-//                                             Theme.of(context).iconTheme.color,
-//                                       ),
-//                                       const SizedBox(width: 10.0),
-//                                       Text(
-//                                         AppLocalizations.of(context)!.equalizer,
-//                                       ),
-//                                     ],
-//                                   ),
-//                                 ),
-//                               PopupMenuItem(
-//                                 value: 3,
-//                                 child: Row(
-//                                   children: [
-//                                     Icon(
-//                                       MdiIcons.youtube,
-//                                       color: Theme.of(context).iconTheme.color,
-//                                     ),
-//                                     const SizedBox(width: 10.0),
-//                                     Text(
-//                                       mediaItem.genre == 'YouTube'
-//                                           ? AppLocalizations.of(
-//                                               context,
-//                                             )!
-//                                               .watchVideo
-//                                           : AppLocalizations.of(
-//                                               context,
-//                                             )!
-//                                               .searchVideo,
-//                                     ),
-//                                   ],
-//                                 ),
-//                               ),
-//                               PopupMenuItem(
-//                                 value: 10,
-//                                 child: Row(
-//                                   children: [
-//                                     Icon(
-//                                       Icons.info_rounded,
-//                                       color: Theme.of(context).iconTheme.color,
-//                                     ),
-//                                     const SizedBox(width: 10.0),
-//                                     Text(
-//                                       AppLocalizations.of(context)!.songInfo,
-//                                     ),
-//                                   ],
-//                                 ),
-//                               ),
-//                             ],
-//                     )
-//                   ],
-//                 ),
-//                 body: LayoutBuilder(
-//                   builder: (
-//                     BuildContext context,
-//                     BoxConstraints constraints,
-//                   ) {
-//                     if (constraints.maxWidth > constraints.maxHeight) {
-//                       return Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                         children: [
-//                           // Artwork
-//                           ArtWorkWidget(
-//                             cardKey: cardKey,
-//                             mediaItem: mediaItem,
-//                             width: min(
-//                               constraints.maxHeight / 0.9,
-//                               constraints.maxWidth / 1.8,
-//                             ),
-//                             audioHandler: audioHandler,
-//                             offline: offline,
-//                             getLyricsOnline: getLyricsOnline,
-//                           ),
-//
-//                           // title and controls
-//                           NameNControls(
-//                             mediaItem: mediaItem,
-//                             offline: offline,
-//                             width: constraints.maxWidth / 2,
-//                             height: constraints.maxHeight,
-//                             panelController: _panelController,
-//                             audioHandler: audioHandler,
-//                           ),
-//                         ],
-//                       );
-//                     }
-//                     return Column(
-//                       children: [
-//                         // Artwork
-//                         ArtWorkWidget(
-//                           cardKey: cardKey,
-//                           mediaItem: mediaItem,
-//                           width: constraints.maxWidth,
-//                           audioHandler: audioHandler,
-//                           offline: offline,
-//                           getLyricsOnline: getLyricsOnline,
-//                         ),
-//
-//                         // title and controls
-//                         NameNControls(
-//                           mediaItem: mediaItem,
-//                           offline: offline,
-//                           width: constraints.maxWidth,
-//                           height: constraints.maxHeight -
-//                               (constraints.maxWidth * 0.85),
-//                           panelController: _panelController,
-//                           audioHandler: audioHandler,
-//                         ),
-//                       ],
-//                     );
-//                   },
-//                 ),
-//                 // }
-//               ),
-//             ),
-//             builder:
-//                 (BuildContext context, List<Color?>? value, Widget? child) {
-//               return AnimatedContainer(
-//                 duration: const Duration(milliseconds: 600),
-//                 decoration: BoxDecoration(
-//                   gradient: LinearGradient(
-//                     begin: gradientType == 'simple'
-//                         ? Alignment.topLeft
-//                         : Alignment.topCenter,
-//                     end: gradientType == 'simple'
-//                         ? Alignment.bottomRight
-//                         : (gradientType == 'halfLight' ||
-//                                 gradientType == 'halfDark')
-//                             ? Alignment.center
-//                             : Alignment.bottomCenter,
-//                     colors: gradientType == 'simple'
-//                         ? Theme.of(context).brightness == Brightness.dark
-//                             ? currentTheme.getBackGradient()
-//                             : [
-//                                 const Color(0xfff5f9ff),
-//                                 Colors.white,
-//                               ]
-//                         : Theme.of(context).brightness == Brightness.dark
-//                             ? [
-//                                 if (gradientType == 'halfDark' ||
-//                                     gradientType == 'fullDark')
-//                                   value?[1] ?? Colors.grey[900]!
-//                                 else
-//                                   value?[0] ?? Colors.grey[900]!,
-//                                 if (gradientType == 'fullMix')
-//                                   value?[1] ?? Colors.black
-//                                 else
-//                                   Colors.black
-//                               ]
-//                             : [
-//                                 value?[0] ?? const Color(0xfff5f9ff),
-//                                 Colors.white,
-//                               ],
-//                   ),
-//                 ),
-//                 child: child,
-//               );
-//             },
-//           );
-//           // );
-//         },
-//       ),
-//     );
-//   }
-//
-//   Future<dynamic> setTimer(
-//     BuildContext context,
-//     BuildContext? scaffoldContext,
-//   ) {
-//     return showDialog(
-//       context: context,
-//       builder: (context) {
-//         return SimpleDialog(
-//           title: Center(
-//             child: Text(
-//               AppLocalizations.of(context)!.selectDur,
-//               style: TextStyle(
-//                 fontWeight: FontWeight.w600,
-//                 color: Theme.of(context).colorScheme.secondary,
-//               ),
-//             ),
-//           ),
-//           children: [
-//             Center(
-//               child: SizedBox(
-//                 height: 200,
-//                 width: 200,
-//                 child: CupertinoTheme(
-//                   data: CupertinoThemeData(
-//                     primaryColor: Theme.of(context).colorScheme.secondary,
-//                     textTheme: CupertinoTextThemeData(
-//                       dateTimePickerTextStyle: TextStyle(
-//                         fontSize: 16,
-//                         color: Theme.of(context).colorScheme.secondary,
-//                       ),
-//                     ),
-//                   ),
-//                   child: CupertinoTimerPicker(
-//                     mode: CupertinoTimerPickerMode.hm,
-//                     onTimerDurationChanged: (value) {
-//                       _time = value;
-//                     },
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.end,
-//               children: [
-//                 TextButton(
-//                   style: TextButton.styleFrom(
-//                     primary: Theme.of(context).colorScheme.secondary,
-//                   ),
-//                   onPressed: () {
-//                     sleepTimer(0);
-//                     Navigator.pop(context);
-//                   },
-//                   child: Text(AppLocalizations.of(context)!.cancel),
-//                 ),
-//                 const SizedBox(
-//                   width: 10,
-//                 ),
-//                 TextButton(
-//                   style: TextButton.styleFrom(
-//                     backgroundColor: Theme.of(context).colorScheme.secondary,
-//                     primary:
-//                         Theme.of(context).colorScheme.secondary == Colors.white
-//                             ? Colors.black
-//                             : Colors.white,
-//                   ),
-//                   onPressed: () {
-//                     sleepTimer(_time.inMinutes);
-//                     Navigator.pop(context);
-//                     ShowSnackBar().showSnackBar(
-//                       context,
-//                       '${AppLocalizations.of(context)!.sleepTimerSetFor} ${_time.inMinutes} ${AppLocalizations.of(context)!.minutes}',
-//                     );
-//                   },
-//                   child: Text(AppLocalizations.of(context)!.ok),
-//                 ),
-//                 const SizedBox(
-//                   width: 20,
-//                 ),
-//               ],
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-//
-//   Future<dynamic> setCounter() async {
-//     await showTextInputDialog(
-//       context: context,
-//       title: AppLocalizations.of(context)!.enterSongsCount,
-//       initialText: '',
-//       keyboardType: TextInputType.number,
-//       onSubmitted: (String value) {
-//         sleepCounter(
-//           int.parse(value),
-//         );
-//         Navigator.pop(context);
-//         ShowSnackBar().showSnackBar(
-//           context,
-//           '${AppLocalizations.of(context)!.sleepTimerSetFor} $value ${AppLocalizations.of(context)!.songs}',
-//         );
-//       },
-//     );
-//   }
-// }
+import 'package:audio_service/audio_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flip_card/flip_card.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get_it/get_it.dart';
+import 'package:hive/hive.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../CustomWidgets/add_playlist.dart';
+import '../../CustomWidgets/download_button.dart';
+import '../../CustomWidgets/equalizer.dart';
+import '../../CustomWidgets/like_button.dart';
+import '../../CustomWidgets/player.dart';
+import '../../CustomWidgets/popup.dart';
+import '../../CustomWidgets/snackbar.dart';
+import '../../CustomWidgets/textinput_dialog.dart';
+import '../../utils/config.dart';
+import '../../utils/dominant_color.dart';
+import '../../utils/mediaitem_converter.dart';
+
+class PlayScreen extends StatefulWidget {
+  final List songsList;
+  final bool fromMiniplayer;
+  final bool? offline;
+  final int index;
+  final bool recommend;
+  final bool fromDownloads;
+  const PlayScreen({
+    super.key,
+    required this.index,
+    required this.songsList,
+    required this.fromMiniplayer,
+    required this.offline,
+    required this.recommend,
+    required this.fromDownloads,
+  });
+  @override
+  _PlayScreenState createState() => _PlayScreenState();
+}
+
+class _PlayScreenState extends State<PlayScreen> {
+  bool fromMiniplayer = false;
+  final String preferredQuality = Hive.box('settings')
+      .get('streamingQuality', defaultValue: '96 kbps')
+      .toString();
+  final String repeatMode =
+      Hive.box('settings').get('repeatMode', defaultValue: 'None').toString();
+  final bool enforceRepeat =
+      Hive.box('settings').get('enforceRepeat', defaultValue: false) as bool;
+  final String gradientType = Hive.box('settings')
+      .get('gradientType', defaultValue: 'halfDark')
+      .toString();
+  final bool getLyricsOnline =
+      Hive.box('settings').get('getLyricsOnline', defaultValue: true) as bool;
+
+  List<MediaItem> globalQueue = [];
+  int globalIndex = 0;
+  List response = [];
+  bool offline = false;
+  bool fromDownloads = false;
+  String defaultCover = '';
+  final MyTheme currentTheme = GetIt.I<MyTheme>();
+  final ValueNotifier<List<Color?>?> gradientColor =
+      ValueNotifier<List<Color?>?>(GetIt.I<MyTheme>().playGradientColor);
+  final PanelController _panelController = PanelController();
+  final AudioPlayerHandler audioHandler = GetIt.I<AudioPlayerHandler>();
+  GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
+
+  void sleepTimer(int time) {
+    audioHandler.customAction('sleepTimer', {'time': time});
+  }
+
+  void sleepCounter(int count) {
+    audioHandler.customAction('sleepCounter', {'count': count});
+  }
+
+  late Duration _time;
+
+  Future<void> main() async {
+    await Hive.openBox('Favorite Songs');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    main();
+    response = widget.songsList;
+    globalIndex = widget.index;
+    if (globalIndex == -1) {
+      globalIndex = 0;
+    }
+    fromDownloads = widget.fromDownloads;
+    if (widget.offline == null) {
+      if (audioHandler.mediaItem.value?.extras!['url'].startsWith('http')
+          as bool) {
+        offline = false;
+      } else {
+        offline = true;
+      }
+    } else {
+      offline = widget.offline!;
+    }
+
+    fromMiniplayer = widget.fromMiniplayer;
+    if (!fromMiniplayer) {
+      if (!Platform.isAndroid) {
+        // Don't know why but it fixes the playback issue with iOS Side
+        audioHandler.stop();
+      }
+      if (offline) {
+        fromDownloads
+            ? setDownValues(response)
+            : (Platform.isWindows || Platform.isLinux)
+                ? setOffDesktopValues(response)
+                : setOffValues(response);
+      } else {
+        setValues(response);
+        updateNplay();
+      }
+    }
+  }
+
+  Future<MediaItem> setTags(SongModel response, Directory tempDir) async {
+    String playTitle = response.title;
+    playTitle == ''
+        ? playTitle = response.displayNameWOExt
+        : playTitle = response.title;
+    String playArtist = response.artist!;
+    playArtist == '<unknown>'
+        ? playArtist = 'Unknown'
+        : playArtist = response.artist!;
+
+    final String playAlbum = response.album!;
+    final int playDuration = response.duration ?? 180000;
+    final String imagePath = '${tempDir.path}/${response.displayNameWOExt}.jpg';
+
+    final MediaItem tempDict = MediaItem(
+      id: response.id.toString(),
+      album: playAlbum,
+      duration: Duration(milliseconds: playDuration),
+      title: playTitle.split('(')[0],
+      artist: playArtist,
+      genre: response.genre,
+      artUri: Uri.file(imagePath),
+      extras: {
+        'url': response.data,
+        'date_added': response.dateAdded,
+        'date_modified': response.dateModified,
+        'size': response.size,
+        'year': response.getMap['year'],
+      },
+    );
+    return tempDict;
+  }
+
+  void setOffDesktopValues(List response) {
+    getTemporaryDirectory().then((tempDir) async {
+      final File file = File('${tempDir.path}/cover.jpg');
+      if (!await file.exists()) {
+        final byteData = await rootBundle.load('assets/cover.jpg');
+        await file.writeAsBytes(
+          byteData.buffer
+              .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+        );
+      }
+      globalQueue.addAll(
+        response.map(
+          (song) => MediaItem(
+            id: song['id'].toString(),
+            album: song['album'].toString(),
+            artist: song['artist'].toString(),
+            duration: Duration(
+              seconds: int.parse(
+                (song['duration'] == null || song['duration'] == 'null')
+                    ? '180'
+                    : song['duration'].toString(),
+              ),
+            ),
+            title: song['title'].toString(),
+            artUri: Uri.file(file.path),
+            genre: song['genre'].toString(),
+            extras: {
+              'url': song['path'].toString(),
+              'subtitle': song['subtitle'],
+              'quality': song['quality'],
+            },
+          ),
+        ),
+      );
+      updateNplay();
+    });
+  }
+
+  void setOffValues(List response) {
+    getTemporaryDirectory().then((tempDir) async {
+      final File file = File('${tempDir.path}/cover.jpg');
+      if (!await file.exists()) {
+        final byteData = await rootBundle.load('assets/cover.jpg');
+        await file.writeAsBytes(
+          byteData.buffer
+              .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+        );
+      }
+      for (int i = 0; i < response.length; i++) {
+        globalQueue.add(
+          await setTags(response[i] as SongModel, tempDir),
+        );
+      }
+      updateNplay();
+    });
+  }
+
+  void setDownValues(List response) {
+    globalQueue.addAll(
+      response.map(
+        (song) => MediaItemConverter.downMapToMediaItem(song as Map),
+      ),
+    );
+    updateNplay();
+  }
+
+  void setValues(List response) {
+    globalQueue.addAll(
+      response.map(
+        (song) => MediaItemConverter.mapToMediaItem(
+          song as Map,
+          autoplay: widget.recommend,
+        ),
+      ),
+    );
+  }
+
+  Future<void> updateNplay() async {
+    await audioHandler.setShuffleMode(AudioServiceShuffleMode.none);
+    await audioHandler.updateQueue(globalQueue);
+    await audioHandler.skipToQueueItem(globalIndex);
+    await audioHandler.play();
+    if (enforceRepeat) {
+      switch (repeatMode) {
+        case 'None':
+          audioHandler.setRepeatMode(AudioServiceRepeatMode.none);
+          break;
+        case 'All':
+          audioHandler.setRepeatMode(AudioServiceRepeatMode.all);
+          break;
+        case 'One':
+          audioHandler.setRepeatMode(AudioServiceRepeatMode.one);
+          break;
+        default:
+          break;
+      }
+    } else {
+      audioHandler.setRepeatMode(AudioServiceRepeatMode.none);
+      Hive.box('settings').put('repeatMode', 'None');
+    }
+  }
+
+  void updateBackgroundColors(List<Color?> value) {
+    gradientColor.value = value;
+    return;
+  }
+
+  String format(String msg) {
+    return '${msg[0].toUpperCase()}${msg.substring(1)}: '.replaceAll('_', ' ');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    BuildContext? scaffoldContext;
+
+    return Dismissible(
+      direction: DismissDirection.down,
+      background: const ColoredBox(color: Colors.transparent),
+      key: const Key('playScreen'),
+      onDismissed: (direction) {
+        Navigator.pop(context);
+      },
+      child: StreamBuilder<MediaItem?>(
+        stream: audioHandler.mediaItem,
+        builder: (context, snapshot) {
+          final MediaItem? mediaItem = snapshot.data;
+          if (mediaItem == null) return const SizedBox();
+          mediaItem.artUri.toString().startsWith('file')
+              ? getColors(
+                  imageProvider: FileImage(
+                    File(
+                      mediaItem.artUri!.toFilePath(),
+                    ),
+                  ),
+                  // useDominantAndDarkerColors: gradientType == 'halfLight' ||
+                  //     gradientType == 'fullLight' ||
+                  //     gradientType == 'fullMix',
+                ).then((value) => updateBackgroundColors(value))
+              : getColors(
+                  imageProvider: CachedNetworkImageProvider(
+                    mediaItem.artUri.toString(),
+                  ),
+                  // useDominantAndDarkerColors: gradientType == 'halfLight' ||
+                  //     gradientType == 'fullLight' ||
+                  //     gradientType == 'fullMix',
+                ).then((value) => updateBackgroundColors(value));
+          return ValueListenableBuilder(
+            valueListenable: gradientColor,
+            child: SafeArea(
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                backgroundColor: Colors.transparent,
+                appBar: AppBar(
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  centerTitle: true,
+                  leading: IconButton(
+                    icon: const Icon(Icons.expand_more_rounded),
+                    tooltip: AppLocalizations.of(context)!.back,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  actions: [
+                    IconButton(
+                      icon: const Icon(Icons.lyrics_rounded),
+                      //     Image.asset(
+                      //   'assets/lyrics.png',
+                      // ),
+                      tooltip: AppLocalizations.of(context)!.lyrics,
+                      onPressed: () => cardKey.currentState!.toggleCard(),
+                    ),
+                    if (!offline)
+                      IconButton(
+                        icon: const Icon(Icons.share_rounded),
+                        tooltip: AppLocalizations.of(context)!.share,
+                        onPressed: () {
+                          Share.share(
+                            mediaItem.extras!['perma_url'].toString(),
+                          );
+                        },
+                      ),
+                    PopupMenuButton(
+                      icon: const Icon(
+                        Icons.more_vert_rounded,
+                      ),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15.0),
+                        ),
+                      ),
+                      onSelected: (int? value) {
+                        if (value == 10) {
+                          final Map details =
+                              MediaItemConverter.mediaItemToMap(mediaItem);
+                          details['duration'] =
+                              '${int.parse(details["duration"].toString()) ~/ 60}:${int.parse(details["duration"].toString()) % 60}';
+                          // style: Theme.of(context).textTheme.caption,
+                          if (mediaItem.extras?['size'] != null) {
+                            details.addEntries([
+                              MapEntry(
+                                'date_modified',
+                                DateTime.fromMillisecondsSinceEpoch(
+                                  int.parse(
+                                        mediaItem.extras!['date_modified']
+                                            .toString(),
+                                      ) *
+                                      1000,
+                                ).toString().split('.').first,
+                              ),
+                              MapEntry(
+                                'size',
+                                '${((mediaItem.extras!['size'] as int) / (1024 * 1024)).toStringAsFixed(2)} MB',
+                              ),
+                            ]);
+                          }
+                          PopupDialog().showPopup(
+                            context: context,
+                            child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              padding: const EdgeInsets.all(25.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: details.keys.map((e) {
+                                  return SelectableText.rich(
+                                    TextSpan(
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          text: format(
+                                            e.toString(),
+                                          ),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .color,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: details[e].toString(),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    showCursor: true,
+                                    cursorColor: Colors.black,
+                                    cursorRadius: const Radius.circular(5),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          );
+                        }
+                        if (value == 5) {
+                          print(value.toString());
+          // }
+                          // TODO
+                          // Navigator.push(
+                          //   context,
+                          //   PageRouteBuilder(
+                          //     opaque: false,
+                          //     pageBuilder: (_, __, ___) => SongsListPage(
+                          //       listItem: {
+                          //         'type': 'album',
+                          //         'id': mediaItem.extras?['album_id'],
+                          //         'title': mediaItem.album,
+                          //         'image': mediaItem.artUri,
+                          //       },
+                          //     ),
+                          //   ),
+                          // );
+                        }
+                        if (value == 4) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return const Equalizer();
+                            },
+                          );
+                        }
+                        if (value == 3) {
+                          launchUrl(
+                            Uri.parse(
+                              mediaItem.genre == 'YouTube'
+                                  ? 'https://youtube.com/watch?v=${mediaItem.id}'
+                                  : 'https://www.youtube.com/results?search_query=${mediaItem.title} by ${mediaItem.artist}',
+                            ),
+                            mode: LaunchMode.externalApplication,
+                          );
+                        }
+                        if (value == 1) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return SimpleDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                title: Text(
+                                  AppLocalizations.of(context)!.sleepTimer,
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                                contentPadding: const EdgeInsets.all(10.0),
+                                children: [
+                                  ListTile(
+                                    title: Text(
+                                      AppLocalizations.of(context)!.sleepDur,
+                                    ),
+                                    subtitle: Text(
+                                      AppLocalizations.of(context)!.sleepDurSub,
+                                    ),
+                                    dense: true,
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      setTimer(
+                                        context,
+                                        scaffoldContext,
+                                      );
+                                    },
+                                  ),
+                                  ListTile(
+                                    title: Text(
+                                      AppLocalizations.of(context)!.sleepAfter,
+                                    ),
+                                    subtitle: Text(
+                                      AppLocalizations.of(context)!
+                                          .sleepAfterSub,
+                                    ),
+                                    dense: true,
+                                    isThreeLine: true,
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      setCounter();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                        if (value == 0) {
+                          AddToPlaylist().addToPlaylist(context, mediaItem);
+                        }
+                      },
+                      itemBuilder: (context) => offline
+                          ? [
+                              if (mediaItem.extras?['album_id'] != null)
+                                PopupMenuItem(
+                                  value: 5,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.album_rounded,
+                                        color:
+                                            Theme.of(context).iconTheme.color,
+                                      ),
+                                      const SizedBox(width: 10.0),
+                                      Text(
+                                        AppLocalizations.of(context)!.viewAlbum,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              PopupMenuItem(
+                                value: 1,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      CupertinoIcons.timer,
+                                      color: Theme.of(context).iconTheme.color,
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    Text(
+                                      AppLocalizations.of(context)!.sleepTimer,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (Hive.box('settings').get(
+                                'supportEq',
+                                defaultValue: false,
+                              ) as bool)
+                                PopupMenuItem(
+                                  value: 4,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.equalizer_rounded,
+                                        color:
+                                            Theme.of(context).iconTheme.color,
+                                      ),
+                                      const SizedBox(width: 10.0),
+                                      Text(
+                                        AppLocalizations.of(context)!.equalizer,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              PopupMenuItem(
+                                value: 10,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.info_rounded,
+                                      color: Theme.of(context).iconTheme.color,
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    Text(
+                                      AppLocalizations.of(context)!.songInfo,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ]
+                          : [
+                              if (mediaItem.extras?['album_id'] != null)
+                                PopupMenuItem(
+                                  value: 5,
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.album_rounded,
+                                      ),
+                                      const SizedBox(width: 10.0),
+                                      Text(
+                                        AppLocalizations.of(context)!.viewAlbum,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              PopupMenuItem(
+                                value: 0,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.playlist_add_rounded,
+                                      color: Theme.of(context).iconTheme.color,
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    Text(
+                                      AppLocalizations.of(context)!
+                                          .addToPlaylist,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 1,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      CupertinoIcons.timer,
+                                      color: Theme.of(context).iconTheme.color,
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    Text(
+                                      AppLocalizations.of(context)!.sleepTimer,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (Hive.box('settings').get(
+                                'supportEq',
+                                defaultValue: false,
+                              ) as bool)
+                                PopupMenuItem(
+                                  value: 4,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.equalizer_rounded,
+                                        color:
+                                            Theme.of(context).iconTheme.color,
+                                      ),
+                                      const SizedBox(width: 10.0),
+                                      Text(
+                                        AppLocalizations.of(context)!.equalizer,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              PopupMenuItem(
+                                value: 3,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      MdiIcons.youtube,
+                                      color: Theme.of(context).iconTheme.color,
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    Text(
+                                      mediaItem.genre == 'YouTube'
+                                          ? AppLocalizations.of(
+                                              context,
+                                            )!
+                                              .watchVideo
+                                          : AppLocalizations.of(
+                                              context,
+                                            )!
+                                              .searchVideo,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 10,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.info_rounded,
+                                      color: Theme.of(context).iconTheme.color,
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    Text(
+                                      AppLocalizations.of(context)!.songInfo,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                    )
+                  ],
+                ),
+                body: LayoutBuilder(
+                  builder: (
+                    BuildContext context,
+                    BoxConstraints constraints,
+                  ) {
+                    if (constraints.maxWidth > constraints.maxHeight) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          // TODO
+                          // Artwork
+                          // ArtWorkWidget(
+                          //   cardKey: cardKey,
+                          //   mediaItem: mediaItem,
+                          //   width: min(
+                          //     constraints.maxHeight / 0.9,
+                          //     constraints.maxWidth / 1.8,
+                          //   ),
+                          //   audioHandler: audioHandler,
+                          //   offline: offline,
+                          //   getLyricsOnline: getLyricsOnline,
+                          // ),
+
+                          // title and controls
+                          // NameNControls(
+                          //   mediaItem: mediaItem,
+                          //   offline: offline,
+                          //   width: constraints.maxWidth / 2,
+                          //   height: constraints.maxHeight,
+                          //   panelController: _panelController,
+                          //   audioHandler: audioHandler,
+                          // ),
+                        ],
+                      );
+                    }
+                    return Column(
+                      children: [
+                        // TODO
+                        // Artwork
+                        // ArtWorkWidget(
+                        //   cardKey: cardKey,
+                        //   mediaItem: mediaItem,
+                        //   width: constraints.maxWidth,
+                        //   audioHandler: audioHandler,
+                        //   offline: offline,
+                        //   getLyricsOnline: getLyricsOnline,
+                        // ),
+
+                        // title and controls
+                        // NameNControls(
+                        //   mediaItem: mediaItem,
+                        //   offline: offline,
+                        //   width: constraints.maxWidth,
+                        //   height: constraints.maxHeight -
+                        //       (constraints.maxWidth * 0.85),
+                        //   panelController: _panelController,
+                        //   audioHandler: audioHandler,
+                        // ),
+                      ],
+                    );
+                  },
+                ),
+                // }
+              ),
+            ),
+            builder:
+                (BuildContext context, List<Color?>? value, Widget? child) {
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 600),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: gradientType == 'simple'
+                        ? Alignment.topLeft
+                        : Alignment.topCenter,
+                    end: gradientType == 'simple'
+                        ? Alignment.bottomRight
+                        : (gradientType == 'halfLight' ||
+                                gradientType == 'halfDark')
+                            ? Alignment.center
+                            : Alignment.bottomCenter,
+                    colors: gradientType == 'simple'
+                        ? Theme.of(context).brightness == Brightness.dark
+                            ? currentTheme.getBackGradient()
+                            : [
+                                const Color(0xfff5f9ff),
+                                Colors.white,
+                              ]
+                        : Theme.of(context).brightness == Brightness.dark
+                            ? [
+                                if (gradientType == 'halfDark' ||
+                                    gradientType == 'fullDark')
+                                  value?[1] ?? Colors.grey[900]!
+                                else
+                                  value?[0] ?? Colors.grey[900]!,
+                                if (gradientType == 'fullMix')
+                                  value?[1] ?? Colors.black
+                                else
+                                  Colors.black
+                              ]
+                            : [
+                                value?[0] ?? const Color(0xfff5f9ff),
+                                Colors.white,
+                              ],
+                  ),
+                ),
+                child: child,
+              );
+            },
+          );
+          // );
+        },
+      ),
+    );
+  }
+
+  Future<dynamic> setTimer(
+    BuildContext context,
+    BuildContext? scaffoldContext,
+  ) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Center(
+            child: Text(
+              AppLocalizations.of(context)!.selectDur,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+          ),
+          children: [
+            Center(
+              child: SizedBox(
+                height: 200,
+                width: 200,
+                child: CupertinoTheme(
+                  data: CupertinoThemeData(
+                    primaryColor: Theme.of(context).colorScheme.secondary,
+                    textTheme: CupertinoTextThemeData(
+                      dateTimePickerTextStyle: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                  ),
+                  child: CupertinoTimerPicker(
+                    mode: CupertinoTimerPickerMode.hm,
+                    onTimerDurationChanged: (value) {
+                      _time = value;
+                    },
+                  ),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    primary: Theme.of(context).colorScheme.secondary,
+                  ),
+                  onPressed: () {
+                    sleepTimer(0);
+                    Navigator.pop(context);
+                  },
+                  child: Text(AppLocalizations.of(context)!.cancel),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    primary:
+                        Theme.of(context).colorScheme.secondary == Colors.white
+                            ? Colors.black
+                            : Colors.white,
+                  ),
+                  onPressed: () {
+                    sleepTimer(_time.inMinutes);
+                    Navigator.pop(context);
+                    ShowSnackBar().showSnackBar(
+                      context,
+                      '${AppLocalizations.of(context)!.sleepTimerSetFor} ${_time.inMinutes} ${AppLocalizations.of(context)!.minutes}',
+                    );
+                  },
+                  child: Text(AppLocalizations.of(context)!.ok),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<dynamic> setCounter() async {
+    await showTextInputDialog(
+      context: context,
+      title: AppLocalizations.of(context)!.enterSongsCount,
+      initialText: '',
+      keyboardType: TextInputType.number,
+      onSubmitted: (String value) {
+        sleepCounter(
+          int.parse(value),
+        );
+        Navigator.pop(context);
+        ShowSnackBar().showSnackBar(
+          context,
+          '${AppLocalizations.of(context)!.sleepTimerSetFor} $value ${AppLocalizations.of(context)!.songs}',
+        );
+      },
+    );
+  }
+}
 //
 // class MediaState {
 //   final MediaItem? mediaItem;
@@ -1130,232 +1148,232 @@
 //   ValueStream<double> get speed;
 // }
 //
-// class NowPlayingStream extends StatelessWidget {
-//   final AudioPlayerHandler audioHandler;
-//   final ScrollController? scrollController;
-//   final bool head;
-//   final double headHeight;
-//
-//   const NowPlayingStream({
-//     required this.audioHandler,
-//     this.scrollController,
-//     this.head = false,
-//     this.headHeight = 50,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return StreamBuilder<QueueState>(
-//       stream: audioHandler.queueState,
-//       builder: (context, snapshot) {
-//         final queueState = snapshot.data ?? QueueState.empty;
-//         final queue = queueState.queue;
-//
-//         return ReorderableListView.builder(
-//           header: SizedBox(
-//             height: head ? headHeight : 0,
-//           ),
-//           onReorder: (int oldIndex, int newIndex) {
-//             if (oldIndex < newIndex) {
-//               newIndex--;
-//             }
-//             audioHandler.moveQueueItem(oldIndex, newIndex);
-//           },
-//           scrollController: scrollController,
-//           physics: const BouncingScrollPhysics(),
-//           padding: const EdgeInsets.only(bottom: 10),
-//           shrinkWrap: true,
-//           itemCount: queue.length,
-//           itemBuilder: (context, index) {
-//             return Dismissible(
-//               key: ValueKey(queue[index].id),
-//               direction: index == queueState.queueIndex
-//                   ? DismissDirection.none
-//                   : DismissDirection.horizontal,
-//               onDismissed: (dir) {
-//                 audioHandler.removeQueueItemAt(index);
-//               },
-//               child: ListTileTheme(
-//                 selectedColor: Theme.of(context).colorScheme.secondary,
-//                 child: ListTile(
-//                   contentPadding:
-//                       const EdgeInsets.only(left: 16.0, right: 10.0),
-//                   selected: index == queueState.queueIndex,
-//                   trailing: index == queueState.queueIndex
-//                       ? IconButton(
-//                           icon: const Icon(
-//                             Icons.bar_chart_rounded,
-//                           ),
-//                           tooltip: AppLocalizations.of(context)!.playing,
-//                           onPressed: () {},
-//                         )
-//                       : queue[index]
-//                               .extras!['url']
-//                               .toString()
-//                               .startsWith('http')
-//                           ? Row(
-//                               mainAxisSize: MainAxisSize.min,
-//                               children: [
-//                                 LikeButton(
-//                                   mediaItem: queue[index],
-//                                 ),
-//                                 DownloadButton(
-//                                   icon: 'download',
-//                                   size: 25.0,
-//                                   data: {
-//                                     'id': queue[index].id,
-//                                     'artist': queue[index].artist.toString(),
-//                                     'album': queue[index].album.toString(),
-//                                     'image': queue[index].artUri.toString(),
-//                                     'duration': queue[index]
-//                                         .duration!
-//                                         .inSeconds
-//                                         .toString(),
-//                                     'title': queue[index].title,
-//                                     'url':
-//                                         queue[index].extras?['url'].toString(),
-//                                     'year':
-//                                         queue[index].extras?['year'].toString(),
-//                                     'language': queue[index]
-//                                         .extras?['language']
-//                                         .toString(),
-//                                     'genre': queue[index].genre?.toString(),
-//                                     '320kbps': queue[index].extras?['320kbps'],
-//                                     'has_lyrics':
-//                                         queue[index].extras?['has_lyrics'],
-//                                     'release_date':
-//                                         queue[index].extras?['release_date'],
-//                                     'album_id':
-//                                         queue[index].extras?['album_id'],
-//                                     'subtitle':
-//                                         queue[index].extras?['subtitle'],
-//                                     'perma_url':
-//                                         queue[index].extras?['perma_url'],
-//                                   },
-//                                 )
-//                               ],
-//                             )
-//                           : const SizedBox(),
-//                   leading: Row(
-//                     mainAxisSize: MainAxisSize.min,
-//                     crossAxisAlignment: CrossAxisAlignment.end,
-//                     children: [
-//                       if (queue[index].extras?['addedByAutoplay'] as bool? ??
-//                           false)
-//                         Column(
-//                           mainAxisAlignment: MainAxisAlignment.end,
-//                           children: [
-//                             Row(
-//                               crossAxisAlignment: CrossAxisAlignment.end,
-//                               children: [
-//                                 RotatedBox(
-//                                   quarterTurns: 3,
-//                                   child: Text(
-//                                     AppLocalizations.of(context)!.addedBy,
-//                                     textAlign: TextAlign.start,
-//                                     style: const TextStyle(
-//                                       fontSize: 5.0,
-//                                     ),
-//                                   ),
-//                                 ),
-//                                 RotatedBox(
-//                                   quarterTurns: 3,
-//                                   child: Text(
-//                                     AppLocalizations.of(context)!.autoplay,
-//                                     textAlign: TextAlign.start,
-//                                     style: TextStyle(
-//                                       fontSize: 8.0,
-//                                       color: Theme.of(context)
-//                                           .colorScheme
-//                                           .secondary,
-//                                       fontWeight: FontWeight.w600,
-//                                     ),
-//                                   ),
-//                                 ),
-//                               ],
-//                             ),
-//                             const SizedBox(
-//                               height: 5.0,
-//                             ),
-//                           ],
-//                         ),
-//                       Card(
-//                         elevation: 5,
-//                         shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(7.0),
-//                         ),
-//                         clipBehavior: Clip.antiAlias,
-//                         child: (queue[index].artUri == null)
-//                             ? const SizedBox.square(
-//                                 dimension: 50,
-//                                 child: Image(
-//                                   image: AssetImage('assets/cover.jpg'),
-//                                 ),
-//                               )
-//                             : SizedBox.square(
-//                                 dimension: 50,
-//                                 child: queue[index]
-//                                         .artUri
-//                                         .toString()
-//                                         .startsWith('file:')
-//                                     ? Image(
-//                                         fit: BoxFit.cover,
-//                                         image: FileImage(
-//                                           File(
-//                                             queue[index].artUri!.toFilePath(),
-//                                           ),
-//                                         ),
-//                                       )
-//                                     : CachedNetworkImage(
-//                                         fit: BoxFit.cover,
-//                                         errorWidget:
-//                                             (BuildContext context, _, __) =>
-//                                                 const Image(
-//                                           fit: BoxFit.cover,
-//                                           image: AssetImage(
-//                                             'assets/cover.jpg',
-//                                           ),
-//                                         ),
-//                                         placeholder:
-//                                             (BuildContext context, _) =>
-//                                                 const Image(
-//                                           fit: BoxFit.cover,
-//                                           image: AssetImage(
-//                                             'assets/cover.jpg',
-//                                           ),
-//                                         ),
-//                                         imageUrl:
-//                                             queue[index].artUri.toString(),
-//                                       ),
-//                               ),
-//                       ),
-//                     ],
-//                   ),
-//                   title: Text(
-//                     queue[index].title,
-//                     overflow: TextOverflow.ellipsis,
-//                     style: TextStyle(
-//                       fontWeight: index == queueState.queueIndex
-//                           ? FontWeight.w600
-//                           : FontWeight.normal,
-//                     ),
-//                   ),
-//                   subtitle: Text(
-//                     queue[index].artist!,
-//                     overflow: TextOverflow.ellipsis,
-//                   ),
-//                   onTap: () {
-//                     audioHandler.skipToQueueItem(index);
-//                   },
-//                 ),
-//               ),
-//             );
-//           },
-//         );
-//       },
-//     );
-//   }
-// }
+class NowPlayingStream extends StatelessWidget {
+  final AudioPlayerHandler audioHandler;
+  final ScrollController? scrollController;
+  final bool head;
+  final double headHeight;
+
+  const NowPlayingStream({
+    required this.audioHandler,
+    this.scrollController,
+    this.head = false,
+    this.headHeight = 50,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QueueState>(
+      stream: audioHandler.queueState,
+      builder: (context, snapshot) {
+        final queueState = snapshot.data ?? QueueState.empty;
+        final queue = queueState.queue;
+
+        return ReorderableListView.builder(
+          header: SizedBox(
+            height: head ? headHeight : 0,
+          ),
+          onReorder: (int oldIndex, int newIndex) {
+            if (oldIndex < newIndex) {
+              newIndex--;
+            }
+            audioHandler.moveQueueItem(oldIndex, newIndex);
+          },
+          scrollController: scrollController,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: 10),
+          shrinkWrap: true,
+          itemCount: queue.length,
+          itemBuilder: (context, index) {
+            return Dismissible(
+              key: ValueKey(queue[index].id),
+              direction: index == queueState.queueIndex
+                  ? DismissDirection.none
+                  : DismissDirection.horizontal,
+              onDismissed: (dir) {
+                audioHandler.removeQueueItemAt(index);
+              },
+              child: ListTileTheme(
+                selectedColor: Theme.of(context).colorScheme.secondary,
+                child: ListTile(
+                  contentPadding:
+                      const EdgeInsets.only(left: 16.0, right: 10.0),
+                  selected: index == queueState.queueIndex,
+                  trailing: index == queueState.queueIndex
+                      ? IconButton(
+                          icon: const Icon(
+                            Icons.bar_chart_rounded,
+                          ),
+                          tooltip: AppLocalizations.of(context)!.playing,
+                          onPressed: () {},
+                        )
+                      : queue[index]
+                              .extras!['url']
+                              .toString()
+                              .startsWith('http')
+                          ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                LikeButton(
+                                  mediaItem: queue[index],
+                                ),
+                                DownloadButton(
+                                  icon: 'download',
+                                  size: 25.0,
+                                  data: {
+                                    'id': queue[index].id,
+                                    'artist': queue[index].artist.toString(),
+                                    'album': queue[index].album.toString(),
+                                    'image': queue[index].artUri.toString(),
+                                    'duration': queue[index]
+                                        .duration!
+                                        .inSeconds
+                                        .toString(),
+                                    'title': queue[index].title,
+                                    'url':
+                                        queue[index].extras?['url'].toString(),
+                                    'year':
+                                        queue[index].extras?['year'].toString(),
+                                    'language': queue[index]
+                                        .extras?['language']
+                                        .toString(),
+                                    'genre': queue[index].genre?.toString(),
+                                    '320kbps': queue[index].extras?['320kbps'],
+                                    'has_lyrics':
+                                        queue[index].extras?['has_lyrics'],
+                                    'release_date':
+                                        queue[index].extras?['release_date'],
+                                    'album_id':
+                                        queue[index].extras?['album_id'],
+                                    'subtitle':
+                                        queue[index].extras?['subtitle'],
+                                    'perma_url':
+                                        queue[index].extras?['perma_url'],
+                                  },
+                                )
+                              ],
+                            )
+                          : const SizedBox(),
+                  leading: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      if (queue[index].extras?['addedByAutoplay'] as bool? ??
+                          false)
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                RotatedBox(
+                                  quarterTurns: 3,
+                                  child: Text(
+                                    AppLocalizations.of(context)!.addedBy,
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(
+                                      fontSize: 5.0,
+                                    ),
+                                  ),
+                                ),
+                                RotatedBox(
+                                  quarterTurns: 3,
+                                  child: Text(
+                                    AppLocalizations.of(context)!.autoplay,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 8.0,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 5.0,
+                            ),
+                          ],
+                        ),
+                      Card(
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(7.0),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: (queue[index].artUri == null)
+                            ? const SizedBox.square(
+                                dimension: 50,
+                                child: Image(
+                                  image: AssetImage('assets/cover.jpg'),
+                                ),
+                              )
+                            : SizedBox.square(
+                                dimension: 50,
+                                child: queue[index]
+                                        .artUri
+                                        .toString()
+                                        .startsWith('file:')
+                                    ? Image(
+                                        fit: BoxFit.cover,
+                                        image: FileImage(
+                                          File(
+                                            queue[index].artUri!.toFilePath(),
+                                          ),
+                                        ),
+                                      )
+                                    : CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        errorWidget:
+                                            (BuildContext context, _, __) =>
+                                                const Image(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                            'assets/cover.jpg',
+                                          ),
+                                        ),
+                                        placeholder:
+                                            (BuildContext context, _) =>
+                                                const Image(
+                                          fit: BoxFit.cover,
+                                          image: AssetImage(
+                                            'assets/cover.jpg',
+                                          ),
+                                        ),
+                                        imageUrl:
+                                            queue[index].artUri.toString(),
+                                      ),
+                              ),
+                      ),
+                    ],
+                  ),
+                  title: Text(
+                    queue[index].title,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontWeight: index == queueState.queueIndex
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                  ),
+                  subtitle: Text(
+                    queue[index].artist!,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  onTap: () {
+                    audioHandler.skipToQueueItem(index);
+                  },
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
 //
 // class ArtWorkWidget extends StatefulWidget {
 //   final GlobalKey<FlipCardState> cardKey;

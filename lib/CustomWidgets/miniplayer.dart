@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pure_music/CustomWidgets/player.dart';
-
-import '../services/Player/audioplayer.dart';
+import '../Screens/Player/audioplayer.dart';
 import 'gradient_containers.dart';
 
 class MiniPlayer extends StatefulWidget {
