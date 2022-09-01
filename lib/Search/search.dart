@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:pure_music/Screens/Common/song_list.dart';
+import 'package:pure_music/Screens/Player/audioplayer.dart';
 import 'package:pure_music/apis/api.dart';
 
 import '../CustomWidgets/copy_clipboard.dart';
@@ -35,9 +36,7 @@ class _SearchPageState extends State<SearchPage> {
   Map searchedData = {};
   Map position = {};
   List sortedKeys = [];
-  final ValueNotifier<List<String>> topSearch = ValueNotifier<List<String>>(
-    [],
-  );
+  final ValueNotifier<List<String>> topSearch = ValueNotifier<List<String>>([]);
   bool fetched = false;
   bool alertShown = false;
   bool albumFetched = false;
@@ -63,6 +62,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> fetchResults() async {
+    print('fetchResults method invoke');
     // 搜索音乐
     final Map result = await KwMusicAPI().fetchSongSearchResults(
       searchQuery: query == '' ? widget.query : query,
@@ -112,6 +112,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    // ??= 只有当变量为 null 时才会被赋值
     fromHome ??= widget.fromHome;
     if (!status) {
       status = true;
@@ -172,15 +173,9 @@ class _SearchPageState extends State<SearchPage> {
                                   ),
                                   ListView.builder(
                                     itemCount: value.length,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
+                                    physics: const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
-                                    padding: const EdgeInsets.fromLTRB(
-                                      15,
-                                      10,
-                                      10,
-                                      0,
-                                    ),
+                                    padding: const EdgeInsets.fromLTRB(15, 10, 10, 0,),
                                     itemBuilder: (context, index) {
                                       return ListTile(
                                         horizontalTitleGap: 0.0,
@@ -229,28 +224,20 @@ class _SearchPageState extends State<SearchPage> {
                           : (searchedData.isEmpty)
                               ? nothingFound(context)
                               : SingleChildScrollView(
-                                  padding: const EdgeInsets.only(
-                                    top: 70,
-                                  ),
+                                  padding: const EdgeInsets.only(top: 70),
                                   physics: const BouncingScrollPhysics(),
                                   child: Column(
                                     children: sortedKeys.map(
                                       (e) {
-                                        final String key =
-                                            position[e].toString();
-                                        final List? value =
-                                            searchedData[key] as List?;
-
+                                        final String key = position[e].toString();
+                                        final List? value = searchedData[key] as List?;
                                         if (value == null) {
                                           return const SizedBox();
                                         }
                                         return Column(
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 25,
-                                                top: 10,
-                                              ),
+                                              padding: const EdgeInsets.only(left: 25, top: 10),
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
@@ -259,93 +246,22 @@ class _SearchPageState extends State<SearchPage> {
                                                   Text(
                                                     key,
                                                     style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary,
+                                                      color: Theme.of(context).colorScheme.secondary,
                                                       fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w800,
+                                                      fontWeight: FontWeight.w800,
                                                     ),
                                                   ),
                                                   if (key != 'Top Result')
                                                     Padding(
                                                       padding: const EdgeInsets
-                                                          .fromLTRB(
-                                                        25,
-                                                        0,
-                                                        25,
-                                                        0,
-                                                      ),
+                                                          .fromLTRB(25, 0, 25, 0,),
                                                       child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
+                                                        mainAxisAlignment: MainAxisAlignment.end,
                                                         children: [
                                                           GestureDetector(
-                                                            onTap: () {
-                                                              if (key == 'Albums' ||
-                                                                  key ==
-                                                                      'Playlists' ||
-                                                                  key ==
-                                                                      'Artists') {
-
-                                                                // Navigator.push(
-                                                                //   context,
-                                                                //   PageRouteBuilder(
-                                                                //     opaque:
-                                                                //         false,
-                                                                //     pageBuilder: (
-                                                                //       _,
-                                                                //       __,
-                                                                //       ___,
-                                                                //     ) =>
-                                                                //         AlbumSearchPage(
-                                                                //       query: query ==
-                                                                //               ''
-                                                                //           ? widget
-                                                                //               .query
-                                                                //           : query,
-                                                                //       type: key,
-                                                                //     ),
-                                                                //   ),
-                                                                // );
-                                                              }
-                                                              if (key ==
-                                                                  'Songs') {
-                                                                Navigator.push(
-                                                                  context,
-                                                                  PageRouteBuilder(
-                                                                    opaque:
-                                                                        false,
-                                                                    pageBuilder: (
-                                                                      _,
-                                                                      __,
-                                                                      ___,
-                                                                    ) =>
-                                                                        SongsListPage(
-                                                                      listItem: {
-                                                                        'id': query ==
-                                                                                ''
-                                                                            ? widget.query
-                                                                            : query,
-                                                                        'title':
-                                                                            key,
-                                                                        'type':
-                                                                            'songs',
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              }
-                                                            },
                                                             child: Row(
                                                               children: [
-                                                                Text(
-                                                                  AppLocalizations
-                                                                          .of(
-                                                                    context,
-                                                                  )!
-                                                                      .viewAll,
+                                                                Text(AppLocalizations.of(context,)!.viewAll,
                                                                   style:
                                                                       TextStyle(
                                                                     color: Theme
@@ -373,6 +289,28 @@ class _SearchPageState extends State<SearchPage> {
                                                                 ),
                                                               ],
                                                             ),
+                                                            onTap: () {
+                                                              if (key == 'Songs') {
+                                                                Navigator.push(
+                                                                  context,
+                                                                  PageRouteBuilder(
+                                                                    opaque: false,
+                                                                    pageBuilder: (_, __, ___,) => SongsListPage(
+                                                                      listItem: {
+                                                                        'id': query ==
+                                                                            ''
+                                                                            ? widget.query
+                                                                            : query,
+                                                                        'title':
+                                                                        key,
+                                                                        'type':
+                                                                        'songs',
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }
+                                                            },
                                                           ),
                                                         ],
                                                       ),
@@ -532,7 +470,19 @@ class _SearchPageState extends State<SearchPage> {
                                                           '${value[index]["title"]}',
                                                     );
                                                   },
-    // TODO
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      PageRouteBuilder(pageBuilder: (_, __,___,) => PlayScreen(
+                                                                            songsList: [value[index]],
+                                                                            index: 0,
+                                                                            offline: false,
+                                                                            fromMiniplayer: false,
+                                                                            fromDownloads: false,
+                                                                            recommend: true,
+                                                                          )));
+                                                  },
+                                                  // TODO
                                                   // onTap: () {
                                                   //   Navigator.push(
                                                   //     context,
@@ -594,8 +544,6 @@ class _SearchPageState extends State<SearchPage> {
                         query = submittedQuery;
                         status = false;
                         fromHome = false;
-                        // var res = await KwMusicAPI().searchBykeyWord(submittedQuery);
-                        // print('搜索结果: $res');
                         searchedData = {};
                       },
                     );
@@ -603,7 +551,8 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
             ),
-            const MiniPlayer(),
+            // TODO
+            // const MiniPlayer(),
           ],
         ),
       ),
