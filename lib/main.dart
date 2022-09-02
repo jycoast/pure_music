@@ -10,13 +10,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pure_music/Screens/Player/audioplayer.dart';
 import 'package:pure_music/services/audio_service.dart';
 import 'package:pure_music/theme/app_theme.dart';
 import 'package:pure_music/utils/config.dart';
 import 'package:pure_music/utils/handle_native.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
-import 'CustomWidgets/player.dart';
 import 'Screens/Home/home.dart';
 import 'Screens/Library/nowplaying.dart';
 import 'Screens/Library/recent.dart';

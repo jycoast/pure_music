@@ -105,7 +105,7 @@ class _SongsListPageState extends State<SongsListPage> {
                       title: unescape.convert(
                         widget.listItem['title']?.toString() ?? 'Songs',
                       ),
-                      placeholderImage: 'assets/album.png',
+                      placeholderImage: 'assets/images/album.png',
                       imageUrl: widget.listItem['image']
                           ?.toString()
                           .replaceAll('http:', 'https:')

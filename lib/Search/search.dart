@@ -78,6 +78,7 @@ class _SearchPageState extends State<SearchPage> {
     position = value[1];
     sortedKeys = position.keys.toList()..sort();
     albumFetched = true;
+    // print('searchedData:${searchedData['Songs'][0]}');
     setState(
       () {},
     );
@@ -262,30 +263,14 @@ class _SearchPageState extends State<SearchPage> {
                                                             child: Row(
                                                               children: [
                                                                 Text(AppLocalizations.of(context,)!.viewAll,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Theme
-                                                                            .of(
-                                                                      context,
-                                                                    )
-                                                                        .textTheme
-                                                                        .caption!
-                                                                        .color,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w800,
+                                                                  style: TextStyle(
+                                                                    color: Theme.of(context,).textTheme.caption!.color,
+                                                                    fontWeight: FontWeight.w800,
                                                                   ),
                                                                 ),
                                                                 Icon(
-                                                                  Icons
-                                                                      .chevron_right_rounded,
-                                                                  color: Theme
-                                                                          .of(
-                                                                    context,
-                                                                  )
-                                                                      .textTheme
-                                                                      .caption!
-                                                                      .color,
+                                                                  Icons.chevron_right_rounded,
+                                                                  color: Theme.of(context,).textTheme.caption!.color,
                                                                 ),
                                                               ],
                                                             ),
@@ -297,14 +282,9 @@ class _SearchPageState extends State<SearchPage> {
                                                                     opaque: false,
                                                                     pageBuilder: (_, __, ___,) => SongsListPage(
                                                                       listItem: {
-                                                                        'id': query ==
-                                                                            ''
-                                                                            ? widget.query
-                                                                            : query,
-                                                                        'title':
-                                                                        key,
-                                                                        'type':
-                                                                        'songs',
+                                                                        'id': query =='' ? widget.query : query,
+                                                                        'title': key,
+                                                                        'type': 'songs',
                                                                       },
                                                                     ),
                                                                   ),
@@ -400,12 +380,11 @@ class _SearchPageState extends State<SearchPage> {
                                                                           'artist')
                                                               ? 'assets/artist.png'
                                                               : key == 'Songs'
-                                                                  ? 'assets/cover.jpg'
-                                                                  : 'assets/album.png',
+                                                                  ? 'assets/images/cover.jpg'
+                                                                  : 'assets/images/album.png',
                                                         ),
                                                       ),
-                                                      imageUrl:
-                                                          '${value[index]["image"].replaceAll('http:', 'https:')}',
+                                                      imageUrl: '${value[index]["image"]}',
                                                       placeholder:
                                                           (context, url) =>
                                                               Image(
@@ -418,8 +397,8 @@ class _SearchPageState extends State<SearchPage> {
                                                                           'artist')
                                                               ? 'assets/artist.png'
                                                               : key == 'Songs'
-                                                                  ? 'assets/cover.jpg'
-                                                                  : 'assets/album.png',
+                                                                  ? 'assets/images/cover.jpg'
+                                                                  : 'assets/images/album.png',
                                                         ),
                                                       ),
                                                     ),

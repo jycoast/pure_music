@@ -217,9 +217,7 @@ class AddToPlaylist {
                                 child: const SizedBox.square(
                                   dimension: 50,
                                   child: Image(
-                                    image: AssetImage(
-                                      'assets/album.png',
-                                    ),
+                                    image: AssetImage('assets/images/album.png'),
                                   ),
                                 ),
                               )

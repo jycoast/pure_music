@@ -17,7 +17,8 @@ class KwMusicAPI {
   Map<String, String> endpoints = {
     'searchUrl': '/www/search/searchMusicBykeyWord',
     'playUrl': '/v1/www/music/playUrl',
-    'homeData': '/www/artist/artistInfo' //http://www.kuwo.cn/api/www/artist/artistInfo?category=11&pn=1&rn=6&httpsStatus=1&reqId=1659e180-278b-11ed-b257-e7c7f69ecd4c
+    'homeData': '/www/artist/artistInfo',
+    'musicList': '/www/bang/bang/musicList'
   };
 
   Future<Response> getResponse(String params) async {
@@ -35,7 +36,7 @@ class KwMusicAPI {
     });
   }
 
-  Future<String?> getPlayUrl(String mid) async {
+  Future<String> getPlayUrl(String mid) async {
     var params =
         '${endpoints['playUrl']}?mid=$mid&type=$type&httpsStatus=$httpsStatus';
     final res = await getResponse(params);
@@ -43,7 +44,7 @@ class KwMusicAPI {
       final Map playUrlMap = json.decode(res.body) as Map;
       return playUrlMap['data']['url'];
     }
-    return null;
+    return 'https://le-sycdn.kuwo.cn/c7a4e80092e3c9cbe463a9fc8fda8a88/63117ab7/resource/n3/77/97/851025454.mp3';
   }
 
   Future<List> getReco(String pid) async {
@@ -94,28 +95,50 @@ class KwMusicAPI {
     return result;
   }
 
+
+  Future<List> getMusicList(int bangId,
+      {int pn = 1, int rn = 30}) async {
+    final params =
+        "${endpoints['musicList']}?bangId=$bangId&pn=$pn&rn=$rn&httpsStatus=$httpsStatus&reqId=$reqId";
+    try {
+      final res = await getResponse(params);
+      if (res.statusCode == 200) {
+        final Map playUrlMap = json.decode(res.body) as Map;
+        List responseList = playUrlMap['data']['musicList'];
+        for (var value in responseList) {
+          String url = await getPlayUrl(value['rid'].toString());
+          value['url'] = url;
+        }
+        // print(responseList);
+        return formatSongsResponse(responseList, 'song');
+      }
+      return List.empty();
+    } catch (e) {
+      log('Error in getMusicList: $e');
+      return List.empty();
+    }
+  }
+
   Future<Map> fetchSongSearchResults({
     required String searchQuery,
     int count = 20,
     int page = 1,
   }) async {
-    final String params =
-        "p=$page&q=$searchQuery&n=$count&${endpoints['getResults']}";
     try {
+      final params =
+          "${endpoints['searchUrl']}?key=$searchQuery&pn=$page&rn=$count&httpsStatus=$httpsStatus&reqId=$reqId";
       final res = await getResponse(params);
-      if (res.statusCode == 200) {
-        final Map getMain = json.decode(res.body) as Map;
-        final List responseList = getMain['results'] as List;
-        return {
-          'songs': await formatSongsResponse(responseList, 'song'),
-          'error': '',
-        };
-      } else {
-        return {
-          'songs': List.empty(),
-          'error': res.body,
-        };
+      Map<dynamic, dynamic> resMap = json.decode(res.body);
+      List responseList = resMap['data']['list'];
+      for (var value in responseList) {
+         String url = await getPlayUrl(value['rid'].toString());
+         print(url);
+         value['url'] = url;
       }
+      return {
+        'songs': await formatSongsResponse(responseList, 'song'),
+        'error': '',
+      };
     } catch (e) {
       log('Error in fetchSongSearchResults: $e');
       return {
@@ -132,13 +155,14 @@ class KwMusicAPI {
     List searchedPlaylistList = [];
     List searchedArtistList = [];
     List searchedTopQueryList = [];
+    position[0] = 'Songs';
     return [result, position];
   }
 
   static Future<List> formatSongsResponse(
-      List responseList,
-      String type,
-      ) async {
+    List responseList,
+    String type,
+  ) async {
     final List searchedList = [];
     for (int i = 0; i < responseList.length; i++) {
       Map? response;
@@ -162,10 +186,6 @@ class KwMusicAPI {
   }
 
   static Future<Map> formatSingleSongResponse(Map response) async {
-    // Map cachedSong = Hive.box('cache').get(response['id']);
-    // if (cachedSong != null) {
-    //   return cachedSong;
-    // }
     try {
       final List artistNames = [];
       if (response['more_info']?['artistMap']?['primary_artists'] == null ||
@@ -202,32 +222,26 @@ class KwMusicAPI {
       }
 
       return {
-        'id': response['id'],
+        'id': response['musicrid'],
         'type': response['type'],
-        'album': response['more_info']['album'].toString().unescape(),
+        'album': "",
         'year': response['year'],
-        'duration': response['more_info']['duration'],
+        'duration': response['duration'],
         'language': response['language'].toString().capitalize(),
         'genre': response['language'].toString().capitalize(),
-        '320kbps': response['more_info']['320kbps'],
-        'has_lyrics': response['more_info']['has_lyrics'],
-        'lyrics_snippet':
-        response['more_info']['lyrics_snippet'].toString().unescape(),
-        'release_date': response['more_info']['release_date'],
-        'album_id': response['more_info']['album_id'],
-        'subtitle': response['subtitle'].toString().unescape(),
-        'title': response['title'].toString().unescape(),
-        'artist': artistNames.join(', ').unescape(),
-        'album_artist': response['more_info'] == null
-            ? response['music']
-            : response['more_info']['music'],
-        'image': response['image']
-            .toString()
-            .replaceAll('150x150', '500x500')
-            .replaceAll('50x50', '500x500')
-            .replaceAll('http:', 'https:'),
-        'perma_url': response['perma_url'],
-        'url': response['more_info']['encrypted_media_url'].toString(),
+        '320kbps': "",
+        'has_lyrics': false,
+        'lyrics_snippet': "",
+        'release_date': response['releaseDate'],
+        'album_id': response['albumid'],
+        'subtitle': response['artist'] + '-' + response['album'],
+        'title': response['name'],
+        'artist': response['artist'],
+        'album_artist': response['album'],
+        'image': response['pic'],
+        'perma_url': response['albumpic'],
+        'url': response['url'],
+        'name': response['name']
       };
       // Hive.box('cache').put(response['id'].toString(), info);
     } catch (e) {

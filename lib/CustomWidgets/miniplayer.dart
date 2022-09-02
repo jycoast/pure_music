@@ -5,9 +5,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:pure_music/CustomWidgets/player.dart';
-import '../Screens/Player/audioplayer.dart';
-import 'gradient_containers.dart';
+import 'package:pure_music/CustomWidgets/gradient_containers.dart';
+import 'package:pure_music/Screens/Player/audioplayer.dart';
 
 class MiniPlayer extends StatefulWidget {
   const MiniPlayer({super.key});

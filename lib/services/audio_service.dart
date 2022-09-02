@@ -7,9 +7,9 @@ import 'package:audio_session/audio_session.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:pure_music/Screens/Player/audioplayer.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../CustomWidgets/player.dart';
 import '../utils/mediaitem_converter.dart';
 
 class AudioPlayerHandlerImpl extends BaseAudioHandler

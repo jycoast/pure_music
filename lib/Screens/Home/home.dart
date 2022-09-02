@@ -835,46 +835,40 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        bottomNavigationBar: rotated
-            ? null
-            : SafeArea(
-          child: ValueListenableBuilder(
-            valueListenable: _selectedIndex,
-            builder:
-                (BuildContext context, int indexValue, Widget? child) {
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 100),
-                height: 60,
-                child: SalomonBottomBar(
-                  currentIndex: indexValue,
-                  onTap: (index) {
-                    _onItemTapped(index);
-                  },
-                  items: [
-                    SalomonBottomBarItem(
-                      icon: const Icon(Icons.home_rounded),
-                      title: Text(AppLocalizations.of(context)!.home),
-                      selectedColor:
-                      Theme.of(context).colorScheme.secondary,
-                    ),
-                    // SalomonBottomBarItem(
-                    //   icon: const Icon(MdiIcons.playCircleOutline),
-                    //   title: Text(AppLocalizations.of(context)!.play),
-                    //   selectedColor:
-                    //   Theme.of(context).colorScheme.secondary,
-                    // ),
-                    SalomonBottomBarItem(
-                      icon: const Icon(Icons.my_library_music_rounded),
-                      title: Text(AppLocalizations.of(context)!.library),
-                      selectedColor:
-                      Theme.of(context).colorScheme.secondary,
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
+        // bottomNavigationBar: rotated
+        //     ? null
+        //     : SafeArea(
+        //   child: ValueListenableBuilder(
+        //     valueListenable: _selectedIndex,
+        //     builder:
+        //         (BuildContext context, int indexValue, Widget? child) {
+        //       return AnimatedContainer(
+        //         duration: const Duration(milliseconds: 100),
+        //         height: 60,
+        //         child: SalomonBottomBar(
+        //           currentIndex: indexValue,
+        //           onTap: (index) {
+        //             _onItemTapped(index);
+        //           },
+        //           items: [
+        //             SalomonBottomBarItem(
+        //               icon: const Icon(Icons.home_rounded),
+        //               title: Text(AppLocalizations.of(context)!.home),
+        //               selectedColor:
+        //               Theme.of(context).colorScheme.secondary,
+        //             ),
+        //             SalomonBottomBarItem(
+        //               icon: const Icon(Icons.my_library_music_rounded),
+        //               title: Text(AppLocalizations.of(context)!.library),
+        //               selectedColor:
+        //               Theme.of(context).colorScheme.secondary,
+        //             ),
+        //           ],
+        //         ),
+        //       );
+        //     },
+        //   ),
+        // ),
       ),
     );
   }

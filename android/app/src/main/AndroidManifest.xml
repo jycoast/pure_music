@@ -3,7 +3,7 @@
     package="com.pure.pure_music">
    <application
         android:usesCleartextTraffic="true"
-        android:label="pureMusic"
+        android:label="纯享音乐"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

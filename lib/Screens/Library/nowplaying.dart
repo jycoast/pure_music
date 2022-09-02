@@ -8,7 +8,6 @@ import '../../CustomWidgets/bouncy_sliver_scroll_view.dart';
 import '../../CustomWidgets/empty_screen.dart';
 import '../../CustomWidgets/gradient_containers.dart';
 import '../../CustomWidgets/miniplayer.dart';
-import '../../CustomWidgets/player.dart';
 import '../Player/audioplayer.dart';
 
 class NowPlaying extends StatefulWidget {
