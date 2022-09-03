@@ -6,7 +6,21 @@ import 'package:pure_music/utils/extensions.dart';
 import 'dart:convert';
 import '../model/music_model.dart';
 
-class KwMusicAPI {
+class API {
+  fetchSearchResults(String searchQuery) {
+    return KMusicAPI().fetchSearchResults(searchQuery);
+  }
+
+  fetchSongSearchResults({required String searchQuery, required int count}) {
+    return KMusicAPI().fetchSongSearchResults(searchQuery: searchQuery, count: count);
+  }
+
+  getMusicList(int i) {
+    return KMusicAPI().getMusicList(i);
+  }
+}
+
+class KMusicAPI {
   Map<String, String> headers = {};
   String baseUrl = 'http://www.kuwo.cn/api';
   String apiStr = '/api.php?_format=json&_marker=0&api_version=4&ctx=web6dot0';
@@ -25,10 +39,10 @@ class KwMusicAPI {
     Uri url = Uri.parse(baseUrl + params);
     headers = {
       'User-Agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
       'Referer': 'http://www.kuwo.cn',
       'Cookie':
-          'gid=86d551b1-ff26-41d7-86af-8a1c94d1004c; JSESSIONID=15x90blsw700r1q4hawf27km3x; Hm_lvt_cdb524f42f0ce19b169a8071123a4797=1661181745; _ga=GA1.2.23391679.1661181759; _gid=GA1.2.310724863.1661596442; Hm_lpvt_cdb524f42f0ce19b169a8071123a4797=1661597954; kw_token=03DUIQDCKYZY',
+      'gid=86d551b1-ff26-41d7-86af-8a1c94d1004c; JSESSIONID=15x90blsw700r1q4hawf27km3x; Hm_lvt_cdb524f42f0ce19b169a8071123a4797=1661181745; _ga=GA1.2.23391679.1661181759; _gid=GA1.2.310724863.1661596442; Hm_lpvt_cdb524f42f0ce19b169a8071123a4797=1661597954; kw_token=03DUIQDCKYZY',
       'csrf': '03DUIQDCKYZY'
     };
     return get(url, headers: headers).onError((error, stackTrace) {
@@ -109,7 +123,6 @@ class KwMusicAPI {
           String url = await getPlayUrl(value['rid'].toString());
           value['url'] = url;
         }
-        // print(responseList);
         return formatSongsResponse(responseList, 'song');
       }
       return List.empty();
@@ -131,9 +144,9 @@ class KwMusicAPI {
       Map<dynamic, dynamic> resMap = json.decode(res.body);
       List responseList = resMap['data']['list'];
       for (var value in responseList) {
-         String url = await getPlayUrl(value['rid'].toString());
-         print(url);
-         value['url'] = url;
+        String url = await getPlayUrl(value['rid'].toString());
+        print(url);
+        value['url'] = url;
       }
       return {
         'songs': await formatSongsResponse(responseList, 'song'),
@@ -160,9 +173,9 @@ class KwMusicAPI {
   }
 
   static Future<List> formatSongsResponse(
-    List responseList,
-    String type,
-  ) async {
+      List responseList,
+      String type,
+      ) async {
     final List searchedList = [];
     for (int i = 0; i < responseList.length; i++) {
       Map? response;

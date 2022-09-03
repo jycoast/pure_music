@@ -47,6 +47,7 @@ dependencies:
   flip_card: ^0.6.0
   sliding_up_panel: ^2.0.0+1
   html_unescape: ^2.0.0
+  marquee: ^2.2.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

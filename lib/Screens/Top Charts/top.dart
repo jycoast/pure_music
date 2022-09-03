@@ -120,23 +120,7 @@ class _TopChartsState extends State<TopCharts>
 
 Future<List> scrapData(String type) async {
   print('scrapData invoke');
-  return await KwMusicAPI().getMusicList(16);
-  // const String authority = 'www.volt.fm';
-  // const String topPath = '/charts/spotify-top';
-  // const String viralPath = '/charts/spotify-viral';
-  // // const String weeklyPath = '/weekly';
-  //
-  // final String unencodedPath = type == 'top' ? topPath : viralPath;
-  // // if (isWeekly) unencodedPath += weeklyPath;
-  //
-  // final Response res = await get(Uri.https(authority, unencodedPath));
-  //
-  // if (res.statusCode != 200) return List.empty();
-  // final result = RegExp(r'<script.*>({\"context\".*})<\/script>', dotAll: true)
-  //     .firstMatch(res.body)![1]!;
-  // final Map data = json.decode(result) as Map;
-  // print('排行榜数据:${data['chart_ranking']['tracks']}');
-  // return data['chart_ranking']['tracks'] as List;
+  return await API().getMusicList(16);
 }
 
 class TopPage extends StatefulWidget {

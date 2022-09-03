@@ -64,7 +64,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> fetchResults() async {
     print('fetchResults method invoke');
     // 搜索音乐
-    final Map result = await KwMusicAPI().fetchSongSearchResults(
+    final Map result = await API().fetchSongSearchResults(
       searchQuery: query == '' ? widget.query : query,
       count: 5,
     );
@@ -73,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
     fetched = true;
     // 搜索专辑等其他信息
     final List<Map> value =
-        await KwMusicAPI().fetchSearchResults(query == '' ? widget.query : query);
+        await API().fetchSearchResults(query == '' ? widget.query : query);
     searchedData.addEntries(value[0].entries);
     position = value[1];
     sortedKeys = position.keys.toList()..sort();

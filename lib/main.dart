@@ -187,15 +187,9 @@ class _MyAppState extends State<MyApp> {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        systemNavigationBarColor: AppTheme.themeMode == ThemeMode.dark
-            ? Colors.black38
-            : Colors.white,
-        statusBarIconBrightness: AppTheme.themeMode == ThemeMode.dark
-            ? Brightness.light
-            : Brightness.dark,
-        systemNavigationBarIconBrightness: AppTheme.themeMode == ThemeMode.dark
-            ? Brightness.light
-            : Brightness.dark,
+        systemNavigationBarColor: AppTheme.themeMode == ThemeMode.dark ? Colors.black38  : Colors.white,
+        statusBarIconBrightness: AppTheme.themeMode == ThemeMode.dark  ? Brightness.light : Brightness.dark,
+        systemNavigationBarIconBrightness: AppTheme.themeMode == ThemeMode.dark ? Brightness.light : Brightness.dark,
       ),
     );
     SystemChrome.setPreferredOrientations([

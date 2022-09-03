@@ -35,6 +35,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pure_music/CustomWidgets/add_playlist.dart';
+import 'package:pure_music/CustomWidgets/animated_text.dart';
 import 'package:pure_music/CustomWidgets/copy_clipboard.dart';
 import 'package:pure_music/CustomWidgets/download_button.dart';
 import 'package:pure_music/CustomWidgets/empty_screen.dart';
@@ -1002,11 +1003,7 @@ class ControlButtons extends StatelessWidget {
         switch (e) {
           case 'Like':
             return !online
-                ? const SizedBox()
-                : LikeButton(
-              mediaItem: mediaItem,
-              size: 22.0,
-            );
+                ? const SizedBox() : LikeButton(mediaItem: mediaItem, size: 22.0,);
           case 'Previous':
             return StreamBuilder<QueueState>(
               stream: audioHandler.queueState,
@@ -1885,80 +1882,50 @@ class NameNControls extends StatelessWidget {
                           ),
 
                           /// Title container TODO
-                          // AnimatedText(
-                          //   text: mediaItem.title
-                          //       .split(' (')[0]
-                          //       .split('|')[0]
-                          //       .trim(),
-                          //   pauseAfterRound: const Duration(seconds: 3),
-                          //   showFadingOnlyWhenScrolling: false,
-                          //   fadingEdgeEndFraction: 0.1,
-                          //   fadingEdgeStartFraction: 0.1,
-                          //   startAfter: const Duration(seconds: 2),
-                          //   style: TextStyle(
-                          //     fontSize: titleBoxHeight / 2.75,
-                          //     fontWeight: FontWeight.bold,
-                          //     // color: Theme.of(context).accentColor,
-                          //   ),
-                          // ),
+                          AnimatedText(
+                            text: mediaItem.title
+                                .split(' (')[0]
+                                .split('|')[0]
+                                .trim(),
+                            pauseAfterRound: const Duration(seconds: 3),
+                            showFadingOnlyWhenScrolling: false,
+                            fadingEdgeEndFraction: 0.1,
+                            fadingEdgeStartFraction: 0.1,
+                            startAfter: const Duration(seconds: 2),
+                            style: TextStyle(
+                              fontSize: titleBoxHeight / 2.75,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
 
                           SizedBox(
                             height: titleBoxHeight / 40,
                           ),
-
                           /// Subtitle container TODO
-                          // AnimatedText(
-                          //   text:
-                          //   '${mediaItem.artist ?? "Unknown"} • ${mediaItem.album ?? "Unknown"}',
-                          //   pauseAfterRound: const Duration(seconds: 3),
-                          //   showFadingOnlyWhenScrolling: false,
-                          //   fadingEdgeEndFraction: 0.1,
-                          //   fadingEdgeStartFraction: 0.1,
-                          //   startAfter: const Duration(seconds: 2),
-                          //   style: TextStyle(
-                          //     fontSize: titleBoxHeight / 6.75,
-                          //     fontWeight: FontWeight.w400,
-                          //   ),
-                          // ),
+                          AnimatedText(
+                            text:
+                            '${mediaItem.artist ?? "Unknown"} • ${mediaItem.album ?? "Unknown"}',
+                            pauseAfterRound: const Duration(seconds: 3),
+                            showFadingOnlyWhenScrolling: false,
+                            fadingEdgeEndFraction: 0.1,
+                            fadingEdgeStartFraction: 0.1,
+                            startAfter: const Duration(seconds: 2),
+                            style: TextStyle(
+                              fontSize: titleBoxHeight / 6.75,
+                              fontWeight: FontWeight.w400,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
               ),
-
-              /// Seekbar starts from here
-              SizedBox(
-                height: seekBoxHeight,
-                width: width * 0.95,
-                child: StreamBuilder<PositionData>(
-                  stream: _positionDataStream,
-                  builder: (context, snapshot) {
-                    final positionData = snapshot.data ??
-                        PositionData(
-                          Duration.zero,
-                          Duration.zero,
-                          mediaItem.duration ?? Duration.zero,
-                        );
-                    return SeekBar(
-                      width: width,
-                      height: height,
-                      duration: positionData.duration,
-                      position: positionData.position,
-                      bufferedPosition: positionData.bufferedPosition,
-                      offline: offline,
-                      onChangeEnd: (newPosition) {
-                        audioHandler.seek(newPosition);
-                      },
-                      audioHandler: audioHandler,
-                    );
-                  },
-                ),
-              ),
-
               /// Final row starts from here
               SizedBox(
-                height: controlBoxHeight,
+                height: controlBoxHeight * 0.1,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5.0),
                   child: Center(
@@ -1967,7 +1934,7 @@ class NameNControls extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
+                          Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               const SizedBox(height: 6.0),
@@ -2006,20 +1973,11 @@ class NameNControls extends StatelessWidget {
                                 },
                               ),
                               if (!offline)
-                                LikeButton(mediaItem: mediaItem, size: 25.0)
-                            ],
-                          ),
-                          ControlButtons(
-                            audioHandler,
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
+                                LikeButton(mediaItem: mediaItem, size: 25.0),
                               const SizedBox(height: 6.0),
                               StreamBuilder<AudioServiceRepeatMode>(
                                 stream: audioHandler.playbackState
-                                    .map((state) => state.repeatMode)
-                                    .distinct(),
+                                    .map((state) => state.repeatMode).distinct(),
                                 builder: (context, snapshot) {
                                   final repeatMode = snapshot.data ??
                                       AudioServiceRepeatMode.none;
@@ -2067,7 +2025,21 @@ class NameNControls extends StatelessWidget {
                                   data: MediaItemConverter.mediaItemToMap(
                                     mediaItem,
                                   ),
-                                )
+                                ),
+                              PopupMenuButton<String>(
+                                itemBuilder: (context) {
+                                  return <PopupMenuEntry<String>>[
+                                    const PopupMenuItem<String>(
+                                      value: '语文',
+                                      child: Text('语文'),
+                                    ),
+                                    const PopupMenuItem<String>(
+                                      value: '数学',
+                                      child: Text('数学'),
+                                    )
+                                  ];
+                                },
+                              )
                             ],
                           ),
                         ],
@@ -2076,8 +2048,39 @@ class NameNControls extends StatelessWidget {
                   ),
                 ),
               ),
+              // 进度条
               SizedBox(
-                height: nowplayingBoxHeight,
+                height: seekBoxHeight,
+                width: width * 0.95,
+                child: StreamBuilder<PositionData>(
+                  stream: _positionDataStream,
+                  builder: (context, snapshot) {
+                    final positionData = snapshot.data ??
+                        PositionData(
+                          Duration.zero,
+                          Duration.zero,
+                          mediaItem.duration ?? Duration.zero,
+                        );
+                    return SeekBar(
+                      width: width,
+                      height: height,
+                      duration: positionData.duration,
+                      position: positionData.position,
+                      bufferedPosition: positionData.bufferedPosition,
+                      offline: offline,
+                      onChangeEnd: (newPosition) {
+                        audioHandler.seek(newPosition);
+                      },
+                      audioHandler: audioHandler,
+                    );
+                  },
+                ),
+              ),
+
+              SizedBox(
+                child: ControlButtons(
+                  audioHandler,
+                ),
               ),
             ],
           ),
