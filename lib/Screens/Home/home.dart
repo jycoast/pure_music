@@ -1,30 +1,22 @@
 import 'dart:io';
-import 'dart:math';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:pure_music/CustomWidgets/empty_screen.dart';
 import 'package:pure_music/Screens/Home/person.dart';
 import 'package:pure_music/utils/extensions.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../CustomWidgets/custom_physics.dart';
 import '../../CustomWidgets/gradient_containers.dart';
 import '../../CustomWidgets/miniplayer.dart';
-import '../../CustomWidgets/search_page.dart';
 import '../../CustomWidgets/snackbar.dart';
 import '../../CustomWidgets/textinput_dialog.dart';
 import '../../Search/search.dart';
-import '../../services/ext_storage_provider.dart';
-import '../../utils/backup_restore.dart';
 import '../../utils/supabase.dart';
-import '../Top Charts/top.dart';
+import 'home_body.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -283,24 +275,24 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                // SliverFillRemaining(
-                //   hasScrollBody: false,
-                //   child: Column(
-                //     children: <Widget>[
-                //       const Spacer(),
-                //       Padding(
-                //         padding: const EdgeInsets.fromLTRB(5, 30, 5, 20),
-                //         child: Center(
-                //           child: Text(
-                //             AppLocalizations.of(context)!.madeBy,
-                //             textAlign: TextAlign.center,
-                //             style: const TextStyle(fontSize: 12),
-                //           ),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Column(
+                    children: <Widget>[
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(5, 30, 5, 20),
+                        child: Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.madeBy,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -555,10 +547,7 @@ class _HomePageState extends State<HomePage> {
                                             builder: (context, child) {
                                               return GestureDetector(
                                                 child: AnimatedContainer(
-                                                  width: (MediaQuery.of(context)
-                                                      .size
-                                                      .width
-                                                  ),
+                                                  width: (MediaQuery.of(context).size.width),
                                                   height: 52.0,
                                                   duration: const Duration(
                                                     milliseconds: 150,
@@ -635,8 +624,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ];
                                   },
-                                    // TODO
-                                    body: SizedBox()
+                                    body: HomeBody()
                                 ),
                                 // 导航菜单 TODO
                                 // if (!rotated || screenWidth > 1050)
@@ -669,8 +657,6 @@ class _HomePageState extends State<HomePage> {
                             //   pageController: _pageController,
                             // ),
                             Person()
-                            // const YouTube(),
-                            // const LibraryPage(),
                           ],
                         ),
                       ),
