@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:pure_music/utils/extensions.dart';
@@ -11,12 +12,18 @@ class API {
     return KMusicAPI().fetchSearchResults(searchQuery);
   }
 
-  fetchSongSearchResults({required String searchQuery, required int count}) {
-    return KMusicAPI().fetchSongSearchResults(searchQuery: searchQuery, count: count);
+  fetchSongSearchResults(
+      {required String searchQuery, required int page, int count = 20}) {
+    return KMusicAPI().fetchSongSearchResults(
+        searchQuery: searchQuery, page: page, count: count);
   }
 
   getMusicList(int i) {
     return KMusicAPI().getMusicList(i);
+  }
+
+  getRcmPlayList(int page, int count) {
+    return KMusicAPI().getRcmPlayList(page, count);
   }
 }
 
@@ -32,17 +39,18 @@ class KMusicAPI {
     'searchUrl': '/www/search/searchMusicBykeyWord',
     'playUrl': '/v1/www/music/playUrl',
     'homeData': '/www/artist/artistInfo',
-    'musicList': '/www/bang/bang/musicList'
+    'musicList': '/www/bang/bang/musicList',
+    'rcmPlayList': '/www/classify/playlist/getRcmPlayList'
   };
 
   Future<Response> getResponse(String params) async {
     Uri url = Uri.parse(baseUrl + params);
     headers = {
       'User-Agent':
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
       'Referer': 'http://www.kuwo.cn',
       'Cookie':
-      'gid=86d551b1-ff26-41d7-86af-8a1c94d1004c; JSESSIONID=15x90blsw700r1q4hawf27km3x; Hm_lvt_cdb524f42f0ce19b169a8071123a4797=1661181745; _ga=GA1.2.23391679.1661181759; _gid=GA1.2.310724863.1661596442; Hm_lpvt_cdb524f42f0ce19b169a8071123a4797=1661597954; kw_token=03DUIQDCKYZY',
+          'gid=86d551b1-ff26-41d7-86af-8a1c94d1004c; JSESSIONID=15x90blsw700r1q4hawf27km3x; Hm_lvt_cdb524f42f0ce19b169a8071123a4797=1661181745; _ga=GA1.2.23391679.1661181759; _gid=GA1.2.310724863.1661596442; Hm_lpvt_cdb524f42f0ce19b169a8071123a4797=1661597954; kw_token=03DUIQDCKYZY',
       'csrf': '03DUIQDCKYZY'
     };
     return get(url, headers: headers).onError((error, stackTrace) {
@@ -109,9 +117,7 @@ class KMusicAPI {
     return result;
   }
 
-
-  Future<List> getMusicList(int bangId,
-      {int pn = 1, int rn = 30}) async {
+  Future<List> getMusicList(int bangId, {int pn = 1, int rn = 100}) async {
     final params =
         "${endpoints['musicList']}?bangId=$bangId&pn=$pn&rn=$rn&httpsStatus=$httpsStatus&reqId=$reqId";
     try {
@@ -140,7 +146,9 @@ class KMusicAPI {
     try {
       final params =
           "${endpoints['searchUrl']}?key=$searchQuery&pn=$page&rn=$count&httpsStatus=$httpsStatus&reqId=$reqId";
+      print('请求参数: $params');
       final res = await getResponse(params);
+      print(res.body.toString());
       Map<dynamic, dynamic> resMap = json.decode(res.body);
       List responseList = resMap['data']['list'];
       for (var value in responseList) {
@@ -161,6 +169,27 @@ class KMusicAPI {
     }
   }
 
+  Future<List> getRcmPlayList(int page, int count) async {
+    final params =
+        "${endpoints['rcmPlayList']}?order=new&pn=$page&rn=$count&httpsStatus=$httpsStatus&reqId=$reqId";
+    try {
+      if (kDebugMode) {
+        print('请求参数: $params');
+      }
+      final res = await getResponse(params);
+      if (kDebugMode) {
+        print(res.body.toString());
+      }
+      Map<dynamic, dynamic> resMap = json.decode(res.body);
+      return resMap['data']['data'];
+    } catch (e) {
+      log('Error in fetchSongSearchResults: $e');
+      return List.empty();
+    }
+
+    return List.empty();
+  }
+
   Future<List<Map>> fetchSearchResults(String searchQuery) async {
     final Map<String, List> result = {};
     final Map<int, String> position = {};
@@ -173,9 +202,9 @@ class KMusicAPI {
   }
 
   static Future<List> formatSongsResponse(
-      List responseList,
-      String type,
-      ) async {
+    List responseList,
+    String type,
+  ) async {
     final List searchedList = [];
     for (int i = 0; i < responseList.length; i++) {
       Map? response;

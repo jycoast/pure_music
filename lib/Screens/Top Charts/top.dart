@@ -26,9 +26,9 @@ bool emptyTop = false;
 bool emptyViral = false;
 
 class TopCharts extends StatefulWidget {
-  final PageController pageController;
+  // final PageController pageController;
 
-  const TopCharts({super.key, required this.pageController});
+  const TopCharts({super.key});
 
   @override
   _TopChartsState createState() => _TopChartsState();
@@ -47,29 +47,31 @@ class _TopChartsState extends State<TopCharts>
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          // bottom: TabBar(
-          //   indicatorSize: TabBarIndicatorSize.label,
-          //   tabs: [
-          //     Tab(
-          //       child: Text(
-          //         AppLocalizations.of(context)!.top,
-          //         style: TextStyle(
-          //           color: Theme.of(context).textTheme.bodyText1!.color,
-          //         ),
-          //       ),
-          //     ),
-          //     Tab(
-          //       child: Text(
-          //         AppLocalizations.of(context)!.viral,
-          //         style: TextStyle(
-          //           color: Theme.of(context).textTheme.bodyText1!.color,
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
+          bottom: TabBar(
+            indicatorSize: TabBarIndicatorSize.label,
+            tabs: [
+              Tab(
+                child: Text(
+                  // AppLocalizations.of(context)!.top,
+                  '新歌榜',
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyText1!.color,
+                  ),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  // AppLocalizations.of(context)!.viral,
+                  '热歌榜',
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyText1!.color,
+                  ),
+                ),
+              ),
+            ],
+          ),
           title: Text(
             AppLocalizations.of(context)!.spotifyCharts,
             style: TextStyle(
@@ -83,16 +85,17 @@ class _TopChartsState extends State<TopCharts>
           automaticallyImplyLeading: false,
         ),
         body: NotificationListener(
+          // TODO
           onNotification: (overscroll) {
-            if (overscroll is OverscrollNotification &&
-                overscroll.overscroll != 0 &&
-                overscroll.dragDetails != null) {
-              widget.pageController.animateToPage(
-                overscroll.overscroll < 0 ? 0 : 2,
-                curve: Curves.ease,
-                duration: const Duration(milliseconds: 150),
-              );
-            }
+            // if (overscroll is OverscrollNotification &&
+            //     overscroll.overscroll != 0 &&
+            //     overscroll.dragDetails != null) {
+            //   widget.pageController.animateToPage(
+            //     overscroll.overscroll < 0 ? 0 : 2,
+            //     curve: Curves.ease,
+            //     duration: const Duration(milliseconds: 150),
+            //   );
+            // }
             return true;
           },
           child: const TabBarView(
@@ -120,7 +123,11 @@ class _TopChartsState extends State<TopCharts>
 
 Future<List> scrapData(String type) async {
   print('scrapData invoke');
-  return await API().getMusicList(16);
+  if (type == 'top') {
+    return await API().getMusicList(16);
+  } else {
+    return await API().getMusicList(17);
+  }
 }
 
 class TopPage extends StatefulWidget {
@@ -224,14 +231,17 @@ class _TopPageState extends State<TopPage>
                       clipBehavior: Clip.antiAlias,
                       child: Stack(
                         children: [
-                          const Image(
-                            image: AssetImage('assets/images/cover.jpg'),
+                           Image(
+                            image: Image.network(
+                              '${showList[index]['image']}',
+                              fit: BoxFit.fitWidth,
+                            ).image,
                           ),
-                          if (showList[index]['image_url_small'] != '')
+                          if (showList[index]['image'] != '')
                             CachedNetworkImage(
                               fit: BoxFit.cover,
                               imageUrl:
-                                  showList[index]['image_url_small'].toString(),
+                                  showList[index]['image'].toString(),
                               errorWidget: (context, _, __) => const Image(
                                 fit: BoxFit.cover,
                                 image: AssetImage('assets/images/cover.jpg'),
@@ -248,21 +258,21 @@ class _TopPageState extends State<TopPage>
                       '${index + 1}. ${showList[index]["name"]}',
                       overflow: TextOverflow.ellipsis,
                     ),
-                    // subtitle: Text(
-                    //   (showList[index]['artists'] as List)
-                    //       .map((e) => e['name'])
-                    //       .toList()
-                    //       .join(', '),
-                    //   overflow: TextOverflow.ellipsis,
-                    // ),
-                    // TODO
+                    subtitle: Text(
+                      // (showList[index]['subtitle'] as List)
+                      //     .map((e) => e['name'])
+                      //     .toList()
+                      //     .join(', '),
+                      '${showList[index]['subtitle']}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     onTap: () {
                       Navigator.push(
                         context,
                         PageRouteBuilder(
                           opaque: false,
                           pageBuilder: (_, __, ___) => PlayScreen(
-                            songsList: topSongs,
+                            songsList:  isTop ? topSongs : viralSongs,
                             index: index,
                             offline: false,
                             fromDownloads: false,

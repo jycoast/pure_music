@@ -988,7 +988,7 @@ class ControlButtons extends StatelessWidget {
       this.audioHandler, {
         this.shuffle = false,
         this.miniplayer = false,
-        this.buttons = const ['Previous', 'Play/Pause', 'Next'],
+        this.buttons = const ['Like', 'Previous', 'Play/Pause', 'Next', 'PlayList'],
         this.dominantColor,
       });
 
@@ -1002,8 +1002,7 @@ class ControlButtons extends StatelessWidget {
       children: buttons.map((e) {
         switch (e) {
           case 'Like':
-            return !online
-                ? const SizedBox() : LikeButton(mediaItem: mediaItem, size: 22.0,);
+            return !online ? const SizedBox() : LikeButton(mediaItem: mediaItem, size: 22.0,);
           case 'Previous':
             return StreamBuilder<QueueState>(
               stream: audioHandler.queueState,
@@ -1120,13 +1119,18 @@ class ControlButtons extends StatelessWidget {
                 );
               },
             );
-          case 'Download':
+          case 'PlayList':
             return !online
                 ? const SizedBox()
-                : DownloadButton(
-              size: 20.0,
-              icon: 'download',
-              data: MediaItemConverter.mediaItemToMap(mediaItem),
+                : PopupMenuButton<String>(
+              itemBuilder: (context) {
+                return <PopupMenuEntry<String>>[
+                  const PopupMenuItem<String>(
+                    value: '语文',
+                    child: Text('列表'),
+                  ),
+                ];
+              },
             );
           default:
             break;
@@ -1923,7 +1927,7 @@ class NameNControls extends StatelessWidget {
                   ),
                 ),
               ),
-              /// Final row starts from here
+              // 功能区
               SizedBox(
                 height: controlBoxHeight * 0.1,
                 child: Padding(
@@ -2022,24 +2026,8 @@ class NameNControls extends StatelessWidget {
                               if (!offline)
                                 DownloadButton(
                                   size: 25.0,
-                                  data: MediaItemConverter.mediaItemToMap(
-                                    mediaItem,
-                                  ),
+                                  data: MediaItemConverter.mediaItemToMap(mediaItem),
                                 ),
-                              PopupMenuButton<String>(
-                                itemBuilder: (context) {
-                                  return <PopupMenuEntry<String>>[
-                                    const PopupMenuItem<String>(
-                                      value: '语文',
-                                      child: Text('语文'),
-                                    ),
-                                    const PopupMenuItem<String>(
-                                      value: '数学',
-                                      child: Text('数学'),
-                                    )
-                                  ];
-                                },
-                              )
                             ],
                           ),
                         ],

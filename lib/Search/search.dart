@@ -66,7 +66,8 @@ class _SearchPageState extends State<SearchPage> {
     // 搜索音乐
     final Map result = await API().fetchSongSearchResults(
       searchQuery: query == '' ? widget.query : query,
-      count: 5,
+      page: 1,
+      count: 20,
     );
     final List songResults = result['songs'] as List;
     if (songResults.isNotEmpty) searchedData['Songs'] = songResults;
@@ -245,7 +246,8 @@ class _SearchPageState extends State<SearchPage> {
                                                         .spaceBetween,
                                                 children: [
                                                   Text(
-                                                    key,
+                                                    // key, // TODO
+                                                    AppLocalizations.of(context)!.songs,
                                                     style: TextStyle(
                                                       color: Theme.of(context).colorScheme.secondary,
                                                       fontSize: 18,
@@ -516,7 +518,6 @@ class _SearchPageState extends State<SearchPage> {
                                   ),
                                 ),
                   onSubmitted: (String submittedQuery) {
-                    print('提交搜索: ' + submittedQuery);
                     setState(
                       () {
                         fetched = false;

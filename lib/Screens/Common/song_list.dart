@@ -10,6 +10,7 @@ import 'package:pure_music/CustomWidgets/like_button.dart';
 import 'package:pure_music/CustomWidgets/miniplayer.dart';
 import 'package:pure_music/CustomWidgets/snackbar.dart';
 import 'package:pure_music/Screens/Player/audioplayer.dart';
+import 'package:pure_music/apis/api.dart';
 import 'package:share_plus/share_plus.dart';
 
 class SongsListPage extends StatefulWidget {
@@ -25,6 +26,7 @@ class SongsListPage extends StatefulWidget {
 }
 
 class _SongsListPageState extends State<SongsListPage> {
+
   int page = 1;
   bool loading = false;
   List songList = [];
@@ -54,16 +56,76 @@ class _SongsListPageState extends State<SongsListPage> {
   }
 
   void _fetchSongs() {
+    print(widget.listItem);
     loading = true;
-    setState(() {
-      fetched = true;
-      loading = false;
-    });
-    ShowSnackBar().showSnackBar(
-      context,
-      'Error: Unsupported Type ${widget.listItem['type']}',
-      duration: const Duration(seconds: 3),
-    );
+    switch (widget.listItem['type'].toString()) {
+      case 'songs':
+        API().fetchSongSearchResults(
+          searchQuery: widget.listItem['id'].toString(),
+          page: page,
+        ).then((value) {
+          setState(() {
+            songList.addAll(value['songs'] as List);
+            fetched = true;
+            loading = false;
+          });
+          if (value['error'].toString() != '') {
+            ShowSnackBar().showSnackBar(
+              context,
+              'Error: ${value["error"]}',
+              duration: const Duration(seconds: 3),
+            );
+          }
+        });
+        break;
+      // case 'album':
+      //   SaavnAPI()
+      //       .fetchAlbumSongs(widget.listItem['id'].toString())
+      //       .then((value) {
+      //     setState(() {
+      //       songList = value['songs'] as List;
+      //       fetched = true;
+      //       loading = false;
+      //     });
+      //     if (value['error'].toString() != '') {
+      //       ShowSnackBar().showSnackBar(
+      //         context,
+      //         'Error: ${value["error"]}',
+      //         duration: const Duration(seconds: 3),
+      //       );
+      //     }
+      //   });
+      //   break;
+      // case 'playlist':
+      //   SaavnAPI()
+      //       .fetchPlaylistSongs(widget.listItem['id'].toString())
+      //       .then((value) {
+      //     setState(() {
+      //       songList = value['songs'] as List;
+      //       fetched = true;
+      //       loading = false;
+      //     });
+      //     if (value['error'].toString() != '') {
+      //       ShowSnackBar().showSnackBar(
+      //         context,
+      //         'Error: ${value["error"]}',
+      //         duration: const Duration(seconds: 3),
+      //       );
+      //     }
+      //   });
+      //   break;
+      default:
+        setState(() {
+          fetched = true;
+          loading = false;
+        });
+        ShowSnackBar().showSnackBar(
+          context,
+          'Error: Unsupported Type ${widget.listItem['type']}',
+          duration: const Duration(seconds: 3),
+        );
+        break;
+    }
   }
 
   @override
@@ -102,21 +164,11 @@ class _SongsListPageState extends State<SongsListPage> {
                         //       widget.listItem['title']?.toString() ?? 'Songs',
                         // ),
                       ],
-                      title: unescape.convert(
-                        widget.listItem['title']?.toString() ?? 'Songs',
-                      ),
+                      title: unescape.convert(widget.listItem['title']?.toString() ?? 'Songs',),
                       placeholderImage: 'assets/images/album.png',
-                      imageUrl: widget.listItem['image']
-                          ?.toString()
-                          .replaceAll('http:', 'https:')
-                          .replaceAll(
-                            '50x50',
-                            '500x500',
-                          )
-                          .replaceAll(
-                            '150x150',
-                            '500x500',
-                          ),
+                      imageUrl: widget.listItem['image']?.toString()
+                          .replaceAll('http:', 'https:').replaceAll('50x50','500x500', )
+                          .replaceAll('150x150','500x500',),
                       sliverList: SliverList(
                         delegate: SliverChildListDelegate([
                           Padding(
@@ -322,15 +374,14 @@ class _SongsListPageState extends State<SongsListPage> {
                                   errorWidget: (context, _, __) => const Image(
                                     fit: BoxFit.cover,
                                     image: AssetImage(
-                                      'assets/cover.jpg',
+                                      'assets/images/cover.jpg',
                                     ),
                                   ),
-                                  imageUrl:
-                                      '${entry["image"].replaceAll('http:', 'https:')}',
+                                  imageUrl: '${entry["image"]}',
                                   placeholder: (context, url) => const Image(
                                     fit: BoxFit.cover,
                                     image: AssetImage(
-                                      'assets/cover.jpg',
+                                      'assets/images/cover.jpg',
                                     ),
                                   ),
                                 ),
