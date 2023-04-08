@@ -119,7 +119,7 @@ class _FavoritePageState extends State<FavoritePage>
                       return GestureDetector(
                         onTap: () {
                           if (null != data.url) {
-                            SongModel songModel = Provider.of(context);
+                            SongModel songModel = Provider.of(context, listen: false);
                             songModel.setSongs(new List<Song>.from(
                                 favoriteModel.favoriteSong));
                             songModel.setCurrentIndex(index);

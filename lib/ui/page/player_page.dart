@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_music_app/anims/player_anim.dart';
 import 'package:flutter_music_app/model/download_model.dart';
@@ -43,10 +42,6 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   void dispose() {
     controllerPlayer.dispose();
     super.dispose();
-  }
-
-  String getSongUrl(Song s) {
-    return 'http://music.163.com/song/media/outer/url?id=${s.songid}.mp3';
   }
 
   @override

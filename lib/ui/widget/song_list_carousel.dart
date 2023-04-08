@@ -141,7 +141,7 @@ class _ForYouCarouselState extends State<SongListCarousel> {
                         : favoriteModel.isCollect(data)
                             ? Icon(
                                 Icons.favorite,
-                                color: Theme.of(context).accentColor,
+                                color: Theme.of(context).colorScheme.secondary,
                                 size: 20.0,
                               )
                             : Icon(

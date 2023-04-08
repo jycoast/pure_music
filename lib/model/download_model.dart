@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_music_app/config/apis/api.dart';
 import 'package:flutter_music_app/config/storage_manager.dart';
 import 'package:flutter_music_app/model/song_model.dart';
 import 'package:flutter_music_app/provider/view_state_list_model.dart';
@@ -51,12 +52,9 @@ class DownloadModel with ChangeNotifier {
     }
   }
 
-  String getSongUrl(Song s) {
-    return 'http://music.163.com/song/media/outer/url?id=${s.songid}.mp3';
-  }
-
   Future downloadFile(Song s) async {
-    final bytes = await readBytes(getSongUrl(s));
+    String url = await API.getSongUrl(s);
+    final bytes = await readBytes(url);
     final dir = await getApplicationDocumentsDirectory();
     setDirectoryPath(dir.path);
     final file = File('${dir.path}/${s.songid}.mp3');

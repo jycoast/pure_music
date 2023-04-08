@@ -131,7 +131,7 @@ class _MusicPageState extends State<MusicPage>
                         return GestureDetector(
                           onTap: () {
                             if (null != data.url) {
-                              SongModel songModel = Provider.of(context);
+                              SongModel songModel = Provider.of(context, listen: false);
                               songModel.setSongs(new List<Song>.from(
                                   downloadModel.downloadSong));
                               songModel.setCurrentIndex(index);

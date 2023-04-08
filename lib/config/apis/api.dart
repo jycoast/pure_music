@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_music_app/model/song_model.dart';
 import 'package:http/http.dart';
@@ -9,26 +8,35 @@ import 'package:http/http.dart';
 import 'dart:convert';
 // import '../model/music_model.dart';
 
-class API {
-  fetchSearchResults(String searchQuery) {
+abstract class API {
+  static fetchSearchResults(String searchQuery) {
     return KMusicAPI().fetchSearchResults(searchQuery);
   }
 
-  fetchSongSearchResults({ String searchQuery, int page, int count = 20}) {
+  static fetchSongSearchResults(
+      {String searchQuery, int page, int count = 20}) {
     return KMusicAPI().fetchSongSearchResults(
         searchQuery: searchQuery, page: page, count: count);
   }
 
-  getMusicList(int i) {
+  static getMusicList(int i) {
     return KMusicAPI().getMusicList(i);
   }
 
-  getRcmPlayList(int page, int count) {
+  static getRcmPlayList(int page, int count) {
     return KMusicAPI().getRcmPlayList(page, count);
+  }
+
+  static getPlayUrl(String mid) {
+    return KMusicAPI().getPlayUrl(mid);
+  }
+
+  static Future<String> getSongUrl(Song song) {
+    return getPlayUrl(song.songid);
   }
 }
 
-class KMusicAPI {
+class KMusicAPI implements API {
   Map<String, String> headers = {};
   String baseUrl = 'http://www.kuwo.cn/api';
   String apiStr = '/api.php?_format=json&_marker=0&api_version=4&ctx=web6dot0';
@@ -48,10 +56,10 @@ class KMusicAPI {
     Uri url = Uri.parse(baseUrl + params);
     headers = {
       'User-Agent':
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
       'Referer': 'http://www.kuwo.cn',
       'Cookie':
-      'gid=86d551b1-ff26-41d7-86af-8a1c94d1004c; JSESSIONID=15x90blsw700r1q4hawf27km3x; Hm_lvt_cdb524f42f0ce19b169a8071123a4797=1661181745; _ga=GA1.2.23391679.1661181759; _gid=GA1.2.310724863.1661596442; Hm_lpvt_cdb524f42f0ce19b169a8071123a4797=1661597954; kw_token=03DUIQDCKYZY',
+          'gid=86d551b1-ff26-41d7-86af-8a1c94d1004c; JSESSIONID=15x90blsw700r1q4hawf27km3x; Hm_lvt_cdb524f42f0ce19b169a8071123a4797=1661181745; _ga=GA1.2.23391679.1661181759; _gid=GA1.2.310724863.1661596442; Hm_lpvt_cdb524f42f0ce19b169a8071123a4797=1661597954; kw_token=03DUIQDCKYZY',
       'csrf': '03DUIQDCKYZY'
     };
     return get(url, headers: headers).onError((error, stackTrace) {
@@ -60,7 +68,6 @@ class KMusicAPI {
   }
 
   Future<String> getPlayUrl(String mid) async {
-    String msg = "张三" + "数据有误";
     var params =
         '${endpoints['playUrl']}?mid=$mid&type=$type&httpsStatus=$httpsStatus';
     final res = await getResponse(params);
@@ -68,9 +75,7 @@ class KMusicAPI {
       final Map playUrlMap = json.decode(res.body) as Map;
       return playUrlMap['data']['url'];
     }
-    return 'https://le-sycdn.kuwo.cn/c7a4e80092e3c9cbe463a9fc8fda8a88/63117ab7/resource/n3/77/97/851025454.mp3';
   }
-    // return 'https://le-sycdn.kuwo.cn/c7a4e80092e3c9cbe463a9fc8fda8a88/63117ab7/resource/n3/77/97/851025454.mp3';
 
   Future<List> getReco(String pid) async {
     final String params = "${endpoints['getReco']}&pid=$pid";
@@ -204,8 +209,10 @@ class KMusicAPI {
     return [result, position];
   }
 
-  static Future<List> formatSongsResponse(List responseList,
-      String type,) async {
+  static Future<List> formatSongsResponse(
+    List responseList,
+    String type,
+  ) async {
     final List searchedList = [];
     for (int i = 0; i < responseList.length; i++) {
       Map response;
@@ -220,8 +227,7 @@ class KMusicAPI {
       }
 
       if (response.containsKey('Error')) {
-        log(
-            'Error at index $i inside FormatSongsResponse: ${response["Error"]}');
+        log('Error at index $i inside FormatSongsResponse: ${response["Error"]}');
       } else {
         searchedList.add(response);
       }

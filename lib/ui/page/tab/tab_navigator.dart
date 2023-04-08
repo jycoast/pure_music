@@ -1,5 +1,4 @@
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_music_app/generated/i18n.dart';
@@ -93,22 +92,6 @@ class _TabNavigatorState extends State<TabNavigator> {
             BubbleBottomBarItem(
               backgroundColor: Theme.of(context).primaryColorDark,
               icon: Icon(
-                Icons.favorite,
-                size: 25.0,
-              ),
-              activeIcon: Icon(
-                Icons.favorite,
-                size: 25.0,
-                color: Colors.white,
-              ),
-              title: Text(
-                S.of(context).tabFavorite,
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            BubbleBottomBarItem(
-              backgroundColor: Theme.of(context).primaryColorDark,
-              icon: Icon(
                 Icons.music_note,
                 size: 25.0,
               ),
@@ -119,6 +102,22 @@ class _TabNavigatorState extends State<TabNavigator> {
               ),
               title: Text(
                 S.of(context).localMusic,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            BubbleBottomBarItem(
+              backgroundColor: Theme.of(context).primaryColorDark,
+              icon: Icon(
+                Icons.favorite,
+                size: 25.0,
+              ),
+              activeIcon: Icon(
+                Icons.favorite,
+                size: 25.0,
+                color: Colors.white,
+              ),
+              title: Text(
+                S.of(context).tabFavorite,
                 style: TextStyle(color: Colors.white),
               ),
             ),

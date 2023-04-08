@@ -1,5 +1,4 @@
 import 'package:flutter_music_app/config/net/base_api.dart';
-import 'package:flutter_music_app/model/song_model.dart';
 
 import '../config/apis/api.dart';
 
