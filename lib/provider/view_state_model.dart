@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/config/net/api.dart';
 import 'package:flutter_music_app/generated/i18n.dart';
 import 'package:oktoast/oktoast.dart';
 
+import '../config/custom_exception.dart';
 import 'view_state.dart';
 
 class ViewStateModel with ChangeNotifier {

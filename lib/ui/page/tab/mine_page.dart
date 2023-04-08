@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_music_app/model/local_view_model.dart';
 import 'package:flutter_music_app/model/theme_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 class MinePage extends StatefulWidget {
   @override
@@ -38,6 +41,8 @@ class _MinePageState extends State<MinePage>
             child: CustomScrollView(
               slivers: <Widget>[
                 UserListWidget(),
+                // 定时关闭                    // ProcessTimelinePage(),
+                // Text('你好')
               ],
             ),
           ),
@@ -71,7 +76,7 @@ class UserListWidget extends StatelessWidget {
               ),
             ),
             trailing: CupertinoSwitch(
-                activeColor: Theme.of(context).accentColor,
+                activeColor: Theme.of(context).colorScheme.secondary,
                 value: Theme.of(context).brightness == Brightness.dark,
                 onChanged: (value) {
                   switchDarkMode(context);
@@ -89,12 +94,13 @@ class UserListWidget extends StatelessWidget {
               color: iconColor,
             ),
             trailing: CupertinoSwitch(
-                activeColor: Theme.of(context).accentColor,
+                activeColor: Theme.of(context).colorScheme.secondary,
                 value: localModel.localeIndex == 0,
                 onChanged: (value) {
                   localModel.switchLocale();
                 }),
           ),
+          SettingTimeWidget()
         ]),
       ),
     );
@@ -160,7 +166,8 @@ class SettingThemeWidget extends StatelessWidget {
                     child: Text(
                       "?",
                       style: TextStyle(
-                          fontSize: 20, color: Theme.of(context).accentColor),
+                          fontSize: 20,
+                          color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
                 ),
@@ -171,4 +178,80 @@ class SettingThemeWidget extends StatelessWidget {
       ],
     );
   }
+}
+
+class SettingTimeState extends State<SettingTimeWidget> {
+  List<String> times = ['不开启', '10分钟', '15分钟', '20分钟', '30分钟'];
+  Timer _timer = null;
+  Timer _countdownTimer = null;
+  double _countdownTime = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      title: Text(S.of(context).closeTime +
+          (_countdownTime.toInt() == 0
+              ? ''
+              : ' (' + _countdownTime.toStringAsFixed(2) + '分钟后关闭)')),
+      leading: Icon(
+        Icons.more_time,
+        color: Theme.of(context).accentColor,
+      ),
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Wrap(
+            spacing: 5,
+            runSpacing: 5,
+            children: <Widget>[
+              ...times.map((time) {
+                return ListTile(
+                  title: new Center(
+                      child: new Text(
+                    time,
+                    style: new TextStyle(
+                        fontWeight: FontWeight.w500, fontSize: 16.0),
+                  )),
+                  onTap: () {
+                    if (time == '不开启') {
+                      if (_timer != null && _countdownTimer != null) {
+                        _timer.cancel();
+                        _countdownTimer.cancel();
+                        _countdownTime = 0.0;
+                        print('已取消');
+                      }
+                    } else {
+                      int intTime =
+                          int.parse(time.substring(0, time.indexOf('分')));
+                      // TODO showToast('$intTime分钟后将被关闭', position: ToastPosition.bottom);
+                      print('$intTime分钟后将被关闭');
+                      _timer = Timer(Duration(minutes: intTime), () {
+                        //到时回调
+                        print('应用即将关闭：' + DateTime.now().toString());
+                        SystemNavigator.pop();
+                      });
+                      _countdownTime = intTime.toDouble();
+                      // 定时更新当前时间的 _countdownTime 字符串
+                      _countdownTimer =
+                          Timer.periodic(Duration(milliseconds: 500), (timer) {
+                        setState(() {
+                          this._countdownTime = _countdownTime - 0.005;
+                        });
+                      });
+                    }
+                    setState(() {});
+                  },
+                );
+              }).toList(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SettingTimeWidget extends StatefulWidget {
+  @override
+  createState() => SettingTimeState();
 }

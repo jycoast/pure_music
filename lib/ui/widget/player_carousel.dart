@@ -144,7 +144,7 @@ class PlayerState extends State<Player> {
     if (_downloadData.isDownload(s)) {
       url = _downloadData.getDirectoryPath + '/${s.songid}.mp3';
     } else {
-      url = await getSongUrl(s);
+      url = await API.getSongUrl(s);
       print('获取播放地址: ' + url);
     }
     if (url == _songData.url) {

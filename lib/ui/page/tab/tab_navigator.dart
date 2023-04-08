@@ -92,11 +92,11 @@ class _TabNavigatorState extends State<TabNavigator> {
             BubbleBottomBarItem(
               backgroundColor: Theme.of(context).primaryColorDark,
               icon: Icon(
-                Icons.music_note,
+                Icons.cloud_download_rounded,
                 size: 25.0,
               ),
               activeIcon: Icon(
-                Icons.music_note,
+                Icons.cloud_download_rounded,
                 size: 25.0,
                 color: Colors.white,
               ),

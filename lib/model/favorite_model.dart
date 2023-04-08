@@ -17,7 +17,7 @@ class FavoriteListModel extends ViewStateListModel<Song> {
     await localStorage.ready;
     List<Song> favoriteList =
         (localStorage.getItem(kFavoriteList) ?? []).map<Song>((item) {
-      return Song.fromJsonMap(item);
+      return Song.fromJsonMap2(item);
     }).toList();
     favoriteModel.setFavorites(favoriteList);
     setIdle();

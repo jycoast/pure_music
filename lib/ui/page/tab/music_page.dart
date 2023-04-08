@@ -26,7 +26,7 @@ class _MusicPageState extends State<MusicPage>
     final dir = await getApplicationDocumentsDirectory();
     List<FileSystemEntity> files = dir.listSync();
     for (var file in files) {
-      print(file.path);
+      print('文件路径:' + file.path);
     }
     setState(() {});
   }

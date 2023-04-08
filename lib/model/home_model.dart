@@ -1,8 +1,7 @@
 import 'dart:math';
-
+import 'package:flutter_music_app/config/apis/api.dart';
 import 'package:flutter_music_app/model/song_model.dart';
 import 'package:flutter_music_app/provider/view_state_refresh_list_model.dart';
-import 'package:flutter_music_app/service/base_repository.dart';
 
 class HomeModel extends ViewStateRefreshListModel {
   static const albumValueList = ['酒吧', '怀旧', '女歌手', '经典', '热门'];
@@ -21,8 +20,8 @@ class HomeModel extends ViewStateRefreshListModel {
     int _randomSongForYou = r.nextInt(forYouValueList.length);
     String inputAlbums = albumValueList[_randomSongAlbum];
     String inputForYou = forYouValueList[_randomSongForYou];
-    futures.add(BaseRepository.fetchSongList(inputAlbums, pageNum));
-    futures.add(BaseRepository.fetchSongList(inputForYou, pageNum));
+    futures.add(API.searchBykeyWord(inputAlbums, pn: pageNum));
+    futures.add(API.searchBykeyWord(inputForYou, pn: pageNum));
 
     var result = await Future.wait(futures);
     _albums = result[0];

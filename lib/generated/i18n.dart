@@ -98,6 +98,7 @@ class S implements WidgetsLocalizations {
   String get viewStateMessageUnAuth => "Not sign in yet";
   String get wechatAccount => "Wechat";
   String get localMusic => "localMusic";
+  String get closeTime => "closeTime";
   String appUpdateFoundNewVersion(String version) => "New version $version";
 }
 
@@ -265,6 +266,8 @@ class $zh_CN extends S {
   String appUpdateFoundNewVersion(String version) => "发现新版本$version,是否更新?";
   @override
   String get localMusic => "本地";
+  @override
+  String get closeTime => "定时关闭";
 }
 
 class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {

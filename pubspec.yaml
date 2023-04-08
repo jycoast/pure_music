@@ -42,6 +42,8 @@ dependencies:
   http: ^0.11.3+17
   path_provider: ^1.1.0
   change_notifier: ^0.24.0
+  timelines: ^0.1.0
+  font_awesome_flutter: ^10.4.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

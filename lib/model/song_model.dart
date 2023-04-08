@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_music_app/config/apis/api.dart';
 import 'package:flutter_music_app/provider/view_state_refresh_list_model.dart';
-import 'package:flutter_music_app/service/base_repository.dart';
 
 class SongListModel extends ViewStateRefreshListModel<Song> {
   final String input;
@@ -11,7 +11,7 @@ class SongListModel extends ViewStateRefreshListModel<Song> {
 
   @override
   Future<List<Song>> loadData({int pageNum}) async {
-    return await BaseRepository.fetchSongList(input, pageNum);
+    return API.searchBykeyWord(input, pn: 1);
   }
 }
 
@@ -159,4 +159,14 @@ class Song {
     data['pic'] = pic;
     return data;
   }
+  /// TODO 优化映射模型
+  Song.fromJsonMap2(Map<String, dynamic> map)
+      : type = map["type"].toString(),
+        link = map["link"].toString(),
+        songid = map["songid"].toString(),
+        title = map["title"].toString(),
+        author = map["author"].toString(),
+        lrc = map["lrc"].toString(),
+        url = map["url"].toString(),
+        pic = map["pic"].toString();
 }

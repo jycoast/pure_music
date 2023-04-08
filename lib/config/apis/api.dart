@@ -3,36 +3,45 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_music_app/model/song_model.dart';
 import 'package:http/http.dart';
 
-// import 'package:http/io_client.dart';
-// import 'package:pure_music/utils/extensions.dart';
 import 'dart:convert';
-// import '../model/music_model.dart';
 
+Map<String, API> apiMap = {'kw': KMusicAPI(), 'wy': WYMusicAPI()};
+final String defaultApiSource = 'kw';
+/// 具体的实现
+final KMusicAPI api = apiMap[defaultApiSource];
+
+/// 请求外部接口抽象类，后续考虑适配多种音源
 abstract class API {
+
   static fetchSearchResults(String searchQuery) {
-    return KMusicAPI().fetchSearchResults(searchQuery);
+    return api.fetchSearchResults(searchQuery);
   }
 
-  static fetchSongSearchResults(
-      {String searchQuery, int page, int count = 20}) {
-    return KMusicAPI().fetchSongSearchResults(
+  static fetchSongSearchResults(String searchQuery, int page,
+      {int count = 20}) {
+    return api.fetchSongSearchResults(
         searchQuery: searchQuery, page: page, count: count);
   }
 
   static getMusicList(int i) {
-    return KMusicAPI().getMusicList(i);
+    return api.getMusicList(i);
   }
 
   static getRcmPlayList(int page, int count) {
-    return KMusicAPI().getRcmPlayList(page, count);
+    return api.getRcmPlayList(page, count);
   }
 
   static getPlayUrl(String mid) {
-    return KMusicAPI().getPlayUrl(mid);
+    return api.getPlayUrl(mid);
   }
 
   static Future<String> getSongUrl(Song song) {
     return getPlayUrl(song.songid);
+  }
+
+  static Future<List<Song>> searchBykeyWord(String key,
+      {int pn = 1, int rn = 30}) {
+    return api.searchBykeyWord(key, pn: pn, rn: rn);
   }
 }
 
@@ -69,7 +78,8 @@ class KMusicAPI implements API {
 
   Future<String> getPlayUrl(String mid) async {
     var params =
-        '${endpoints['playUrl']}?mid=$mid&type=$type&httpsStatus=$httpsStatus';
+        '${endpoints['playUrl']}?mid=$mid&type=$type&httpsStatus=$httpsStatus&br=320kmp3';
+    print(params);
     final res = await getResponse(params);
     if (res.statusCode == 200) {
       final Map playUrlMap = json.decode(res.body) as Map;
@@ -299,4 +309,8 @@ class KMusicAPI implements API {
       return {'Error': e};
     }
   }
+}
+
+class WYMusicAPI implements API {
+
 }

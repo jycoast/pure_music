@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 typedef RequestCallBack = void Function(Map data);
 
+/// 暂时没有用到
 class HttpRequest {
   static requestGET (
       String authority, String unencodedPath, RequestCallBack callBack,

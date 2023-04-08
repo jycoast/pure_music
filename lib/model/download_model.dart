@@ -24,7 +24,7 @@ class DownloadListModel extends ViewStateListModel<Song> {
     await localStorage.ready;
     List<Song> downloadList =
         (localStorage.getItem(kDownloadList) ?? []).map<Song>((item) {
-      return Song.fromJsonMap(item);
+      return Song.fromJsonMap2(item);
     }).toList();
     downloadModel.setDownloads(downloadList);
     setIdle();
@@ -58,7 +58,6 @@ class DownloadModel with ChangeNotifier {
     final dir = await getApplicationDocumentsDirectory();
     setDirectoryPath(dir.path);
     final file = File('${dir.path}/${s.songid}.mp3');
-
     if (await file.exists()) {
       return;
     }
