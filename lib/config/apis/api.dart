@@ -110,7 +110,6 @@ class KMusicAPI implements API {
       Map<String, dynamic> resMap = json.decode(res.body);
       List<Song> list = [];
       for (Map<String, dynamic> map in resMap['data']['list']) {
-        map['url'] = await getPlayUrl(map['rid'].toString());
         Song model = Song.fromJsonMap(map);
         list.add(model);
       }

@@ -134,11 +134,6 @@ class PlayerState extends State<Player> {
     });
   }
 
-  Future<String> getSongUrl(Song s) async {
-    final res = new KMusicAPI().getPlayUrl(s.songid);
-    return res;
-  }
-
   void play(Song s) async {
     String url;
     if (_downloadData.isDownload(s)) {
@@ -325,17 +320,7 @@ class PlayerState extends State<Player> {
               visible: _songData.showList,
               child: IconButton(
                 onPressed: () => _songData.changeRepeat(),
-                icon: _songData.isRepeat == true
-                    ? Icon(
-                        Icons.repeat,
-                        size: 25.0,
-                        color: Colors.grey,
-                      )
-                    : Icon(
-                        Icons.shuffle,
-                        size: 25.0,
-                        color: Colors.grey,
-                      ),
+                icon: _songData.icons[_songData.repeatIndex],
               ),
             ),
           ],

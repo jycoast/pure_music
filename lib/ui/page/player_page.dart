@@ -90,17 +90,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                                   ),
                                   IconButton(
                                     onPressed: () => songModel.changeRepeat(),
-                                    icon: songModel.isRepeat == true
-                                        ? Icon(
-                                            Icons.repeat,
-                                            size: 25.0,
-                                            color: Colors.grey,
-                                          )
-                                        : Icon(
-                                            Icons.shuffle,
-                                            size: 25.0,
-                                            color: Colors.grey,
-                                          ),
+                                    icon: songModel.icons[songModel.repeatIndex]
                                   ),
                                   IconButton(
                                     onPressed: () => favouriteModel

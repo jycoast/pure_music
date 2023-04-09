@@ -4,8 +4,8 @@ import 'package:flutter_music_app/model/song_model.dart';
 import 'package:flutter_music_app/provider/view_state_refresh_list_model.dart';
 
 class HomeModel extends ViewStateRefreshListModel {
-  static const albumValueList = ['酒吧', '怀旧', '女歌手', '经典', '热门'];
-  static const forYouValueList = ['华语', '流行', '轻音乐', '排行榜', '抖音'];
+  static const albumValueList = ['酒吧', '怀旧', '女歌手', '经典', '热门', ' 工作', '运动', '人群'];
+  static const forYouValueList = ['华语', '流行', '轻音乐', '排行榜', '抖音', '古风', '轻音乐', '解压', '开车'];
 
   List<Song> _albums;
   List<Song> _forYou;
