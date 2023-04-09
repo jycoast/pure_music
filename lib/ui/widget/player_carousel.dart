@@ -51,7 +51,7 @@ class PlayerState extends State<Player> {
     _songData = widget.songData;
     _downloadData = widget.downloadData;
     _initAudioPlayer(_songData);
-    if (_songData.isPlaying || widget.nowPlay) {
+    if (_songData.isPlaying && widget.nowPlay) {
       play(_songData.currentSong);
     }
   }
@@ -140,8 +140,8 @@ class PlayerState extends State<Player> {
       url = _downloadData.getDirectoryPath + '/${s.songid}.mp3';
     } else {
       url = await API.getSongUrl(s);
-      print('获取播放地址: ' + url);
     }
+    print('获取播放地址: ' + url);
     if (url == _songData.url) {
       int result = await _audioPlayer.setUrl(url);
       if (result == 1) {

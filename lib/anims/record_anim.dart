@@ -6,6 +6,7 @@ import 'package:flutter_music_app/model/song_model.dart';
 import 'package:flutter_music_app/ui/page/player_page.dart';
 import 'package:provider/provider.dart';
 
+/// 首页旋转
 class RotateRecord extends AnimatedWidget {
   RotateRecord({Key key, Animation<double> animation})
       : super(key: key, listenable: animation);
