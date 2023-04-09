@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_music_app/Utils/TimeUtil.dart';
 import 'package:flutter_music_app/generated/i18n.dart';
 import 'package:flutter_music_app/model/local_view_model.dart';
 import 'package:flutter_music_app/model/theme_model.dart';
@@ -42,8 +40,6 @@ class _MinePageState extends State<MinePage>
             child: CustomScrollView(
               slivers: <Widget>[
                 UserListWidget(),
-                // 定时关闭                    // ProcessTimelinePage(),
-                // Text('你好')
               ],
             ),
           ),
@@ -238,8 +234,8 @@ class SettingTimeState extends State<SettingTimeWidget> {
                       // TODO showToast('$intTime分钟后将被关闭', position: ToastPosition.bottom);
                       print('$intTime分钟后将被关闭');
                       _timer = Timer(Duration(minutes: intTime), () {
-                        //到时回调
                         print('应用即将关闭：' + DateTime.now().toString());
+                        // PlayerState().dispose();
                         SystemNavigator.pop();
                       });
                       _countdownTime = intTime * 60;

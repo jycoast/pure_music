@@ -51,7 +51,7 @@ class PlayerState extends State<Player> {
     _songData = widget.songData;
     _downloadData = widget.downloadData;
     _initAudioPlayer(_songData);
-    if (_songData.isPlaying && widget.nowPlay) {
+    if (widget.nowPlay) {
       play(_songData.currentSong);
     }
   }
@@ -141,19 +141,13 @@ class PlayerState extends State<Player> {
     } else {
       url = await API.getSongUrl(s);
     }
-    print('获取播放地址: ' + url);
-    if (url == _songData.url) {
-      int result = await _audioPlayer.setUrl(url);
-      if (result == 1) {
-        _songData.setPlaying(true);
-      }
-    } else {
-      int result = await _audioPlayer.play(url);
-      if (result == 1) {
-        _songData.setPlaying(true);
-      }
-      _songData.setUrl(url);
+    print('获取播放地址: $url 播放地址: ${_songData.url}');
+    await _audioPlayer.stop();
+    int result = await _audioPlayer.play(url);
+    if (result == 1) {
+      _songData.setPlaying(true);
     }
+    _songData.setUrl(url);
   }
 
   void pause() async {
