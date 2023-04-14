@@ -141,13 +141,16 @@ class PlayerState extends State<Player> {
     } else {
       url = await API.getSongUrl(s);
     }
+    String lyric = await API.getLyric(s);
     print('获取播放地址: $url 播放地址: ${_songData.url}');
+    print('获取歌词: $lyric');
     await _audioPlayer.stop();
     int result = await _audioPlayer.play(url);
     if (result == 1) {
       _songData.setPlaying(true);
     }
     _songData.setUrl(url);
+    _songData.currentSong.lrc = lyric;
   }
 
   void pause() async {

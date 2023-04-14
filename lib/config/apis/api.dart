@@ -7,12 +7,12 @@ import 'dart:convert';
 
 Map<String, API> apiMap = {'kw': KMusicAPI(), 'wy': WYMusicAPI()};
 final String defaultApiSource = 'kw';
+
 /// 具体的实现
 final KMusicAPI api = apiMap[defaultApiSource];
 
 /// 请求外部接口抽象类，后续考虑适配多种音源
 abstract class API {
-
   static fetchSearchResults(String searchQuery) {
     return api.fetchSearchResults(searchQuery);
   }
@@ -39,6 +39,10 @@ abstract class API {
     return getPlayUrl(song.songid);
   }
 
+  static Future<String> getLyric(Song song) {
+    return api.getLyric(song.songid);
+  }
+
   static Future<List<Song>> searchBykeyWord(String key,
       {int pn = 1, int rn = 30}) {
     return api.searchBykeyWord(key, pn: pn, rn: rn);
@@ -48,6 +52,7 @@ abstract class API {
 class KMusicAPI implements API {
   Map<String, String> headers = {};
   String baseUrl = 'http://www.kuwo.cn/api';
+  String lyricUrl = 'http://m.kuwo.cn';
   String apiStr = '/api.php?_format=json&_marker=0&api_version=4&ctx=web6dot0';
   String reqId = "904fa612-260e-11ed-a6c2-2d5a015b41b4";
   int httpsStatus = 1;
@@ -58,10 +63,26 @@ class KMusicAPI implements API {
     'playUrl': '/v1/www/music/playUrl',
     'homeData': '/www/artist/artistInfo',
     'musicList': '/www/bang/bang/musicList',
-    'rcmPlayList': '/www/classify/playlist/getRcmPlayList'
+    'rcmPlayList': '/www/classify/playlist/getRcmPlayList',
+    'lyricUrl': '/newh5/singles/songinfoandlrc'
   };
 
   Future<Response> getResponse(String params) async {
+    Uri url = Uri.parse(baseUrl + params);
+    headers = {
+      'User-Agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
+      'Referer': 'http://www.kuwo.cn',
+      'Cookie':
+          'gid=86d551b1-ff26-41d7-86af-8a1c94d1004c; JSESSIONID=15x90blsw700r1q4hawf27km3x; Hm_lvt_cdb524f42f0ce19b169a8071123a4797=1661181745; _ga=GA1.2.23391679.1661181759; _gid=GA1.2.310724863.1661596442; Hm_lpvt_cdb524f42f0ce19b169a8071123a4797=1661597954; kw_token=03DUIQDCKYZY',
+      'csrf': '03DUIQDCKYZY'
+    };
+    return get(url, headers: headers).onError((error, stackTrace) {
+      return Response(error.toString(), 404);
+    });
+  }
+
+  Future<Response> getResponseCustom(String baseUrl, String params) async {
     Uri url = Uri.parse(baseUrl + params);
     headers = {
       'User-Agent':
@@ -87,12 +108,26 @@ class KMusicAPI implements API {
     }
   }
 
+  Future<String> getLyric(String mid) async {
+    var params = '${endpoints['lyricUrl']}?musicId=$mid';
+    final res = await getResponseCustom(lyricUrl, params);
+
+    if (res.statusCode == 200) {
+      final Map playUrlMap = json.decode(res.body) as Map;
+      String lyric = '';
+      List lrcList = playUrlMap['data']['lrclist'];
+      for (int i = 0; i < lrcList.length; i++) {
+        lyric = lyric + '[00:00.0$i]' + lrcList[i]['lineLyric'].toString() +  '\n';
+      }
+      return lyric;
+    }
+  }
+
   Future<List> getReco(String pid) async {
     final String params = "${endpoints['getReco']}&pid=$pid";
     final res = await getResponse(params);
     if (res.statusCode == 200) {
       final List getMain = json.decode(res.body) as List;
-      // return FormatResponse.formatSongsResponse(getMain, 'song');
       return getMain;
     }
     return List.empty();
@@ -126,7 +161,6 @@ class KMusicAPI implements API {
       final res = await getResponse(endpoints['homeData']);
       if (res.statusCode == 200) {
         final Map data = json.decode(res.body) as Map;
-        // result = await FormatResponse.formatHomePageData(data);
       }
     } catch (e) {
       log('Error in fetchHomePageData: $e');
@@ -310,6 +344,4 @@ class KMusicAPI implements API {
   }
 }
 
-class WYMusicAPI implements API {
-
-}
+class WYMusicAPI implements API {}

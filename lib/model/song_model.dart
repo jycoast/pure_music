@@ -11,7 +11,7 @@ class SongListModel extends ViewStateRefreshListModel<Song> {
 
   @override
   Future<List<Song>> loadData({int pageNum}) async {
-    return API.searchBykeyWord(input, pn: 1);
+    return API.searchBykeyWord(input, pn: pageNum);
   }
 }
 

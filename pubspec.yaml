@@ -44,6 +44,8 @@ dependencies:
   change_notifier: ^0.24.0
   timelines: ^0.1.0
   font_awesome_flutter: ^10.4.0
+  # 歌词显示
+  flutter_lyric: ^2.0.4+6
 dev_dependencies:
   flutter_test:
     sdk: flutter
