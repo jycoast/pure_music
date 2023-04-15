@@ -117,7 +117,12 @@ class KMusicAPI implements API {
       String lyric = '';
       List lrcList = playUrlMap['data']['lrclist'];
       for (int i = 0; i < lrcList.length; i++) {
-        lyric = lyric + '[00:00.0$i]' + lrcList[i]['lineLyric'].toString() +  '\n';
+        double lyricTime = double.parse(lrcList[i]['time']);
+        Duration duration = Duration(seconds: lyricTime.toInt());
+        lyric = lyric +
+            '[${formatDurationInMmSsMs(duration)}]' +
+            lrcList[i]['lineLyric'].toString() +
+            '\n';
       }
       return lyric;
     }
@@ -342,6 +347,14 @@ class KMusicAPI implements API {
       return {'Error': e};
     }
   }
+
+  static String formatDurationInMmSsMs(Duration duration) {
+    final mm = (duration.inMinutes % 60).toString().padLeft(2, '0');
+    final ss = (duration.inSeconds % 60).toString().padLeft(2, '0');
+    final ms = (duration.inMicroseconds % 60).toString().padLeft(2, '0');
+    return '$mm:$ss.$ms';
+  }
 }
 
 class WYMusicAPI implements API {}
+
