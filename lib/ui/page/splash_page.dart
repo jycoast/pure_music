@@ -40,11 +40,11 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Add Your',
+                  '享受',
                   style: TextStyle(fontSize: 25),
                 ),
                 Text(
-                  'Music',
+                  '纯净音乐',
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 50),

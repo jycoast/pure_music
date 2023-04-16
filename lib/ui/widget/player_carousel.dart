@@ -145,7 +145,7 @@ class PlayerState extends State<Player> {
     print('获取播放地址: $url 播放地址: ${_songData.url}');
     print('获取歌词: $lyric');
     await _audioPlayer.stop();
-    int result = await _audioPlayer.play(url);
+    int result = await _audioPlayer.play(url, stayAwake: true);
     if (result == 1) {
       _songData.setPlaying(true);
     }

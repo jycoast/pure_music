@@ -217,3 +217,19 @@ class Song {
         url = map["url"].toString(),
         pic = map["pic"].toString();
 }
+
+class Singer {
+  String name;
+  String pic;
+
+  Singer.fromJsonMap(Map<String, dynamic> map)
+      : name = map["name"].toString(),
+        pic = map["pic"].toString();
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = name;
+    data['pic'] = pic;
+    return data;
+  }
+}

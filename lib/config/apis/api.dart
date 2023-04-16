@@ -44,8 +44,12 @@ abstract class API {
   }
 
   static Future<List<Song>> searchBykeyWord(String key,
-      {int pn = 1, int rn = 30}) {
+      {int pn = 1, int rn = 50}) {
     return api.searchBykeyWord(key, pn: pn, rn: rn);
+  }
+
+  static Future<List<Singer>> getArtistInfo({int pn = 1, int rn = 25, int category = 11}) {
+    return api.getArtistInfo(pn: pn, rn: rn, category: category);
   }
 }
 
@@ -61,7 +65,7 @@ class KMusicAPI implements API {
   Map<String, String> endpoints = {
     'searchUrl': '/www/search/searchMusicBykeyWord',
     'playUrl': '/v1/www/music/playUrl',
-    'homeData': '/www/artist/artistInfo',
+    'artistInfo': '/www/artist/artistInfo',
     'musicList': '/www/bang/bang/musicList',
     'rcmPlayList': '/www/classify/playlist/getRcmPlayList',
     'lyricUrl': '/newh5/singles/songinfoandlrc'
@@ -71,7 +75,7 @@ class KMusicAPI implements API {
     Uri url = Uri.parse(baseUrl + params);
     headers = {
       'User-Agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
       'Referer': 'http://www.kuwo.cn',
       'Cookie':
           'gid=86d551b1-ff26-41d7-86af-8a1c94d1004c; JSESSIONID=15x90blsw700r1q4hawf27km3x; Hm_lvt_cdb524f42f0ce19b169a8071123a4797=1661181745; _ga=GA1.2.23391679.1661181759; _gid=GA1.2.310724863.1661596442; Hm_lpvt_cdb524f42f0ce19b169a8071123a4797=1661597954; kw_token=03DUIQDCKYZY',
@@ -160,17 +164,23 @@ class KMusicAPI implements API {
     }
   }
 
-  Future<Map> fetchHomePageData() async {
-    Map result = {};
+  Future<List<Singer>> getArtistInfo({int pn = 1, int rn = 15, int category = 11}) async {
+    List<Singer> singerList = [];
     try {
-      final res = await getResponse(endpoints['homeData']);
+      final params =
+          "${endpoints['artistInfo']}?pn=$pn&rn=$rn&httpsStatus=$httpsStatus&reqId=$reqId";
+      final res = await getResponse(params);
       if (res.statusCode == 200) {
         final Map data = json.decode(res.body) as Map;
+        for (var artist in data['data']['artistList']) {
+          Singer singer = Singer.fromJsonMap(artist);
+          singerList.add(singer);
+        }
       }
     } catch (e) {
-      log('Error in fetchHomePageData: $e');
+      log('Error in getArtistInfo: $e');
     }
-    return result;
+    return singerList;
   }
 
   Future<List> getMusicList(int bangId, {int pn = 1, int rn = 100}) async {

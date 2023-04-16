@@ -25,7 +25,7 @@ class S implements WidgetsLocalizations {
   String get about => "About";
   String get actionCancel => "Cancel";
   String get actionConfirm => "Confirm";
-  String get appName => "Love Music";
+  String get appName => "Pure Music";
   String get appUpdateActionDownloadAgain => "Download";
   String get appUpdateActionInstallApk => "Install";
   String get appUpdateActionUpdate => "Update";
@@ -83,6 +83,8 @@ class S implements WidgetsLocalizations {
   String get theme => "Theme";
   String get toSignIn => "Sign In";
   String get albums => "Albums";
+  String get singer => "singer";
+  String get songList => "songList";
   String get viewAll => "View All";
   String get forYou => "For you";
   String get toSignUp => "Sign Up";
@@ -230,6 +232,10 @@ class $zh_CN extends S {
   String get toSignIn => "点我登录";
   @override
   String get albums => "歌集";
+  @override
+  String get singer => "歌手";
+  @override
+  String get songList => "歌单";
   @override
   String get viewAll => "查看所有";
   @override

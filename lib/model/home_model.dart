@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter_music_app/config/apis/api.dart';
+import 'package:flutter_music_app/generated/i18n.dart';
 import 'package:flutter_music_app/model/song_model.dart';
 import 'package:flutter_music_app/provider/view_state_refresh_list_model.dart';
 
@@ -9,9 +10,10 @@ class HomeModel extends ViewStateRefreshListModel {
 
   List<Song> _albums;
   List<Song> _forYou;
+  List<Singer> _songers = [];
   List<Song> get albums => _albums;
-
   List<Song> get forYou => _forYou;
+  List<Singer> get singeres => _songers;
   @override
   Future<List<Song>> loadData({int pageNum}) async {
     List<Future> futures = [];
@@ -22,10 +24,11 @@ class HomeModel extends ViewStateRefreshListModel {
     String inputForYou = forYouValueList[_randomSongForYou];
     futures.add(API.searchBykeyWord(inputAlbums, pn: pageNum));
     futures.add(API.searchBykeyWord(inputForYou, pn: pageNum));
-
+    futures.add(API.getArtistInfo());
     var result = await Future.wait(futures);
     _albums = result[0];
     _forYou = result[1];
+    _songers = result[2];
     return result[1];
   }
 }

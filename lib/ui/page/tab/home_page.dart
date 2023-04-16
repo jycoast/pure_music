@@ -8,6 +8,7 @@ import 'package:flutter_music_app/ui/widget/albums_carousel.dart';
 import 'package:flutter_music_app/anims/record_anim.dart';
 import 'package:flutter_music_app/ui/widget/for_you_carousel.dart';
 import 'package:flutter_music_app/ui/page/search_page.dart';
+import 'package:flutter_music_app/ui/widget/singeres_carousel.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -79,6 +80,7 @@ class _HomePageState extends State<HomePage>
                 }
                 var albums = homeModel?.albums ?? [];
                 var forYou = homeModel?.forYou ?? [];
+                var singers = homeModel?.singeres ?? [];
                 return Column(children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -145,6 +147,7 @@ class _HomePageState extends State<HomePage>
                           height: 10,
                         ),
                         AlbumsCarousel(albums),
+                        SingeresCarousel(singers),
                         ForYouCarousel(forYou),
                       ]),
                     ),
