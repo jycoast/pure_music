@@ -233,3 +233,22 @@ class Singer {
     return data;
   }
 }
+
+class RcmPlayList {
+  String name;
+  String pic;
+  String id;
+
+  RcmPlayList.fromJsonMap(Map<String, dynamic> map)
+      : name = map["name"].toString(),
+        pic = map["img"].toString(),
+        id = map["id"].toString();
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = name;
+    data['pic'] = pic;
+    data['id'] = id;
+    return data;
+  }
+}

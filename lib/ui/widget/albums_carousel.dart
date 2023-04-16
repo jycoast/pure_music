@@ -5,7 +5,7 @@ import 'package:flutter_music_app/model/song_model.dart';
 import 'package:flutter_music_app/ui/page/albums_page.dart';
 
 class AlbumsCarousel extends StatefulWidget {
-  final List<Song> alubums;
+  final List<RcmPlayList> alubums;
 
   AlbumsCarousel(this.alubums);
   @override
@@ -43,13 +43,13 @@ class _AlbumsCarouselState extends State<AlbumsCarousel> {
       Column(
         children: <Widget>[
           Container(
-            height: 200,
+            height: 180,
             child: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemCount: widget.alubums.length,
               itemBuilder: (BuildContext context, int index) {
-                Song data = widget.alubums[index];
+                RcmPlayList data = widget.alubums[index];
                 return GestureDetector(
                   onTap: () => {
                     Navigator.push(
@@ -84,7 +84,7 @@ class _AlbumsCarouselState extends State<AlbumsCarousel> {
                             height: 10,
                           ),
                           Text(
-                            data.title,
+                            data.name,
                             style: TextStyle(
                               fontSize: 12.0,
                               fontWeight: FontWeight.w600,
@@ -95,15 +95,15 @@ class _AlbumsCarouselState extends State<AlbumsCarousel> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text(
-                            data.author,
-                            style: TextStyle(
-                              fontSize: 10.0,
-                              color: Colors.grey,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          // Text(
+                          //   data.name,
+                          //   style: TextStyle(
+                          //     fontSize: 10.0,
+                          //     color: Colors.grey,
+                          //   ),
+                          //   maxLines: 1,
+                          //   overflow: TextOverflow.ellipsis,
+                          // ),
                         ],
                       ),
                     ),

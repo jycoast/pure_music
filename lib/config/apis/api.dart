@@ -27,10 +27,6 @@ abstract class API {
     return api.getMusicList(i);
   }
 
-  static getRcmPlayList(int page, int count) {
-    return api.getRcmPlayList(page, count);
-  }
-
   static getPlayUrl(String mid) {
     return api.getPlayUrl(mid);
   }
@@ -48,8 +44,18 @@ abstract class API {
     return api.searchBykeyWord(key, pn: pn, rn: rn);
   }
 
-  static Future<List<Singer>> getArtistInfo({int pn = 1, int rn = 25, int category = 11}) {
+  static Future<List<Singer>> getArtistInfo(
+      {int pn = 1, int rn = 25, int category = 11}) {
     return api.getArtistInfo(pn: pn, rn: rn, category: category);
+  }
+
+  static Future<List<RcmPlayList>> getRcmPlayList(
+      {int page = 1, int count = 100}) {
+    return api.getRcmPlayList(page, count);
+  }
+
+  static Future<List<Song>> getPlayListInfo(String id) {
+    return api.getPlayListInfo(id);
   }
 }
 
@@ -68,7 +74,8 @@ class KMusicAPI implements API {
     'artistInfo': '/www/artist/artistInfo',
     'musicList': '/www/bang/bang/musicList',
     'rcmPlayList': '/www/classify/playlist/getRcmPlayList',
-    'lyricUrl': '/newh5/singles/songinfoandlrc'
+    'lyricUrl': '/newh5/singles/songinfoandlrc',
+    'playListInfo': '/www/playlist/playListInfo'
   };
 
   Future<Response> getResponse(String params) async {
@@ -164,7 +171,8 @@ class KMusicAPI implements API {
     }
   }
 
-  Future<List<Singer>> getArtistInfo({int pn = 1, int rn = 15, int category = 11}) async {
+  Future<List<Singer>> getArtistInfo(
+      {int pn = 1, int rn = 15, int category = 11}) async {
     List<Singer> singerList = [];
     try {
       final params =
@@ -235,7 +243,8 @@ class KMusicAPI implements API {
     }
   }
 
-  Future<List> getRcmPlayList(int page, int count) async {
+  Future<List<RcmPlayList>> getRcmPlayList(int page, int count) async {
+    List<RcmPlayList> rcmPlayList = [];
     final params =
         "${endpoints['rcmPlayList']}?order=new&pn=$page&rn=$count&httpsStatus=$httpsStatus&reqId=$reqId";
     try {
@@ -247,13 +256,37 @@ class KMusicAPI implements API {
         print(res.body.toString());
       }
       Map<dynamic, dynamic> resMap = json.decode(res.body);
-      return resMap['data']['data'];
+      for (var data in resMap['data']['data']) {
+        RcmPlayList rcmPlay = RcmPlayList.fromJsonMap(data);
+        rcmPlayList.add(rcmPlay);
+      }
+      return rcmPlayList;
     } catch (e) {
-      log('Error in fetchSongSearchResults: $e');
+      log('Error in getRcmPlayList: $e');
+      return rcmPlayList;
+    }
+  }
+
+  Future<List<Song>> getPlayListInfo(String key,
+      {int pn = 1, int rn = 100}) async {
+    if (key == "") {
       return List.empty();
     }
-
-    return List.empty();
+    final params =
+        "${endpoints['playListInfo']}?pid=$key&pn=$pn&rn=$rn&httpsStatus=$httpsStatus&reqId=$reqId";
+    try {
+      final res = await getResponse(params);
+      Map<String, dynamic> resMap = json.decode(res.body);
+      List<Song> list = [];
+      for (Map<String, dynamic> map in resMap['data']['musicList']) {
+        Song model = Song.fromJsonMap(map);
+        list.add(model);
+      }
+      return list;
+    } catch (e) {
+      log('Error in fetchAlbumSongs: $e');
+      return List.empty();
+    }
   }
 
   Future<List<Map>> fetchSearchResults(String searchQuery) async {
@@ -367,4 +400,3 @@ class KMusicAPI implements API {
 }
 
 class WYMusicAPI implements API {}
-

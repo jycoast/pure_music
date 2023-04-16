@@ -8,9 +8,10 @@ import 'package:flutter_music_app/ui/widget/albums_carousel.dart';
 import 'package:flutter_music_app/anims/record_anim.dart';
 import 'package:flutter_music_app/ui/widget/for_you_carousel.dart';
 import 'package:flutter_music_app/ui/page/search_page.dart';
-import 'package:flutter_music_app/ui/widget/singeres_carousel.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import '../../widget/Singeres_carousel.dart';
 
 class HomePage extends StatefulWidget {
   @override

@@ -4,7 +4,8 @@ import 'package:flutter_music_app/ui/widget/app_bar.dart';
 import 'package:flutter_music_app/model/song_model.dart';
 
 class AlbumsPage extends StatefulWidget {
-  final Song data;
+
+  final RcmPlayList data;
 
   AlbumsPage({this.data});
   @override
@@ -33,7 +34,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
                 SizedBox(height: 20.0),
                 Center(
                   child: Text(
-                    widget.data.author,
+                    widget.data.name,
                     style: TextStyle(fontSize: 12.0),
                   ),
                 ),
@@ -92,7 +93,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
                     ),
                   ],
                 ),
-                AlbumCarousel(input: widget.data.author),
+                AlbumCarousel(input: widget.data.id),
               ],
             ),
           ),

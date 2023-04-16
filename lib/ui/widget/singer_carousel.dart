@@ -7,14 +7,14 @@ import 'package:provider/provider.dart';
 
 import '../../model/rcm_list_model.dart';
 
-class AlbumCarousel extends StatefulWidget {
+class SingerCarousel extends StatefulWidget {
   final String input;
-  AlbumCarousel({this.input});
+  SingerCarousel({this.input});
   @override
-  _AlbumCarouselState createState() => _AlbumCarouselState();
+  _SingerCarouselState createState() => _SingerCarouselState();
 }
 
-class _AlbumCarouselState extends State<AlbumCarousel> {
+class _SingerCarouselState extends State<SingerCarousel> {
 
   Widget _buildSongItem(Song data, int index) {
     FavoriteModel favoriteModel = Provider.of(context);
@@ -104,11 +104,11 @@ class _AlbumCarouselState extends State<AlbumCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget<RcmListModel>(
+    return ProviderWidget<SongListModel>(
         onModelReady: (model) async {
           await model.initData();
         },
-        model: RcmListModel(id: widget.input),
+        model: SongListModel(input: widget.input),
         builder: (context, model, child) {
           return Container(
             child: ListView.builder(

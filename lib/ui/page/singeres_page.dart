@@ -3,6 +3,8 @@ import 'package:flutter_music_app/ui/widget/album_carousel.dart';
 import 'package:flutter_music_app/ui/widget/app_bar.dart';
 import 'package:flutter_music_app/model/song_model.dart';
 
+import '../widget/singer_carousel.dart';
+
 class SingeresPage extends StatefulWidget {
   final Singer data;
 
@@ -93,7 +95,7 @@ class _SingeresPageState extends State<SingeresPage> {
                     ),
                   ],
                 ),
-                AlbumCarousel(input: widget.data.name),
+                SingerCarousel(input: widget.data.name),
               ],
             ),
           ),

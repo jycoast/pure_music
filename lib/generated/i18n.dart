@@ -231,7 +231,7 @@ class $zh_CN extends S {
   @override
   String get toSignIn => "点我登录";
   @override
-  String get albums => "歌集";
+  String get albums => "歌单";
   @override
   String get singer => "歌手";
   @override
