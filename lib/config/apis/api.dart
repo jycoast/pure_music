@@ -127,6 +127,9 @@ class KMusicAPI implements API {
       final Map playUrlMap = json.decode(res.body) as Map;
       String lyric = '';
       List lrcList = playUrlMap['data']['lrclist'];
+      if (lrcList == null) {
+        return lyric;
+      }
       for (int i = 0; i < lrcList.length; i++) {
         double lyricTime = double.parse(lrcList[i]['time']);
         Duration duration = Duration(seconds: lyricTime.toInt());

@@ -18,12 +18,11 @@ class Lyric extends StatefulWidget {
 }
 
 class _LyricState extends State<Lyric> with SingleTickerProviderStateMixin {
-  double sliderProgress = 111658;
-  int playProgress = 111658;
-  double max_value = 211658;
-  bool isTap = false;
+
+  int playProgress = 0;
   String normalLyric = "qq";
-  bool useEnhancedLrc = false;
+  AudioPlayer audioPlayer;
+
   var lyricUI = UINetease();
 
   @override
@@ -31,11 +30,24 @@ class _LyricState extends State<Lyric> with SingleTickerProviderStateMixin {
     print(widget.normalLyric);
     print(widget.imgSrc);
     normalLyric = widget.normalLyric;
+    audioPlayer = widget.audioPlayer;
+    audioPlayer.onAudioPositionChanged.listen((event) {
+      // print('onAudioPositionChanged${event.inMicroseconds}');
+      playProgress = event.inMicroseconds;
+      // print(playProgress);
+    });
     super.initState();
   }
 
   @override
+  void setState(VoidCallback fn) {
+    // TODO: implement setState
+    super.setState(fn);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print('位置$playProgress');
     return Container(
       width: MediaQuery.of(context).size.width,
       child: buildReaderWidget(),

@@ -60,10 +60,14 @@ class _HomePageState extends State<HomePage>
       controllerRecord.stop(canceled: false);
     }
     return Scaffold(
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
+      body: WillPopScope(
+        onWillPop: () async {
+          return false;
         },
+        //TODO
+        // onTap: () {
+        //   FocusScope.of(context).requestFocus(FocusNode());
+        // },
         child: SafeArea(
           child: ProviderWidget<HomeModel>(
               onModelReady: (homeModel) async {

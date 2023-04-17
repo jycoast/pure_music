@@ -56,9 +56,18 @@ class DownloadModel with ChangeNotifier {
   Future downloadFile(Song s) async {
     String url = await API.getSongUrl(s);
     final bytes = await readBytes(url);
-    final dir = await getApplicationSupportDirectory();
-    setDirectoryPath(dir.path);
+    Directory dir = null;
+    if (Platform.isAndroid) {
+       List<Directory> dirs = await getExternalStorageDirectories();
+       dir = dirs[0];
+    } else if (Platform.isIOS) {
+      dir = await getLibraryDirectory();
+    } else if (Platform.isWindows || Platform.isMacOS) {
+      dir = await getDownloadsDirectory();
+    }
     final file = File('${dir.path}/${s.title}-${s.songid}.mp3');
+    setDirectoryPath(file.path);
+
     if (await file.exists()) {
       return;
     }

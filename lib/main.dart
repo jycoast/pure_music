@@ -10,6 +10,10 @@ import 'package:pure_music/model/local_view_model.dart';
 import 'package:pure_music/model/theme_model.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:pure_music/ui/page/splash_page.dart';
+import 'package:pure_music/ui/page/tab/tab_navigator.dart';
+
+import 'anims/page_route_anim.dart';
 
 void main() async {
   Provider.debugCheckInvalidValueType = null;
@@ -42,6 +46,10 @@ class MyApp extends StatelessWidget {
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate
               ],
+              routes: {
+                '/' : (_) => TabNavigator(),
+                '/splash' : (_) => SplashPage(),
+              },
               supportedLocales: S.delegate.supportedLocales,
               onGenerateRoute: a.Router.generateRoute,
               initialRoute: a.RouteName.splash,
