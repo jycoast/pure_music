@@ -1,13 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/config/apis/api.dart';
-import 'package:flutter_music_app/config/storage_manager.dart';
-import 'package:flutter_music_app/model/song_model.dart';
-import 'package:flutter_music_app/provider/view_state_list_model.dart';
 import 'package:http/http.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pure_music/config/storage_manager.dart';
+import 'package:pure_music/model/song_model.dart';
+import 'package:pure_music/provider/view_state_list_model.dart';
+
+import '../config/apis/api.dart';
 
 const String kLocalStorageSearch = 'kLocalStorageSearch';
 const String kDownloadList = 'kDownloadList';
@@ -55,9 +56,9 @@ class DownloadModel with ChangeNotifier {
   Future downloadFile(Song s) async {
     String url = await API.getSongUrl(s);
     final bytes = await readBytes(url);
-    final dir = await getApplicationDocumentsDirectory();
+    final dir = await getApplicationSupportDirectory();
     setDirectoryPath(dir.path);
-    final file = File('${dir.path}/${s.songid}.mp3');
+    final file = File('${dir.path}/${s.title}-${s.songid}.mp3');
     if (await file.exists()) {
       return;
     }

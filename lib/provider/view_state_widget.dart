@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/config/resource_manager.dart';
-import 'package:flutter_music_app/generated/i18n.dart';
+import 'package:pure_music/config/resource_manager.dart';
+import 'package:pure_music/generated/i18n.dart';
 
 import 'view_state.dart';
 

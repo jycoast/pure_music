@@ -1,4 +1,4 @@
-package com.obnil.flutter_music_app
+package com.pure.pure_music
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

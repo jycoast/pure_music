@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/generated/i18n.dart';
-import 'package:flutter_music_app/model/home_model.dart';
-import 'package:flutter_music_app/model/song_model.dart';
-import 'package:flutter_music_app/provider/provider_widget.dart';
-import 'package:flutter_music_app/provider/view_state_widget.dart';
-import 'package:flutter_music_app/ui/widget/albums_carousel.dart';
-import 'package:flutter_music_app/anims/record_anim.dart';
-import 'package:flutter_music_app/ui/widget/for_you_carousel.dart';
-import 'package:flutter_music_app/ui/page/search_page.dart';
+import 'package:pure_music/generated/i18n.dart';
+import 'package:pure_music/model/home_model.dart';
+import 'package:pure_music/model/song_model.dart';
+import 'package:pure_music/provider/provider_widget.dart';
+import 'package:pure_music/provider/view_state_widget.dart';
+import 'package:pure_music/ui/widget/albums_carousel.dart';
+import 'package:pure_music/anims/record_anim.dart';
+import 'package:pure_music/ui/widget/for_you_carousel.dart';
+import 'package:pure_music/ui/page/search_page.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 

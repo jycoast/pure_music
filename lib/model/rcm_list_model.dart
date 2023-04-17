@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/model/song_model.dart';
-import 'package:flutter_music_app/provider/view_state_list_model.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:pure_music/model/song_model.dart';
+import 'package:pure_music/provider/view_state_list_model.dart';
 
 import '../config/apis/api.dart';
 

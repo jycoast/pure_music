@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_music_app/config/provider_manager.dart';
-import 'package:flutter_music_app/config/router_manager.dart' as a;
-import 'package:flutter_music_app/config/storage_manager.dart';
-import 'package:flutter_music_app/generated/i18n.dart';
-import 'package:flutter_music_app/model/local_view_model.dart';
-import 'package:flutter_music_app/model/theme_model.dart';
+import 'package:pure_music/config/provider_manager.dart';
+import 'package:pure_music/config/router_manager.dart' as a;
+import 'package:pure_music/config/storage_manager.dart';
+import 'package:pure_music/generated/i18n.dart';
+import 'package:pure_music/model/local_view_model.dart';
+import 'package:pure_music/model/theme_model.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 

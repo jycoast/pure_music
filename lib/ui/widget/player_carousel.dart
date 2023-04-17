@@ -1,8 +1,8 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/model/download_model.dart';
-import 'package:flutter_music_app/model/song_model.dart';
-import 'package:flutter_music_app/config/apis/api.dart';
+import 'package:pure_music/model/download_model.dart';
+import 'package:pure_music/model/song_model.dart';
+import 'package:pure_music/config/apis/api.dart';
 
 class Player extends StatefulWidget {
   /// 播放列表

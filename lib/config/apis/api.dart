@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_music_app/model/song_model.dart';
+import 'package:pure_music/model/song_model.dart';
 import 'package:http/http.dart';
 
 import 'dart:convert';

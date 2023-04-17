@@ -1,14 +1,14 @@
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_music_app/generated/i18n.dart';
-import 'package:flutter_music_app/model/download_model.dart';
-import 'package:flutter_music_app/model/favorite_model.dart';
-import 'package:flutter_music_app/provider/provider_widget.dart';
-import 'package:flutter_music_app/ui/page/tab/favorite_page.dart';
-import 'package:flutter_music_app/ui/page/tab/home_page.dart';
-import 'package:flutter_music_app/ui/page/tab/mine_page.dart';
-import 'package:flutter_music_app/ui/page/tab/music_page.dart';
+import 'package:pure_music/generated/i18n.dart';
+import 'package:pure_music/model/download_model.dart';
+import 'package:pure_music/model/favorite_model.dart';
+import 'package:pure_music/provider/provider_widget.dart';
+import 'package:pure_music/ui/page/tab/favorite_page.dart';
+import 'package:pure_music/ui/page/tab/home_page.dart';
+import 'package:pure_music/ui/page/tab/mine_page.dart';
+import 'package:pure_music/ui/page/tab/music_page.dart';
 import 'package:provider/provider.dart';
 
 class TabNavigator extends StatefulWidget {

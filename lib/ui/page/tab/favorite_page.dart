@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/generated/i18n.dart';
-import 'package:flutter_music_app/model/favorite_model.dart';
-import 'package:flutter_music_app/model/song_model.dart';
-import 'package:flutter_music_app/ui/page/player_page.dart';
+import 'package:pure_music/generated/i18n.dart';
+import 'package:pure_music/model/favorite_model.dart';
+import 'package:pure_music/model/song_model.dart';
+import 'package:pure_music/ui/page/player_page.dart';
 import 'package:provider/provider.dart';
 
 class FavoritePage extends StatefulWidget {

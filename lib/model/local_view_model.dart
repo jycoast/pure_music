@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/config/storage_manager.dart';
+import 'package:pure_music/config/storage_manager.dart';
 
 class LocaleModel extends ChangeNotifier {
   static const localeValueList = ['zh-CN', 'en'];

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_music_app/anims/page_route_anim.dart';
-import 'package:flutter_music_app/ui/page/splash_page.dart';
-import 'package:flutter_music_app/ui/page/tab/tab_navigator.dart';
+import 'package:pure_music/anims/page_route_anim.dart';
+import 'package:pure_music/ui/page/splash_page.dart';
+import 'package:pure_music/ui/page/tab/tab_navigator.dart';
 
 class RouteName {
   static const String splash = 'splash';

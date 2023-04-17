@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/generated/i18n.dart';
-import 'package:flutter_music_app/model/song_model.dart';
-import 'package:flutter_music_app/ui/page/albums_page.dart';
+import 'package:pure_music/generated/i18n.dart';
+import 'package:pure_music/model/song_model.dart';
+import 'package:pure_music/ui/page/albums_page.dart';
 
 class AlbumsCarousel extends StatefulWidget {
   final List<RcmPlayList> alubums;

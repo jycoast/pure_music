@@ -1,8 +1,7 @@
 import 'dart:math';
-import 'package:flutter_music_app/config/apis/api.dart';
-import 'package:flutter_music_app/generated/i18n.dart';
-import 'package:flutter_music_app/model/song_model.dart';
-import 'package:flutter_music_app/provider/view_state_refresh_list_model.dart';
+import 'package:pure_music/config/apis/api.dart';
+import 'package:pure_music/model/song_model.dart';
+import 'package:pure_music/provider/view_state_refresh_list_model.dart';
 
 class HomeModel extends ViewStateRefreshListModel {
   static const albumValueList = ['酒吧', '怀旧', '女歌手', '经典', '热门', ' 工作', '运动', '人群'];

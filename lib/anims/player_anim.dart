@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/model/song_model.dart';
-import 'package:flutter_music_app/ui/widget/lyric.dart';
+import 'package:pure_music/model/song_model.dart';
+import 'package:pure_music/ui/widget/lyric.dart';
 import 'package:provider/provider.dart';
 
 class RotatePlayer extends AnimatedWidget {

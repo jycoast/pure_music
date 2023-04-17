@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/anims/player_anim.dart';
-import 'package:flutter_music_app/model/download_model.dart';
-import 'package:flutter_music_app/model/favorite_model.dart';
-import 'package:flutter_music_app/ui/widget/app_bar.dart';
-import 'package:flutter_music_app/model/song_model.dart';
-import 'package:flutter_music_app/ui/widget/player_carousel.dart';
-import 'package:flutter_music_app/ui/widget/song_list_carousel.dart';
 import 'package:provider/provider.dart';
+import 'package:pure_music/anims/player_anim.dart';
+import 'package:pure_music/model/download_model.dart';
+import 'package:pure_music/model/favorite_model.dart';
+import 'package:pure_music/model/song_model.dart';
+import 'package:pure_music/ui/widget/app_bar.dart';
+import 'package:pure_music/ui/widget/player_carousel.dart';
+import 'package:pure_music/ui/widget/song_list_carousel.dart';
 
 class PlayPage extends StatefulWidget {
   final bool nowPlay;

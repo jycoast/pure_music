@@ -1,8 +1,8 @@
-import 'package:flutter_music_app/model/download_model.dart';
-import 'package:flutter_music_app/model/favorite_model.dart';
-import 'package:flutter_music_app/model/local_view_model.dart';
-import 'package:flutter_music_app/model/song_model.dart';
-import 'package:flutter_music_app/model/theme_model.dart';
+import 'package:pure_music/model/download_model.dart';
+import 'package:pure_music/model/favorite_model.dart';
+import 'package:pure_music/model/local_view_model.dart';
+import 'package:pure_music/model/song_model.dart';
+import 'package:pure_music/model/theme_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 

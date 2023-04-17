@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/config/resource_manager.dart';
-import 'package:flutter_music_app/config/router_manager.dart';
-import 'package:flutter_music_app/generated/i18n.dart';
+import 'package:pure_music/config/resource_manager.dart';
+import 'package:pure_music/config/router_manager.dart';
+import 'package:pure_music/generated/i18n.dart';
 
 class SplashPage extends StatefulWidget {
   static const String image = 'ic_splash.png';

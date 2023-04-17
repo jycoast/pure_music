@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/generated/i18n.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:pure_music/generated/i18n.dart';
 
 import '../config/custom_exception.dart';
 import 'view_state.dart';

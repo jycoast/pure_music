@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/model/favorite_model.dart';
-import 'package:flutter_music_app/model/song_model.dart';
+import 'package:pure_music/model/favorite_model.dart';
+import 'package:pure_music/model/song_model.dart';
 import 'package:provider/provider.dart';
 
 class SongListCarousel extends StatefulWidget {

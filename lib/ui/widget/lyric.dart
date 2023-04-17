@@ -64,23 +64,23 @@ class _LyricState extends State<Lyric> with SingleTickerProviderStateMixin {
               style: lyricUI.getOtherMainTextStyle(),
             ),
           ),
-          selectLineBuilder: (progress, confirm) {
-            return Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(color: Colors.green),
-                    height: 1,
-                    width: double.infinity,
-                  ),
-                ),
-                Text(
-                  progress.toString(),
-                  style: TextStyle(color: Colors.green),
-                )
-              ],
-            );
-          },
+          // selectLineBuilder: (progress, confirm) {
+          //   return Row(
+          //     children: [
+          //       Expanded(
+          //         child: Container(
+          //           decoration: BoxDecoration(color: Colors.green),
+          //           height: 1,
+          //           width: double.infinity,
+          //         ),
+          //       ),
+          //       Text(
+          //         progress.toString(),
+          //         style: TextStyle(color: Colors.green),
+          //       )
+          //     ],
+          //   );
+          // },
         )
       ],
     );

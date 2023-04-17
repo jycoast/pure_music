@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/ui/widget/album_carousel.dart';
-import 'package:flutter_music_app/ui/widget/app_bar.dart';
-import 'package:flutter_music_app/model/song_model.dart';
+import 'package:pure_music/ui/widget/album_carousel.dart';
+import 'package:pure_music/ui/widget/app_bar.dart';
+import 'package:pure_music/model/song_model.dart';
 
 import '../widget/singer_carousel.dart';
 

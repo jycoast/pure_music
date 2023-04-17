@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/config/storage_manager.dart';
-import 'package:flutter_music_app/generated/i18n.dart';
-import 'package:flutter_music_app/ui/helper/theme_helper.dart';
+import 'package:pure_music/config/storage_manager.dart';
+import 'package:pure_music/generated/i18n.dart';
+import 'package:pure_music/ui/helper/theme_helper.dart';
 
 //const Color(0xFF5394FF),
 

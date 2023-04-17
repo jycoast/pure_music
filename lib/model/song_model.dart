@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_music_app/config/apis/api.dart';
-import 'package:flutter_music_app/provider/view_state_refresh_list_model.dart';
+import 'package:pure_music/config/apis/api.dart';
+import 'package:pure_music/provider/view_state_refresh_list_model.dart';
 
 class SongListModel extends ViewStateRefreshListModel<Song> {
   final String input;
