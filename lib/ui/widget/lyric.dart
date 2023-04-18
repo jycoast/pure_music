@@ -31,7 +31,7 @@ class _LyricState extends State<Lyric> with SingleTickerProviderStateMixin {
     print(widget.imgSrc);
     normalLyric = widget.normalLyric;
     audioPlayer = widget.audioPlayer;
-    audioPlayer.onAudioPositionChanged.listen((event) {
+    audioPlayer.onPositionChanged.listen((event) {
       // print('onAudioPositionChanged${event.inMicroseconds}');
       playProgress = event.inMicroseconds;
       // print(playProgress);

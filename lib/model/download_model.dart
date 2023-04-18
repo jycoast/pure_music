@@ -19,6 +19,7 @@ class DownloadListModel extends ViewStateListModel<Song> {
   DownloadModel downloadModel;
 
   DownloadListModel({this.downloadModel});
+
   @override
   Future<List<Song>> loadData() async {
     LocalStorage localStorage = LocalStorage(kLocalStorageSearch);
@@ -37,7 +38,9 @@ class DownloadModel with ChangeNotifier {
   DownloadModel() {
     _directoryPath = StorageManager.sharedPreferences.getString(kDirectoryPath);
   }
+
   List<Song> _downloadSong;
+
   List<Song> get downloadSong => _downloadSong;
 
   setDownloads(List<Song> downloadSong) {
@@ -55,11 +58,11 @@ class DownloadModel with ChangeNotifier {
 
   Future downloadFile(Song s) async {
     String url = await API.getSongUrl(s);
-    final bytes = await readBytes(url);
+    final bytes = await readBytes(Uri.parse(url));
     Directory dir = null;
     if (Platform.isAndroid) {
-       List<Directory> dirs = await getExternalStorageDirectories();
-       dir = dirs[0];
+      List<Directory> dirs = await getExternalStorageDirectories();
+      dir = dirs[0];
     } else if (Platform.isIOS) {
       dir = await getLibraryDirectory();
     } else if (Platform.isWindows || Platform.isMacOS) {
@@ -81,7 +84,9 @@ class DownloadModel with ChangeNotifier {
   }
 
   String _directoryPath;
+
   String get getDirectoryPath => _directoryPath;
+
   setDirectoryPath(String directoryPath) {
     _directoryPath = directoryPath;
     StorageManager.sharedPreferences.setString(kDirectoryPath, _directoryPath);

@@ -4,7 +4,7 @@ import 'package:pure_music/model/download_model.dart';
 import 'package:pure_music/model/song_model.dart';
 import 'package:pure_music/config/apis/api.dart';
 
-class Player extends StatefulWidget {
+class PlayerCarousel extends StatefulWidget {
   /// 播放列表
   final SongModel songData;
   final DownloadModel downloadData;
@@ -22,7 +22,7 @@ class Player extends StatefulWidget {
   /// 是否是本地资源
   final bool isLocal;
 
-  Player(
+  PlayerCarousel(
       {@required this.songData,
       @required this.downloadData,
       this.nowPlay,
@@ -32,10 +32,10 @@ class Player extends StatefulWidget {
       this.isLocal: false});
 
   @override
-  State<StatefulWidget> createState() => PlayerState();
+  State<StatefulWidget> createState() => PlayerCarouselState();
 }
 
-class PlayerState extends State<Player> {
+class PlayerCarouselState extends State<PlayerCarousel> {
   Duration _duration;
   Duration _position;
   SongModel _songData;
@@ -43,7 +43,6 @@ class PlayerState extends State<Player> {
   bool _isSeeking = false;
 
   AudioPlayer _audioPlayer;
-  AudioPlayerState _audioPlayerState;
 
   @override
   void initState() {
@@ -69,25 +68,25 @@ class PlayerState extends State<Player> {
 
       // TODO implemented for iOS, waiting for android impl
       if (Theme.of(context).platform == TargetPlatform.iOS) {
-        // (Optional) listen for notification updates in the background
-        _audioPlayer.startHeadlessService();
-
-        // set at least title to see the notification bar on ios.
-        _audioPlayer.setNotification(
-            title: _songData.currentSong.title,
-            artist: _songData.currentSong.author,
-            //albumTitle: 'Name or blank',
-            imageUrl: _songData.currentSong.pic,
-            forwardSkipInterval: const Duration(seconds: 30),
-            // default is 30s
-            backwardSkipInterval: const Duration(seconds: 30),
-            // default is 30s
-            duration: duration,
-            elapsedTime: Duration(seconds: 0));
+        // // (Optional) listen for notification updates in the background
+        // _audioPlayer.startHeadlessService();
+        //
+        // // set at least title to see the notification bar on ios.
+        // _audioPlayer.setNotification(
+        //     title: _songData.currentSong.title,
+        //     artist: _songData.currentSong.author,
+        //     //albumTitle: 'Name or blank',
+        //     imageUrl: _songData.currentSong.pic,
+        //     forwardSkipInterval: const Duration(seconds: 30),
+        //     // default is 30s
+        //     backwardSkipInterval: const Duration(seconds: 30),
+        //     // default is 30s
+        //     duration: duration,
+        //     elapsedTime: Duration(seconds: 0));
       }
     });
 
-    _audioPlayer.onAudioPositionChanged.listen((position) {
+    _audioPlayer.onPositionChanged.listen((position) {
       if (!mounted) return;
       if (_isSeeking) return;
       setState(() {
@@ -96,7 +95,7 @@ class PlayerState extends State<Player> {
       });
     });
 
-    _audioPlayer.onPlayerCompletion.listen((event) {
+    _audioPlayer.onPlayerComplete.listen((event) {
       // // _onComplete();
       // setState(() {
       //   _position = _duration;
@@ -108,28 +107,10 @@ class PlayerState extends State<Player> {
       _isSeeking = false;
     });
 
-    _audioPlayer.onPlayerError.listen((msg) {
-      if (!mounted) return;
-      print('audioPlayer error : $msg');
-      setState(() {
-        _duration = Duration(seconds: 0);
-        _position = Duration(seconds: 0);
-      });
-    });
-
     _audioPlayer.onPlayerStateChanged.listen((state) {
       if (!mounted) return;
       setState(() {
-        _audioPlayerState = state;
-        _songData.setPlaying(_audioPlayerState == AudioPlayerState.PLAYING);
-      });
-    });
-
-    _audioPlayer.onNotificationPlayerStateChanged.listen((state) {
-      if (!mounted) return;
-      setState(() {
-        _audioPlayerState = state;
-        _songData.setPlaying(_audioPlayerState == AudioPlayerState.PLAYING);
+        _songData.setPlaying(state == PlayerState.playing);
       });
     });
   }
@@ -144,23 +125,22 @@ class PlayerState extends State<Player> {
     String lyric = await API.getLyric(s);
     print('获取播放地址: $url 播放地址: ${_songData.url}');
     print('获取歌词: $lyric');
-    await _audioPlayer.stop();
-    int result = await _audioPlayer.play(url, stayAwake: true);
-    if (result == 1) {
-      _songData.setPlaying(true);
-    }
+    _audioPlayer.setSourceUrl(url);
+    _audioPlayer.play(UrlSource(url));
+
+    _songData.setPlaying(true);
     _songData.setUrl(url);
     _songData.currentSong.lrc = lyric;
   }
 
   void pause() async {
-    final result = await _audioPlayer.pause();
-    if (result == 1) setState(() => _songData.setPlaying(false));
+    await _audioPlayer.pause();
+    setState(() => _songData.setPlaying(false));
   }
 
   void resume() async {
-    final result = await _audioPlayer.resume();
-    if (result == 1) setState(() => _songData.setPlaying(true));
+    await _audioPlayer.resume();
+    setState(() => _songData.setPlaying(true));
   }
 
   void next() {
@@ -326,7 +306,4 @@ class PlayerState extends State<Player> {
     ];
   }
 
-// void _onComplete() {
-//   setState(() => _songData.setPlayState(PlayState.stopped));
-// }
 }

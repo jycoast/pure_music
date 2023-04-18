@@ -149,7 +149,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                 ],
               ),
             ),
-            Player(
+            PlayerCarousel(
               songData: songModel,
               downloadData: downloadModel,
               nowPlay: widget.nowPlay,
