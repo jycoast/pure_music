@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
+import 'package:pure_music/ui/page/player_page.dart';
 
 class Lyric extends StatefulWidget {
   String imgSrc;
@@ -18,7 +19,6 @@ class Lyric extends StatefulWidget {
 }
 
 class _LyricState extends State<Lyric> with SingleTickerProviderStateMixin {
-
   int playProgress = 0;
   String normalLyric = "qq";
   AudioPlayer audioPlayer;
@@ -49,51 +49,51 @@ class _LyricState extends State<Lyric> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     print('位置$playProgress');
     return Container(
-      width: MediaQuery.of(context).size.width,
-      child: buildReaderWidget(),
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
+      child: buildReaderWidget(context),
     );
   }
 
   var lyricPadding = 60.0;
 
-  Stack buildReaderWidget() {
+  Stack buildReaderWidget(BuildContext context) {
     return Stack(
       children: [
         ...buildReaderBackground(),
         LyricsReader(
-          padding: EdgeInsets.symmetric(
-              horizontal: lyricPadding, vertical: lyricPadding),
-          model: LyricsModelBuilder.create()
-              .bindLyricToMain(normalLyric)
-              .getModel(),
-          position: playProgress,
-          lyricUi: lyricUI,
-          playing: true,
-          size: Size(double.infinity, MediaQuery.of(context).size.height),
-          emptyBuilder: () => Center(
-            child: Text(
-              "No lyrics",
-              style: lyricUI.getOtherMainTextStyle(),
-            ),
-          ),
-          // selectLineBuilder: (progress, confirm) {
-          //   return Row(
-          //     children: [
-          //       Expanded(
-          //         child: Container(
-          //           decoration: BoxDecoration(color: Colors.green),
-          //           height: 1,
-          //           width: double.infinity,
-          //         ),
-          //       ),
-          //       Text(
-          //         progress.toString(),
-          //         style: TextStyle(color: Colors.green),
-          //       )
-          //     ],
-          //   );
-          // },
-        )
+            padding: EdgeInsets.symmetric(
+                horizontal: lyricPadding, vertical: lyricPadding),
+            model: LyricsModelBuilder.create()
+                .bindLyricToMain(normalLyric)
+                .getModel(),
+            position: playProgress,
+            lyricUi: lyricUI,
+            playing: true,
+            size: Size(double.infinity, MediaQuery
+                .of(context)
+                .size
+                .height),
+            emptyBuilder: () =>
+                Center(
+                  child: Text(
+                    "No lyrics",
+                    style: lyricUI.getOtherMainTextStyle(),
+                  ),
+                ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      PlayPage(
+                        nowPlay: false,
+                      ),
+                ),
+              );
+            })
       ],
     );
   }

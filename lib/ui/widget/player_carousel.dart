@@ -137,7 +137,7 @@ class PlayerState extends State<Player> {
   void play(Song s) async {
     String url;
     if (_downloadData.isDownload(s)) {
-      url = _downloadData.getDirectoryPath + '/${s.songid}.mp3';
+      url = _downloadData.getDirectoryPath;
     } else {
       url = await API.getSongUrl(s);
     }
