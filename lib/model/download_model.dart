@@ -15,7 +15,7 @@ const String kDownloadList = 'kDownloadList';
 const String kDirectoryPath = 'kDirectoryPath';
 
 /// 我的下载列表
-class DownloadListModel extends ViewStateListModel<Song> {
+class   DownloadListModel extends ViewStateListModel<Song> {
   DownloadModel downloadModel;
 
   DownloadListModel({this.downloadModel});
@@ -35,6 +35,7 @@ class DownloadListModel extends ViewStateListModel<Song> {
 }
 
 class DownloadModel with ChangeNotifier {
+
   DownloadModel() {
     _directoryPath = StorageManager.sharedPreferences.getString(kDirectoryPath);
   }
@@ -69,7 +70,7 @@ class DownloadModel with ChangeNotifier {
       dir = await getDownloadsDirectory();
     }
     final file = File('${dir.path}/${s.title}-${s.songid}.mp3');
-    setDirectoryPath(file.path);
+    setDirectoryPath('${dir.path}');
 
     if (await file.exists()) {
       return;

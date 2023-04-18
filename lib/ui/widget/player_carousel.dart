@@ -96,10 +96,10 @@ class PlayerCarouselState extends State<PlayerCarousel> {
     });
 
     _audioPlayer.onPlayerComplete.listen((event) {
-      // // _onComplete();
-      // setState(() {
-      //   _position = _duration;
-      // });
+      // _onComplete();
+       setState(() {
+         _position = _duration;
+       });
       next();
     });
 
@@ -118,14 +118,13 @@ class PlayerCarouselState extends State<PlayerCarousel> {
   void play(Song s) async {
     String url;
     if (_downloadData.isDownload(s)) {
-      url = _downloadData.getDirectoryPath;
+      url = _downloadData.getDirectoryPath + '/${s.title}-${s.songid}.mp3';
     } else {
       url = await API.getSongUrl(s);
     }
     String lyric = await API.getLyric(s);
     print('获取播放地址: $url 播放地址: ${_songData.url}');
     print('获取歌词: $lyric');
-    _audioPlayer.setSourceUrl(url);
     _audioPlayer.play(UrlSource(url));
 
     _songData.setPlaying(true);
@@ -305,5 +304,4 @@ class PlayerCarouselState extends State<PlayerCarousel> {
       ),
     ];
   }
-
 }
