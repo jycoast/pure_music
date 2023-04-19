@@ -101,6 +101,7 @@ class S implements WidgetsLocalizations {
   String get wechatAccount => "Wechat";
   String get localMusic => "localMusic";
   String get closeTime => "closeTime";
+  String get playHistory => "playHistory";
   String appUpdateFoundNewVersion(String version) => "New version $version";
 }
 
@@ -274,6 +275,8 @@ class $zh_CN extends S {
   String get localMusic => "本地";
   @override
   String get closeTime => "定时关闭";
+  @override
+  String get playHistory => "播放历史";
 }
 
 class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {

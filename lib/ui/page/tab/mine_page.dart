@@ -9,6 +9,7 @@ import 'package:pure_music/model/theme_model.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:pure_music/ui/widget/song_list.dart';
 
 class MinePage extends StatefulWidget {
   @override
@@ -97,7 +98,26 @@ class UserListWidget extends StatelessWidget {
                   localModel.switchLocale();
                 }),
           ),
-          SettingTimeWidget()
+          SettingTimeWidget(),
+          ListTile(
+            title: Text(S.of(context).playHistory),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SongList()
+                ),
+              );
+            },
+            leading: Icon(
+              Icons.history,
+              color: iconColor,
+            ),
+            trailing: Icon(
+              Icons.navigate_next_rounded,
+              color: iconColor,
+            ),
+          ),
         ]),
       ),
     );
