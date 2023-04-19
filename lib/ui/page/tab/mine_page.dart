@@ -221,13 +221,13 @@ class SettingTimeState extends State<SettingTimeWidget> {
                         fontWeight: FontWeight.w500, fontSize: 16.0),
                   )),
                   onTap: () {
+                    if (_timer != null && _countdownTimer != null) {
+                      _timer.cancel();
+                      _countdownTimer.cancel();
+                    }
                     if (time == '不开启') {
-                      if (_timer != null && _countdownTimer != null) {
-                        _timer.cancel();
-                        _countdownTimer.cancel();
-                        _countdownTime = 0;
-                        print('已取消');
-                      }
+                      _countdownTime = 0;
+                      print('已取消');
                     } else {
                       int intTime =
                           int.parse(time.substring(0, time.indexOf('分')));
@@ -235,7 +235,6 @@ class SettingTimeState extends State<SettingTimeWidget> {
                       print('$intTime分钟后将被关闭');
                       _timer = Timer(Duration(minutes: intTime), () {
                         print('应用即将关闭：' + DateTime.now().toString());
-                        // PlayerState().dispose();
                         SystemNavigator.pop();
                       });
                       _countdownTime = intTime * 60;

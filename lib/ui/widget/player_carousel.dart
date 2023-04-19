@@ -60,46 +60,30 @@ class PlayerCarouselState extends State<PlayerCarousel> {
     _position = _songData.position;
     _duration = _songData.duration;
     _audioPlayer.onDurationChanged.listen((duration) {
-      if (!mounted) return;
-      setState(() {
-        _duration = duration;
-        _songData.setDuration(_duration);
-      });
-
-      // TODO implemented for iOS, waiting for android impl
-      if (Theme.of(context).platform == TargetPlatform.iOS) {
-        // // (Optional) listen for notification updates in the background
-        // _audioPlayer.startHeadlessService();
-        //
-        // // set at least title to see the notification bar on ios.
-        // _audioPlayer.setNotification(
-        //     title: _songData.currentSong.title,
-        //     artist: _songData.currentSong.author,
-        //     //albumTitle: 'Name or blank',
-        //     imageUrl: _songData.currentSong.pic,
-        //     forwardSkipInterval: const Duration(seconds: 30),
-        //     // default is 30s
-        //     backwardSkipInterval: const Duration(seconds: 30),
-        //     // default is 30s
-        //     duration: duration,
-        //     elapsedTime: Duration(seconds: 0));
+      if (mounted) {
+        setState(() {
+          _duration = duration;
+          _songData.setDuration(_duration);
+        });
       }
     });
 
     _audioPlayer.onPositionChanged.listen((position) {
-      if (!mounted) return;
       if (_isSeeking) return;
-      setState(() {
-        _position = position;
-        _songData.setPosition(_position);
-      });
+      if (mounted) {
+        setState(() {
+          _position = position;
+          _songData.setPosition(_position);
+        });
+      }
     });
 
     _audioPlayer.onPlayerComplete.listen((event) {
-      // _onComplete();
-       setState(() {
-         _position = _duration;
-       });
+      if (mounted) {
+        setState(() {
+          _position = _duration;
+        });
+      }
       next();
     });
 
@@ -125,8 +109,10 @@ class PlayerCarouselState extends State<PlayerCarousel> {
     String lyric = await API.getLyric(s);
     print('获取播放地址: $url 播放地址: ${_songData.url}');
     print('获取歌词: $lyric');
-    _audioPlayer.play(UrlSource(url));
-
+    // 发生错误播放下一首
+    _audioPlayer
+        .play(UrlSource(url))
+        .onError((error, stackTrace) => {print('播放错误$stackTrace'), next()});
     _songData.setPlaying(true);
     _songData.setUrl(url);
     _songData.currentSong.lrc = lyric;

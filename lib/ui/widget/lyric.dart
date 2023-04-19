@@ -3,14 +3,13 @@ import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
-import 'package:pure_music/ui/page/player_page.dart';
 
 class Lyric extends StatefulWidget {
   String imgSrc;
 
   AudioPlayer audioPlayer;
 
-  String normalLyric = '21312321321';
+  String normalLyric = '';
 
   @override
   _LyricState createState() => _LyricState();
@@ -20,7 +19,7 @@ class Lyric extends StatefulWidget {
 
 class _LyricState extends State<Lyric> with SingleTickerProviderStateMixin {
   int playProgress = 0;
-  String normalLyric = "qq";
+  String normalLyric = "";
   AudioPlayer audioPlayer;
 
   var lyricUI = UINetease();
@@ -31,12 +30,22 @@ class _LyricState extends State<Lyric> with SingleTickerProviderStateMixin {
     print(widget.imgSrc);
     normalLyric = widget.normalLyric;
     audioPlayer = widget.audioPlayer;
-    audioPlayer.onPositionChanged.listen((event) {
-      // print('onAudioPositionChanged${event.inMicroseconds}');
-      playProgress = event.inMicroseconds;
-      // print(playProgress);
-    });
+    listenPosition();
+    print(playProgress);
     super.initState();
+  }
+
+  void listenPosition() {
+    if (!mounted) {
+      return;
+    }
+    audioPlayer.onPositionChanged.listen((event) {
+      if (mounted) {
+        setState(() {
+          playProgress = event.inMicroseconds;
+        });
+      }
+    });
   }
 
   @override
@@ -47,12 +56,8 @@ class _LyricState extends State<Lyric> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    print('位置$playProgress');
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: MediaQuery.of(context).size.width,
       child: buildReaderWidget(context),
     );
   }
@@ -72,27 +77,15 @@ class _LyricState extends State<Lyric> with SingleTickerProviderStateMixin {
             position: playProgress,
             lyricUi: lyricUI,
             playing: true,
-            size: Size(double.infinity, MediaQuery
-                .of(context)
-                .size
-                .height),
-            emptyBuilder: () =>
-                Center(
+            size: Size(double.infinity, MediaQuery.of(context).size.height),
+            emptyBuilder: () => Center(
                   child: Text(
                     "No lyrics",
                     style: lyricUI.getOtherMainTextStyle(),
                   ),
                 ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) =>
-                      PlayPage(
-                        nowPlay: false,
-                      ),
-                ),
-              );
+              Navigator.pop(context);
             })
       ],
     );
