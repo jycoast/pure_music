@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:pure_music/model/download_model.dart';
 import 'package:pure_music/model/song_model.dart';
 import 'package:pure_music/config/apis/api.dart';
@@ -99,6 +100,7 @@ class PlayerCarouselState extends State<PlayerCarousel> {
     });
   }
 
+
   void play(Song s) async {
     String url;
     if (_downloadData.isDownload(s)) {
@@ -112,10 +114,10 @@ class PlayerCarouselState extends State<PlayerCarousel> {
     // 发生错误播放下一首
     _audioPlayer
         .play(UrlSource(url))
-        .onError((error, stackTrace) => {print('播放错误$stackTrace'), next()});
+        .onError((error, stackTrace) => {print('播放错误$stackTrace'), play(s)});
     _songData.setPlaying(true);
-    _songData.setUrl(url);
     _songData.currentSong.lrc = lyric;
+    Hive.box('recently played').put(s.songid.toString(), s.toJson());
   }
 
   void pause() async {
