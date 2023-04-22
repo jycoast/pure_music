@@ -4,10 +4,13 @@ import 'package:pure_music/generated/i18n.dart';
 import 'package:pure_music/model/song_model.dart';
 import 'package:pure_music/ui/page/albums_page.dart';
 
+import 'album_list.dart';
+
 class AlbumsCarousel extends StatefulWidget {
   final List<RcmPlayList> alubums;
 
   AlbumsCarousel(this.alubums);
+
   @override
   _AlbumsCarouselState createState() => _AlbumsCarouselState();
 }
@@ -28,7 +31,12 @@ class _AlbumsCarouselState extends State<AlbumsCarousel> {
                     letterSpacing: 1.2)),
             GestureDetector(
               onTap: () => {
-                print('View All'),
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => AlbumList(
+                              title: '精选歌单',
+                            ))),
               },
               child: Text(S.of(context).viewAll,
                   style: TextStyle(
@@ -95,15 +103,6 @@ class _AlbumsCarouselState extends State<AlbumsCarousel> {
                           SizedBox(
                             height: 10,
                           ),
-                          // Text(
-                          //   data.name,
-                          //   style: TextStyle(
-                          //     fontSize: 10.0,
-                          //     color: Colors.grey,
-                          //   ),
-                          //   maxLines: 1,
-                          //   overflow: TextOverflow.ellipsis,
-                          // ),
                         ],
                       ),
                     ),

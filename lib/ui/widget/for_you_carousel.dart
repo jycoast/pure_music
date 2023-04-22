@@ -5,11 +5,15 @@ import 'package:pure_music/model/favorite_model.dart';
 import 'package:pure_music/model/song_model.dart';
 import 'package:pure_music/ui/page/player_page.dart';
 import 'package:provider/provider.dart';
+import 'package:pure_music/ui/widget/song_list.dart';
+
+import 'album_list.dart';
 
 class ForYouCarousel extends StatefulWidget {
   final List<Song> forYou;
 
   ForYouCarousel(this.forYou);
+
   @override
   _ForYouCarouselState createState() => _ForYouCarouselState();
 }
@@ -107,7 +111,8 @@ class _ForYouCarouselState extends State<ForYouCarousel> {
                     letterSpacing: 1.2)),
             GestureDetector(
               onTap: () => {
-                print('View All'),
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => AlbumList(title: '精选歌单',))),
               },
               child: Text(S.of(context).viewAll,
                   style: TextStyle(
@@ -120,7 +125,8 @@ class _ForYouCarouselState extends State<ForYouCarousel> {
         ),
       ),
       ListView.builder(
-        shrinkWrap: true, //解决无限高度问题
+        shrinkWrap: true,
+        //解决无限高度问题
         physics: new NeverScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
         itemCount: widget.forYou.length,

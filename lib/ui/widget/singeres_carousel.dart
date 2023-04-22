@@ -5,11 +5,13 @@ import 'package:pure_music/model/song_model.dart';
 import 'package:pure_music/ui/page/albums_page.dart';
 
 import '../page/singeres_page.dart';
+import 'album_list.dart';
 
 class SingeresCarousel extends StatefulWidget {
   final List<Singer> singeres;
 
   SingeresCarousel(this.singeres);
+
   @override
   _SingeresCarouselState createState() => _SingeresCarouselState();
 }
@@ -30,7 +32,12 @@ class _SingeresCarouselState extends State<SingeresCarousel> {
                     letterSpacing: 1.2)),
             GestureDetector(
               onTap: () => {
-                print('View All'),
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => AlbumList(
+                              title: '精选歌单',
+                            ))),
               },
               child: Text(S.of(context).viewAll,
                   style: TextStyle(

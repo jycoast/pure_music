@@ -216,6 +216,17 @@ class Song {
         lrc = map["lrc"].toString(),
         url = map["url"].toString(),
         pic = map["pic"].toString();
+
+  /// TODO 优化映射模型
+  Song.fromJsonMap3(Map<dynamic, dynamic> map)
+      : type = map["type"].toString(),
+        link = map["link"].toString(),
+        songid = map["songid"].toString(),
+        title = map["title"].toString(),
+        author = map["author"].toString(),
+        lrc = map["lrc"].toString(),
+        url = map["url"].toString(),
+        pic = map["pic"].toString();
 }
 
 class Singer {

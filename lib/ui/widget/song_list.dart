@@ -23,7 +23,7 @@ class _SongListState extends State<SongList> {
   void initState() {
     List recentlyPlayed = Hive.box('recently played').values.toList();
     for (var recent in recentlyPlayed) {
-      Song song = Song.fromJsonMap2(recent);
+      Song song = Song.fromJsonMap3(recent);
       songList.add(song);
     }
     print('初始化$songList');
@@ -31,33 +31,42 @@ class _SongListState extends State<SongList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      //解决无限高度问题
-      // physics: new NeverScrollableScrollPhysics(),
-      scrollDirection: Axis.vertical,
-      itemCount: songList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          onTap: () {
-            if (null != songList[index]) {
-              SongModel songModel = Provider.of(context, listen: false);
-              songModel.setSongs(songList);
-              songModel.setCurrentIndex(index);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => PlayPage(
-                    nowPlay: true,
-                  ),
-                ),
-              );
-            }
-          },
-          child: _buildSongItem(songList[index]),
-        );
-      },
-    );
+    return Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            AppBar(
+              title: Text('播放历史'),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              //解决无限高度问题
+              // physics: new NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              itemCount: songList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    if (null != songList[index]) {
+                      SongModel songModel = Provider.of(context, listen: false);
+                      songModel.setSongs(songList);
+                      songModel.setCurrentIndex(index);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PlayPage(
+                            nowPlay: true,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: _buildSongItem(songList[index]),
+                );
+              },
+            )
+          ],
+        ));
   }
 
   Widget _buildSongItem(Song data) {
@@ -86,12 +95,13 @@ class _SongListState extends State<SongList> {
                             inherit: false,
                             fontSize: 12.0,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFFE0E0E0),
+                            color: Colors.black,
                           )
                         : TextStyle(
                             inherit: false,
                             fontSize: 12.0,
                             fontWeight: FontWeight.w600,
+                            color: Colors.black,
                           ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -100,7 +110,7 @@ class _SongListState extends State<SongList> {
                     height: 10,
                   ),
                   Text(
-                    data.author,
+                    data.title,
                     style: data.url == null
                         ? TextStyle(
                             inherit: false,
