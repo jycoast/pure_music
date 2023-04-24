@@ -41,10 +41,13 @@ dependencies:
   hive_flutter: ^1.1.0
   getwidget: ^2.0.4
   flutter_screenutil: ^5.0.0+2
+  audio_service: ^0.18.9
+  just_audio: ^0.9.31
+  get_it: ^7.2.0
+  audio_video_progress_bar: ^1.0.0
 #  flutter_audio_manager: ^0.2.3
-  audio_manager: ^0.8.2
-  simple_audio_player: ^0.2.0
-#  audio_service: ^0.18.9
+#  audio_manager: ^0.8.2
+#  simple_audio_player: ^0.2.0
 #  just_audio: ^0.9.32
 #  rxdart: ^0.27.7
 dev_dependencies:

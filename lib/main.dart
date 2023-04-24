@@ -1,10 +1,12 @@
 
 import 'dart:io';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -19,6 +21,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:pure_music/ui/page/splash_page.dart';
 import 'package:pure_music/ui/page/tab/tab_navigator.dart';
 
+import 'Utils/audio_service.dart';
 import 'anims/page_route_anim.dart';
 
 void main() async {
@@ -35,10 +38,43 @@ void main() async {
   await openHiveBox('Favorite Songs');
   await openHiveBox('cache', limit: true);
   await openHiveBox('recently played');
+  // 初始化播放器
+  await startService();
+  var item = MediaItem(
+    id: 'https://other-web-nf01-sycdn.kuwo.cn/f22042fd69438b024e5640f19d103366/6446852f/resource/n3/35/5/1615658295.mp3',
+    album: 'Album name',
+    title: 'Track title',
+    artist: 'Artist name',
+    duration: const Duration(milliseconds: 123456),
+    artUri: Uri.parse('https://img1.kuwo.cn/star/userpl2015/26/68/1681106398218_566304026_500.jpg'),
+  );
+  AudioHandler _audioHandler = GetIt.I<AudioHandler>();
+  _audioHandler.playMediaItem(item);
+  // _audioHandler.playFromSearch(queryString);
+   _audioHandler.playFromUri(Uri.parse("https://other-web-nf01-sycdn.kuwo.cn/f22042fd69438b024e5640f19d103366/6446852f/resource/n3/35/5/1615658295.mp3"));
+  // _audioHandler.playFromMediaId(id);
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
     runApp(MyApp());
   });
+}
+
+
+Future<void> startService() async {
+  final AudioHandler audioHandler = await AudioService.init(
+    builder: () => AudioPlayerHandlerImpl(),
+    config: AudioServiceConfig(
+      androidNotificationChannelId: 'com.shadow.blackhole.channel.audio',
+      androidNotificationChannelName: 'BlackHole',
+      androidNotificationOngoing: true,
+      androidNotificationIcon: 'drawable/ic_stat_music_note',
+      androidShowNotificationBadge: true,
+      // androidStopForegroundOnPause: Hive.box('settings')
+      // .get('stopServiceOnPause', defaultValue: true) as bool,
+      notificationColor: Colors.grey[900],
+    ),
+  );
+  GetIt.I.registerSingleton<AudioHandler>(audioHandler);
 }
 
 
