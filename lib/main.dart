@@ -23,7 +23,7 @@ import 'package:pure_music/ui/page/tab/tab_navigator.dart';
 
 import 'Utils/audio_service.dart';
 import 'anims/page_route_anim.dart';
-import 'audio_service/page_manager.dart';
+import 'audio_service/audio_manager.dart';
 import 'audio_service/services/service_locator.dart';
 
 void main() async {
@@ -42,7 +42,6 @@ void main() async {
   await openHiveBox('recently played');
   // 初始化播放器
   await setupServiceLocator();
-  // getIt<PageManager>().init();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
     runApp(MyApp());

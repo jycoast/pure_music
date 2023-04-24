@@ -4,13 +4,11 @@ import 'notifiers/PlayButtonNotifier.dart';
 import 'notifiers/progress_notifier.dart';
 import 'notifiers/repeat_button_notifier.dart';
 import 'services/playlist_repository.dart';
-import 'package:audio_service/audio_service.dart';
 import 'services/service_locator.dart';
 
 
-class PageManager {
+class AudioManager {
   final _audioHandler = getIt<AudioHandler>();
-  // Listeners: Updates going to the UI
   final currentSongTitleNotifier = ValueNotifier<String>('');
   final playlistNotifier = ValueNotifier<List<String>>([]);
   final progressNotifier = ProgressNotifier();
@@ -22,7 +20,7 @@ class PageManager {
 
   // Events: Calls coming from the UI
   void init() async {
-    await _loadPlaylist();
+    // await _loadPlaylist();
     _listenToChangesInPlaylist();
     _listenToPlaybackState();
     _listenToCurrentPosition();

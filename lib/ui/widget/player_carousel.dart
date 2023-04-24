@@ -1,13 +1,15 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pure_music/audio_service/main.dart';
+import 'package:pure_music/audio_service/notifiers/PlayButtonNotifier.dart';
 import 'package:pure_music/audio_service/services/service_locator.dart';
 import 'package:pure_music/config/apis/api.dart';
 import 'package:pure_music/model/download_model.dart';
 import 'package:pure_music/model/song_model.dart';
-import '../../audio_service/page_manager.dart';
+import '../../audio_service/notifiers/progress_notifier.dart';
+import '../../audio_service/notifiers/repeat_button_notifier.dart';
+import '../../audio_service/audio_manager.dart';
 
 class PlayerCarousel extends StatefulWidget {
   /// 播放列表
@@ -41,31 +43,25 @@ class PlayerCarousel extends StatefulWidget {
 }
 
 class PlayerCarouselState extends State<PlayerCarousel> {
+  final _audioHandler = getIt<AudioHandler>();
 
-  final audioHandler = getIt<AudioHandler>();
+  final _audioManager = getIt<AudioManager>();
 
-
-  final audioManager = getIt<PageManager>();
-
-  Duration _duration;
-  Duration _position;
   SongModel _songData;
   DownloadModel _downloadData;
   bool isPlaying = false;
-  double _slider;
   num curIndex = 0;
-
-  AudioPlayer _audioPlayer;
 
   @override
   void initState() {
+    getIt<AudioManager>().init();
     super.initState();
     _songData = widget.songData;
     _downloadData = widget.downloadData;
-
     if (widget.nowPlay) {
       play();
     }
+    isPlaying = true;
   }
 
   void play() async {
@@ -74,43 +70,30 @@ class PlayerCarouselState extends State<PlayerCarousel> {
     song.url = url;
     print('播放地址${song}');
     MediaItem mediaItem = toMediaItem(song);
-    audioHandler.addQueueItem(mediaItem);
-    audioManager.play();
+    _audioHandler.addQueueItem(mediaItem);
+    _audioManager.play();
   }
 
   MediaItem toMediaItem(Song song) {
-    return MediaItem(id: song.songid, title: song.title, artUri: Uri.parse(song.pic), extras: {'url': song.url},);
+    return MediaItem(
+      id: song.songid,
+      title: song.title,
+      artUri: Uri.parse(song.pic),
+      extras: {'url': song.url},
+    );
   }
 
   @override
   void dispose() {
     // 释放所有资源
-    // AudioManager.instance.release();
+    // getIt<AudioManager>().dispose();
     super.dispose();
-  }
-
-  void pause() async {
-    await _audioPlayer.pause();
-    setState(() => _songData.setPlaying(false));
-  }
-
-  void resume() async {
-    await _audioPlayer.resume();
-    setState(() => _songData.setPlaying(true));
-  }
-
-  String _formatDuration(Duration d) {
-    if (d == null) return "--:--";
-    int minute = d.inMinutes;
-    int second = (d.inSeconds > 60) ? (d.inSeconds % 60) : d.inSeconds;
-    String format = "$minute" + ":" + ((second < 10) ? "0$second" : "$second");
-    return format;
   }
 
   @override
   Widget build(BuildContext context) {
     if (_songData.playNow) {
-      audioManager.play();
+      _audioManager.play();
     }
     return Column(
       children: _controllers(context),
@@ -144,7 +127,7 @@ class PlayerCarouselState extends State<PlayerCarousel> {
             Visibility(
               visible: _songData.showList,
               child: IconButton(
-                onPressed: () => audioManager.previous(),
+                onPressed: () => _audioManager.previous(),
                 icon: Icon(
                   //Icons.skip_previous,
                   Icons.fast_rewind,
@@ -164,7 +147,9 @@ class PlayerCarouselState extends State<PlayerCarousel> {
                 height: 70.0,
                 child: IconButton(
                   onPressed: () {
-                    _songData.isPlaying ? pause() : resume();
+                    _songData.isPlaying
+                        ? _audioManager.pause()
+                        : _audioManager.play();
                   },
                   icon: Icon(
                     _songData.isPlaying ? Icons.pause : Icons.play_arrow,
@@ -177,7 +162,7 @@ class PlayerCarouselState extends State<PlayerCarousel> {
             Visibility(
               visible: _songData.showList,
               child: IconButton(
-                onPressed: () => audioManager.next(),
+                onPressed: () => _audioManager.next(),
                 icon: Icon(
                   //Icons.skip_next,
                   Icons.fast_forward,
@@ -201,62 +186,175 @@ class PlayerCarouselState extends State<PlayerCarousel> {
     ];
   }
 
-  Widget songProgress(BuildContext context) {
-    var style = TextStyle(color: Colors.grey);
-    return Row(
-      children: <Widget>[
-        Text(
-          _formatDuration(_position),
-          style: style,
-        ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5),
-            child: SliderTheme(
-                data: SliderTheme.of(context).copyWith(
-                  trackHeight: 2,
-                  thumbColor: Colors.blueAccent,
-                  overlayColor: Colors.blue,
-                  thumbShape: RoundSliderThumbShape(
-                    disabledThumbRadius: 5,
-                    enabledThumbRadius: 5,
-                  ),
-                  overlayShape: RoundSliderOverlayShape(
-                    overlayRadius: 10,
-                  ),
-                  activeTrackColor: Colors.blueAccent,
-                  inactiveTrackColor: Colors.grey,
-                ),
-                child: Slider(
-                  value: _slider ?? 0,
-                  onChanged: (value) {
-                    setState(() {
-                      _slider = value;
-                    });
-                  },
-                  onChangeEnd: (value) {
-                    if (_duration != null) {
-                      Duration msec = Duration(
-                          milliseconds:
-                              (_duration.inMilliseconds * value).round());
-                      audioManager.seek(msec);
-                    }
-                  },
-                )),
-          ),
-        ),
-        Text(
-          _formatDuration(_duration),
-          style: style,
-        ),
-      ],
+  Widget bottomPanel() {
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 15.0),
+        child: Column(children: <Widget>[
+          AudioProgressBar(),
+          AudioControlButtons(),
+        ]));
+  }
+}
+
+class AudioProgressBar extends StatelessWidget {
+  const AudioProgressBar({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final _audioManager = getIt<AudioManager>();
+    return ValueListenableBuilder<ProgressBarState>(
+      valueListenable: _audioManager.progressNotifier,
+      builder: (_, value, __) {
+        return ProgressBar(
+          timeLabelPadding: 2.0,
+          progress: value.current,
+          buffered: value.buffered,
+          total: value.total,
+          onSeek: _audioManager.seek,
+        );
+      },
     );
   }
+}
 
-  Widget bottomPanel() {
-    return Column(children: <Widget>[
-      AudioProgressBar(),
-      AudioControlButtons(),
-    ]);
+class AudioControlButtons extends StatelessWidget {
+  const AudioControlButtons({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 60,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          RepeatButton(),
+          PreviousSongButton(),
+          PlayButton(),
+          NextSongButton(),
+          ShuffleButton(),
+        ],
+      ),
+    );
+  }
+}
+
+class RepeatButton extends StatelessWidget {
+  const RepeatButton({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final pageManager = getIt<AudioManager>();
+    return ValueListenableBuilder<RepeatState>(
+      valueListenable: pageManager.repeatButtonNotifier,
+      builder: (context, value, child) {
+        Icon icon;
+        switch (value) {
+          case RepeatState.off:
+            icon = Icon(Icons.repeat, color: Colors.grey);
+            break;
+          case RepeatState.repeatSong:
+            icon = Icon(Icons.repeat_one);
+            break;
+          case RepeatState.repeatPlaylist:
+            icon = Icon(Icons.repeat);
+            break;
+        }
+        return IconButton(
+          icon: icon,
+          onPressed: pageManager.repeat,
+        );
+      },
+    );
+  }
+}
+
+class PreviousSongButton extends StatelessWidget {
+  const PreviousSongButton({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final pageManager = getIt<AudioManager>();
+    return ValueListenableBuilder<bool>(
+      valueListenable: pageManager.isFirstSongNotifier,
+      builder: (_, isFirst, __) {
+        return IconButton(
+          icon: Icon(Icons.skip_previous),
+          onPressed: (isFirst) ? null : pageManager.previous,
+        );
+      },
+    );
+  }
+}
+
+class PlayButton extends StatelessWidget {
+  const PlayButton({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final _audioManager = getIt<AudioManager>();
+    return ValueListenableBuilder<ButtonState>(
+      valueListenable: _audioManager.playButtonNotifier,
+      builder: (_, value, __) {
+        switch (value) {
+          case ButtonState.loading:
+            return Container(
+              margin: EdgeInsets.all(8.0),
+              width: 32.0,
+              height: 32.0,
+              child: CircularProgressIndicator(),
+            );
+          case ButtonState.paused:
+            return IconButton(
+              icon: Icon(Icons.play_arrow),
+              iconSize: 32.0,
+              onPressed: _audioManager.play,
+            );
+          case ButtonState.playing:
+            return IconButton(
+              icon: Icon(Icons.pause),
+              iconSize: 32.0,
+              onPressed: _audioManager.pause,
+            );
+        }
+      },
+    );
+  }
+}
+
+class NextSongButton extends StatelessWidget {
+  const NextSongButton({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final pageManager = getIt<AudioManager>();
+    return ValueListenableBuilder<bool>(
+      valueListenable: pageManager.isLastSongNotifier,
+      builder: (_, isLast, __) {
+        return IconButton(
+          icon: Icon(Icons.skip_next),
+          onPressed: (isLast) ? null : pageManager.next,
+        );
+      },
+    );
+  }
+}
+
+class ShuffleButton extends StatelessWidget {
+  const ShuffleButton({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final pageManager = getIt<AudioManager>();
+    return ValueListenableBuilder<bool>(
+      valueListenable: pageManager.isShuffleModeEnabledNotifier,
+      builder: (context, isEnabled, child) {
+        return IconButton(
+          icon: (isEnabled)
+              ? Icon(Icons.shuffle)
+              : Icon(Icons.shuffle, color: Colors.grey),
+          onPressed: pageManager.shuffle,
+        );
+      },
+    );
   }
 }
