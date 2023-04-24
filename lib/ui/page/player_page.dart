@@ -74,60 +74,6 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                             SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height * 0.03),
-                            Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  IconButton(
-                                    onPressed: () => songModel
-                                        .setShowList(!songModel.showList),
-                                    icon: Icon(
-                                      Icons.list,
-                                      size: 25.0,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  IconButton(
-                                      onPressed: () => songModel.changeRepeat(),
-                                      icon: songModel
-                                          .icons[songModel.repeatIndex]),
-                                  IconButton(
-                                    onPressed: () => favouriteModel
-                                        .collect(songModel.currentSong),
-                                    icon: favouriteModel.isCollect(
-                                                songModel.currentSong) ==
-                                            true
-                                        ? Icon(
-                                            Icons.favorite,
-                                            size: 25.0,
-                                            color:
-                                                Theme.of(context).accentColor,
-                                          )
-                                        : Icon(
-                                            Icons.favorite_border,
-                                            size: 25.0,
-                                            color: Colors.grey,
-                                          ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () => downloadModel
-                                        .download(songModel.currentSong),
-                                    icon: downloadModel
-                                            .isDownload(songModel.currentSong)
-                                        ? Icon(
-                                            Icons.cloud_done,
-                                            size: 25.0,
-                                            color:
-                                                Theme.of(context).accentColor,
-                                          )
-                                        : Icon(
-                                            Icons.cloud_download,
-                                            size: 25.0,
-                                            color: Colors.grey,
-                                          ),
-                                  ),
-                                ]),
                             SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height * 0.02),
@@ -143,6 +89,66 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                               songModel.currentSong.title,
                               style: TextStyle(fontSize: 20.0),
                             ),
+                            SizedBox(
+                                height:
+                                MediaQuery.of(context).size.height * 0.2),
+                            Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  IconButton(
+                                    onPressed: () => songModel
+                                        .setShowList(!songModel.showList),
+                                    icon: Icon(
+                                      Icons.list,
+                                      size: 25.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  IconButton(
+                                      onPressed: () => {print('comment')},
+                                      icon: Icon(
+                                        Icons.comment_outlined,
+                                        size: 25.0,
+                                        color: Colors.grey,
+                                      )),
+                                  IconButton(
+                                    onPressed: () => favouriteModel
+                                        .collect(songModel.currentSong),
+                                    icon: favouriteModel.isCollect(
+                                        songModel.currentSong) ==
+                                        true
+                                        ? Icon(
+                                      Icons.favorite,
+                                      size: 25.0,
+                                      color:
+                                      Theme.of(context).accentColor,
+                                    )
+                                        : Icon(
+                                      Icons.favorite_border,
+                                      size: 25.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () => downloadModel
+                                        .download(songModel.currentSong),
+                                    icon: downloadModel
+                                        .isDownload(songModel.currentSong)
+                                        ? Icon(
+                                      Icons.cloud_done,
+                                      size: 25.0,
+                                      color:
+                                      Theme.of(context).accentColor,
+                                    )
+                                        : Icon(
+                                      Icons.cloud_download,
+                                      size: 25.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ]),
                           ],
                         )
                       : SongListCarousel(),

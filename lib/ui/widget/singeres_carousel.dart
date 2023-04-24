@@ -32,12 +32,12 @@ class _SingeresCarouselState extends State<SingeresCarousel> {
                     letterSpacing: 1.2)),
             GestureDetector(
               onTap: () => {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => AlbumList(
-                              title: '精选歌单',
-                            ))),
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (_) => AlbumList(
+                //               title: '精选歌单',
+                //             ))),
               },
               child: Text(S.of(context).viewAll,
                   style: TextStyle(

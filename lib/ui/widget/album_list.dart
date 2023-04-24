@@ -42,7 +42,8 @@ class _AlbumListState extends State<AlbumList> with TickerProviderStateMixin {
     return Container(
         color: Colors.white,
         width: MediaQuery.of(context).size.width,
-        child: Column(
+        child: Expanded(
+            child: Column(
           children: [
             AppBar(
               toolbarHeight: height * 0.02,
@@ -74,27 +75,30 @@ class _AlbumListState extends State<AlbumList> with TickerProviderStateMixin {
                 controller: tabController,
                 children: <Widget>[
                   Container(
-                    child: CustomGridView(index: tabController.index, tabController: tabController,),
+                    child: CustomGridView(
+                      tabController: tabController,
+                    ),
                   ),
                   Container(
-                    child: CustomGridView(index: tabController.index, tabController: tabController),
+                    child: CustomGridView(tabController: tabController),
                   ),
                   Container(
-                    child: CustomGridView(index: tabController.index, tabController: tabController),
+                    child: CustomGridView(tabController: tabController),
                   ),
                 ],
               ),
             ),
           ],
-        ));
+        )));
   }
 }
 
 class CustomGridView extends StatefulWidget {
   List<RcmPlayList> rcmPlayList = [];
-  int index;
+
   TabController tabController;
-  CustomGridView({this.index, this.tabController});
+
+  CustomGridView({this.tabController});
 
   @override
   _CustomGridViewState createState() => _CustomGridViewState();
@@ -112,10 +116,11 @@ class _CustomGridViewState extends State<CustomGridView> {
   }
 
   Future<void> loadRcmPlayList(int index) async {
-    List<RcmPlayList> rcmPlayList2 = await API.getRcmPlayList(page: index + 1);
+    List<RcmPlayList> newRcmPlayList =
+        await API.getRcmPlayList(page: index + 1);
     if (mounted) {
       setState(() {
-        rcmPlayList = rcmPlayList2;
+        rcmPlayList = newRcmPlayList;
       });
     }
   }
@@ -129,16 +134,16 @@ class _CustomGridViewState extends State<CustomGridView> {
         crossAxisCount: 2,
         mainAxisSpacing: 12,
         crossAxisSpacing: 20,
-        children: rcmPlayList
-            .map((rcmPlayList) => _buildItem(rcmPlayList))
-            .toList(),
+        children:
+            rcmPlayList.map((rcmPlayList) => _buildItem(rcmPlayList)).toList(),
       ),
     );
   }
 
   GestureDetector _buildItem(RcmPlayList rcmPlayList) => GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => AlbumsPage(data: rcmPlayList)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (_) => AlbumsPage(data: rcmPlayList)));
       },
       child: Container(
         padding: EdgeInsets.all(6),
@@ -146,7 +151,7 @@ class _CustomGridViewState extends State<CustomGridView> {
         width: 100,
         height: 100,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
@@ -163,11 +168,10 @@ class _CustomGridViewState extends State<CustomGridView> {
             Text(
               rcmPlayList.name,
               style: TextStyle(
-                inherit: false,
-                fontSize: 12.0,
-                fontWeight: FontWeight.w600,
-                color: Colors.black
-              ),
+                  inherit: false,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
