@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:pure_music/config/apis/api.dart';
@@ -204,6 +205,10 @@ class Song {
     data['url'] = url;
     data['pic'] = pic;
     return data;
+  }
+
+  MediaItem toMediaItem() {
+    return MediaItem(id: songid, title: title, artUri: Uri.parse(pic), extras: {'url': url},);
   }
 
   /// TODO 优化映射模型

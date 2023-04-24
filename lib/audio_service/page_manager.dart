@@ -1,6 +1,5 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:pure_music/demo/services/service_locator.dart';
 import 'notifiers/PlayButtonNotifier.dart';
 import 'notifiers/progress_notifier.dart';
 import 'notifiers/repeat_button_notifier.dart';

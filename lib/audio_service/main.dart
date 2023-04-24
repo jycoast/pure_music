@@ -1,6 +1,5 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:pure_music/demo/services/audio_handler.dart';
 import 'notifiers/PlayButtonNotifier.dart';
 import 'notifiers/progress_notifier.dart';
 import 'notifiers/repeat_button_notifier.dart';
@@ -9,7 +8,6 @@ import 'services/service_locator.dart';
 
 void main() async {
   await setupServiceLocator();
-  // await initAudioService();
   runApp(MyApp());
 }
 
