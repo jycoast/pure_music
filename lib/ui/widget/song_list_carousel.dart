@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pure_music/audio_service/audio_manager.dart';
+import 'package:pure_music/audio_service/services/service_locator.dart';
 import 'package:pure_music/model/favorite_model.dart';
 import 'package:pure_music/model/song_model.dart';
 import 'package:provider/provider.dart';
@@ -156,6 +158,7 @@ class _ForYouCarouselState extends State<SongListCarousel> {
   @override
   Widget build(BuildContext context) {
     SongModel songModel = Provider.of(context);
+    AudioManager _audioManager = getIt<AudioManager>();
     return Expanded(
       child: ListView.builder(
         scrollDirection: Axis.vertical,
@@ -164,12 +167,13 @@ class _ForYouCarouselState extends State<SongListCarousel> {
           Song data = songModel.songs[index];
           return GestureDetector(
             onTap: () {
-              if (null != data.url) {
+              if (data != null) {
+                _audioManager.skipToQueueItem(index);
                 songModel.setCurrentIndex(index);
                 songModel.setPlayNow(true);
                 Future.delayed(new Duration(milliseconds: 100), () {
                   songModel.setPlayNow(false);
-                });
+                },);
               }
             },
             child: _buildSongItem(data),

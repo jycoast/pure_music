@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_music/anims/player_anim.dart';
+import 'package:pure_music/audio_service/audio_manager.dart';
+import 'package:pure_music/audio_service/services/service_locator.dart';
 import 'package:pure_music/model/download_model.dart';
 import 'package:pure_music/model/favorite_model.dart';
 import 'package:pure_music/model/song_model.dart';
@@ -18,6 +20,8 @@ class PlayPage extends StatefulWidget {
 }
 
 class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
+
+  final _audioManager = getIt<AudioManager>();
   AnimationController controllerPlayer;
   Animation<double> animationPlayer;
   final _commonTween = new Tween<double>(begin: 0.0, end: 1.0);
@@ -47,6 +51,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SongModel songModel = Provider.of(context);
+    _audioManager.addSongToQueue(songModel.songs.sublist(songModel.currentSongIndex),);
     DownloadModel downloadModel = Provider.of(context);
     FavoriteModel favouriteModel = Provider.of(context);
     if (songModel.isPlaying) {

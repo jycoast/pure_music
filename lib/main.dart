@@ -1,12 +1,10 @@
 
 import 'dart:io';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,10 +18,6 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:pure_music/ui/page/splash_page.dart';
 import 'package:pure_music/ui/page/tab/tab_navigator.dart';
-
-import 'Utils/audio_service.dart';
-import 'anims/page_route_anim.dart';
-import 'audio_service/audio_manager.dart';
 import 'audio_service/services/service_locator.dart';
 
 void main() async {

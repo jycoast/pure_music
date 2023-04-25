@@ -1,5 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:pure_music/config/apis/api.dart';
+import 'package:pure_music/model/song_model.dart';
 
 Future<AudioHandler> initAudioService() async {
   return await AudioService.init(
@@ -23,6 +25,7 @@ class MyAudioHandler extends BaseAudioHandler {
     _listenForDurationChanges();
     _listenForCurrentSongIndexChanges();
     _listenForSequenceStateChanges();
+    _listenForMeta();
   }
 
   Future<void> _loadEmptyPlaylist() async {
@@ -36,17 +39,21 @@ class MyAudioHandler extends BaseAudioHandler {
   @override
   Future<void> addQueueItems(List<MediaItem> mediaItems) async {
     // manage Just Audio
-    final audioSource = mediaItems.map(_createAudioSource);
-    _playlist.addAll(audioSource.toList());
-
+    _playlist.clear();
+    for (var mediaItem in mediaItems) {
+      UriAudioSource uriAudioSource = await _createAudioSource(mediaItem);
+      _playlist.add(uriAudioSource);
+    }
     // notify system
     final newQueue = queue.value..addAll(mediaItems);
     queue.add(newQueue);
   }
 
-  UriAudioSource _createAudioSource(MediaItem mediaItem) {
+  Future<UriAudioSource> _createAudioSource(MediaItem mediaItem) async {
+    String songid = mediaItem.id;
+    String url = await API.getPlayUrl(songid);
     return AudioSource.uri(
-      Uri.parse(mediaItem.extras['url'] as String),
+      Uri.parse(url),
       tag: mediaItem,
     );
   }
@@ -58,7 +65,29 @@ class MyAudioHandler extends BaseAudioHandler {
   Future<void> pause() => _player.pause();
 
   @override
+  Future<void> skipToNext() => _player.seekToNext();
+
+  @override
+  Future<void> skipToPrevious() => _player.seekToPrevious();
+
+  @override
   Future<void> seek(Duration position) => _player.seek(position);
+
+  @override
+  Future<void> stop() async {
+    await _player.stop();
+    return super.stop();
+  }
+
+  @override
+  Future<void> playMediaItem(MediaItem mediaItem) async {
+    print('要播放啦');
+    String mid = mediaItem.id;
+    String url = await API.getPlayUrl(mid);
+    Map<String, dynamic> map = {'url': url};
+    mediaItem.extras.addAll(map);
+    return super.playMediaItem(mediaItem);
+  }
 
   void _notifyAudioHandlerAboutPlaybackEvents() {
     _player.playbackEventStream.listen((PlaybackEvent event) {
@@ -114,12 +143,6 @@ class MyAudioHandler extends BaseAudioHandler {
     });
   }
 
-  @override
-  Future<void> skipToNext() => _player.seekToNext();
-
-  @override
-  Future<void> skipToPrevious() => _player.seekToPrevious();
-
   void _listenForCurrentSongIndexChanges() {
     _player.currentIndexStream.listen((index) {
       final playlist = queue.value;
@@ -157,6 +180,13 @@ class MyAudioHandler extends BaseAudioHandler {
     }
   }
 
+  void _listenForMeta() {
+    mediaItem.stream.listen((event) => {
+      print('haahhah'), print(event),
+      // event.extras.addAll(other);
+    });
+  }
+
   void _listenForSequenceStateChanges() {
     _player.sequenceStateStream.listen((SequenceState sequenceState) {
       final sequence = sequenceState?.effectiveSequence;
@@ -178,7 +208,7 @@ class MyAudioHandler extends BaseAudioHandler {
   @override
   Future<void> addQueueItem(MediaItem mediaItem) async {
     // manage Just Audio
-    final audioSource = _createAudioSource(mediaItem);
+    final audioSource = await _createAudioSource(mediaItem);
     _playlist.add(audioSource);
     // notify system
     final newQueue = queue.value..add(mediaItem);
@@ -195,16 +225,10 @@ class MyAudioHandler extends BaseAudioHandler {
   }
 
   @override
-  Future<void> stop() async {
-    await _player.stop();
-    return super.stop();
-  }
-
-  @override
   Future<void> customAction(
-      String name, [
-        Map<String, dynamic> extras,
-      ]) async {
+    String name, [
+    Map<String, dynamic> extras,
+  ]) async {
     if (name == 'dispose') {
       await _player.dispose();
       super.stop();

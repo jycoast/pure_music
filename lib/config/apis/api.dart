@@ -27,7 +27,7 @@ abstract class API {
     return api.getMusicList(i);
   }
 
-  static getPlayUrl(String mid) {
+  static Future<String> getPlayUrl(String mid) {
     return api.getPlayUrl(mid);
   }
 

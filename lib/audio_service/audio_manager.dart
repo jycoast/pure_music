@@ -1,11 +1,12 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pure_music/config/apis/api.dart';
+import 'package:pure_music/model/song_model.dart';
 import 'notifiers/PlayButtonNotifier.dart';
 import 'notifiers/progress_notifier.dart';
 import 'notifiers/repeat_button_notifier.dart';
 import 'services/playlist_repository.dart';
 import 'services/service_locator.dart';
-
 
 class AudioManager {
   final _audioHandler = getIt<AudioHandler>();
@@ -27,10 +28,15 @@ class AudioManager {
     _listenToTotalDuration();
     _listenToChangesInSong();
   }
-  void play() {
-    print('play');
+
+  Future<void> play() async {
     _audioHandler.play();
   }
+
+  void skipToQueueItem(int index) {
+    _audioHandler.skipToQueueItem(index);
+  }
+
   void pause() => _audioHandler.pause();
 
   void seek(Duration position) => _audioHandler.seek(position);
@@ -49,11 +55,11 @@ class AudioManager {
     final playlist = await songRepository.fetchInitialPlaylist();
     final mediaItems = playlist
         .map((song) => MediaItem(
-      id: song['id'] ?? '',
-      album: song['album'] ?? '',
-      title: song['title'] ?? '',
-      extras: {'url': song['url']},
-    ))
+              id: song['id'] ?? '',
+              album: song['album'] ?? '',
+              title: song['title'] ?? '',
+              extras: {'url': song['url']},
+            ))
         .toList();
     _audioHandler.addQueueItems(mediaItems);
   }
@@ -168,6 +174,18 @@ class AudioManager {
     _audioHandler.addQueueItem(mediaItem);
   }
 
+  void addSongToQueue(List<Song> songList) {
+    List<MediaItem> mediaItemList = [];
+    for (Song song in songList) {
+      mediaItemList.add(toMediaItem(song));
+    }
+    _audioHandler.addQueueItems(mediaItemList);
+  }
+
+  void addQueueItem(MediaItem mediaItem) {
+    _audioHandler.addQueueItem(mediaItem);
+  }
+
   void remove() {
     final lastIndex = _audioHandler.queue.value.length - 1;
     if (lastIndex < 0) return;
@@ -177,6 +195,13 @@ class AudioManager {
   void stop() {
     _audioHandler.stop();
   }
+
+  MediaItem toMediaItem(Song song) {
+    return MediaItem(
+      id: song.songid,
+      title: song.title,
+      artUri: Uri.parse(song.pic),
+      extras: {'url': song.url},
+    );
+  }
 }
-
-

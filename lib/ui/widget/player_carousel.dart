@@ -43,58 +43,35 @@ class PlayerCarousel extends StatefulWidget {
 }
 
 class PlayerCarouselState extends State<PlayerCarousel> {
-  final _audioHandler = getIt<AudioHandler>();
 
   final _audioManager = getIt<AudioManager>();
 
   SongModel _songData;
-  DownloadModel _downloadData;
   bool isPlaying = false;
   num curIndex = 0;
 
   @override
   void initState() {
-    getIt<AudioManager>().init();
-    super.initState();
     _songData = widget.songData;
-    _downloadData = widget.downloadData;
     if (widget.nowPlay) {
-      play();
+      _audioManager.skipToQueueItem(_songData.currentSongIndex);
     }
     isPlaying = true;
+    super.initState();
   }
 
-  void play() async {
-    Song song = _songData.currentSong;
-    String url = await API.getPlayUrl(song.songid);
-    song.url = url;
-    print('播放地址${song}');
-    MediaItem mediaItem = toMediaItem(song);
-    _audioHandler.addQueueItem(mediaItem);
-    _audioManager.play();
-  }
-
-  MediaItem toMediaItem(Song song) {
-    return MediaItem(
-      id: song.songid,
-      title: song.title,
-      artUri: Uri.parse(song.pic),
-      extras: {'url': song.url},
-    );
-  }
 
   @override
   void dispose() {
     // 释放所有资源
-    // getIt<AudioManager>().dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_songData.playNow) {
-      _audioManager.play();
-    }
+    // if (_songData.playNow) {
+    //   _audioManager.play();
+    // }
     return Column(
       children: _controllers(context),
     );
@@ -125,19 +102,7 @@ class PlayerCarouselState extends State<PlayerCarousel> {
               ),
             ),
             Visibility(
-              visible: _songData.showList,
-              child: IconButton(
-                onPressed: () => _audioManager.previous(),
-                icon: Icon(
-                  //Icons.skip_previous,
-                  Icons.fast_rewind,
-                  size: 25.0,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Theme.of(context).accentColor
-                      : Color(0xFF787878),
-                ),
-              ),
-            ),
+                visible: _songData.showList, child: PreviousSongButton()),
             Visibility(
               visible: _songData.showList,
               child: ClipOval(
@@ -145,41 +110,14 @@ class PlayerCarouselState extends State<PlayerCarousel> {
                 color: Theme.of(context).accentColor.withAlpha(30),
                 width: 70.0,
                 height: 70.0,
-                child: IconButton(
-                  onPressed: () {
-                    _songData.isPlaying
-                        ? _audioManager.pause()
-                        : _audioManager.play();
-                  },
-                  icon: Icon(
-                    _songData.isPlaying ? Icons.pause : Icons.play_arrow,
-                    size: 30.0,
-                    color: Theme.of(context).accentColor,
-                  ),
-                ),
+                child: PlayButton(),
               )),
             ),
             Visibility(
               visible: _songData.showList,
-              child: IconButton(
-                onPressed: () => _audioManager.next(),
-                icon: Icon(
-                  //Icons.skip_next,
-                  Icons.fast_forward,
-                  size: 25.0,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Theme.of(context).accentColor
-                      : Color(0xFF787878),
-                ),
-              ),
+              child: NextSongButton(),
             ),
-            Visibility(
-              visible: _songData.showList,
-              child: IconButton(
-                onPressed: () => _songData.changeRepeat(),
-                icon: _songData.icons[_songData.repeatIndex],
-              ),
-            ),
+            Visibility(visible: _songData.showList, child: RepeatButton()),
           ],
         ),
       ),
@@ -188,7 +126,7 @@ class PlayerCarouselState extends State<PlayerCarousel> {
 
   Widget bottomPanel() {
     return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 15.0),
+        padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 35.0),
         child: Column(children: <Widget>[
           AudioProgressBar(),
           AudioControlButtons(),

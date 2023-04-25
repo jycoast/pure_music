@@ -84,7 +84,7 @@ class SongModel with ChangeNotifier {
     notifyListeners();
   }
 
-  int _currentSongIndex = 0;
+  int currentSongIndex = 0;
 
   List<Song> get songs => _songs;
 
@@ -100,10 +100,10 @@ class SongModel with ChangeNotifier {
 
   int get length => _songs.length;
 
-  int get songNumber => _currentSongIndex + 1;
+  int get songNumber => currentSongIndex + 1;
 
   setCurrentIndex(int index) {
-    _currentSongIndex = index;
+    currentSongIndex = index;
     notifyListeners();
   }
 
@@ -117,42 +117,42 @@ class SongModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Song get currentSong => _songs[_currentSongIndex];
+  Song get currentSong => _songs[currentSongIndex];
 
   Song get nextSong {
     if (repeatIndex == 0) {
-      if (_currentSongIndex < length) {
-        _currentSongIndex++;
+      if (currentSongIndex < length) {
+        currentSongIndex++;
       }
-      if (_currentSongIndex == length) {
-        _currentSongIndex = 0;
+      if (currentSongIndex == length) {
+        currentSongIndex = 0;
       }
     } else if (repeatIndex == 1) {
       Random r = new Random();
-      _currentSongIndex = r.nextInt(_songs.length);
+      currentSongIndex = r.nextInt(_songs.length);
     } else if (repeatIndex == 2) {
-      _currentSongIndex = _currentSongIndex;
+      currentSongIndex = currentSongIndex;
     }
     notifyListeners();
-    return _songs[_currentSongIndex];
+    return _songs[currentSongIndex];
   }
 
   Song get prevSong {
     if (repeatIndex == 0) {
-      if (_currentSongIndex > 0) {
-        _currentSongIndex--;
+      if (currentSongIndex > 0) {
+        currentSongIndex--;
       }
-      if (_currentSongIndex == 0) {
-        _currentSongIndex = length - 1;
+      if (currentSongIndex == 0) {
+        currentSongIndex = length - 1;
       }
     } else if (repeatIndex == 1) {
       Random r = new Random();
-      _currentSongIndex = r.nextInt(_songs.length);
+      currentSongIndex = r.nextInt(_songs.length);
     } else if (repeatIndex == 2) {
-      _currentSongIndex = _currentSongIndex;
+      currentSongIndex = currentSongIndex;
     }
     notifyListeners();
-    return _songs[_currentSongIndex];
+    return _songs[currentSongIndex];
   }
 
   Duration _position;

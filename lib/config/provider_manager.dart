@@ -6,6 +6,8 @@ import 'package:pure_music/model/theme_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
+import '../ui/widget/song_list.dart';
+
 List<SingleChildWidget> providers = [
   ...independentServices,
   ...uiConsumableProviders
@@ -27,7 +29,7 @@ List<SingleChildStatelessWidget> independentServices = [
   ),
   ChangeNotifierProvider<SongModel>(
     create: (context) => SongModel(),
-  )
+  ),
 ];
 
 List<SingleChildStatelessWidget> uiConsumableProviders = [
