@@ -128,6 +128,8 @@ class _FavoritePageState extends State<FavoritePage>
                               MaterialPageRoute(
                                 builder: (_) => PlayPage(
                                   nowPlay: true,
+                                  songModel: songModel,
+                                  index: index,
                                 ),
                               ),
                             );

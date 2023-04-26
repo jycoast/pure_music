@@ -174,6 +174,15 @@ class AudioManager {
     _audioHandler.addQueueItem(mediaItem);
   }
 
+  Future<void> updatePlayQueue(
+      List<MediaItem> globalQueue, int globalIndex) async {
+    print(globalQueue);
+    print(globalIndex);
+    await _audioHandler.updateQueue(globalQueue);
+    await _audioHandler.skipToQueueItem(globalIndex);
+    await _audioHandler.play();
+  }
+
   void addSongToQueue(List<Song> songList) {
     List<MediaItem> mediaItemList = [];
     for (Song song in songList) {
@@ -184,6 +193,11 @@ class AudioManager {
 
   void addQueueItem(MediaItem mediaItem) {
     _audioHandler.addQueueItem(mediaItem);
+  }
+
+  MediaItem getCurretMedia() {
+    print('当前播放:${_audioHandler.mediaItem.value}');
+    return _audioHandler.mediaItem.value;
   }
 
   void remove() {

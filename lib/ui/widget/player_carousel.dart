@@ -44,8 +44,6 @@ class PlayerCarousel extends StatefulWidget {
 
 class PlayerCarouselState extends State<PlayerCarousel> {
 
-  final _audioManager = getIt<AudioManager>();
-
   SongModel _songData;
   bool isPlaying = false;
   num curIndex = 0;
@@ -54,7 +52,7 @@ class PlayerCarouselState extends State<PlayerCarousel> {
   void initState() {
     _songData = widget.songData;
     if (widget.nowPlay) {
-      _audioManager.skipToQueueItem(_songData.currentSongIndex);
+      // _audioManager.skipToQueueItem(_songData.currentSongIndex);
     }
     isPlaying = true;
     super.initState();
@@ -69,9 +67,6 @@ class PlayerCarouselState extends State<PlayerCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    // if (_songData.playNow) {
-    //   _audioManager.play();
-    // }
     return Column(
       children: _controllers(context),
     );

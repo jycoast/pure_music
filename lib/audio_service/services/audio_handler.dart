@@ -49,6 +49,17 @@ class MyAudioHandler extends BaseAudioHandler {
     queue.add(newQueue);
   }
 
+
+  @override
+  Future<void> updateQueue(List<MediaItem> queue) async {
+      await _playlist.clear();
+      for (var mediaItem in queue) {
+        UriAudioSource uriAudioSource = await _createAudioSource(mediaItem);
+        _playlist.add(uriAudioSource);
+      }
+    return super.updateQueue(queue);
+  }
+
   Future<UriAudioSource> _createAudioSource(MediaItem mediaItem) async {
     String songid = mediaItem.id;
     String url = await API.getPlayUrl(songid);

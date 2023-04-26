@@ -22,6 +22,7 @@ class RotateRecord extends AnimatedWidget {
             MaterialPageRoute(
               builder: (_) => PlayPage(
                 nowPlay: false,
+                songModel: songModel,
               ),
             ),
           );

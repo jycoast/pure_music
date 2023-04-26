@@ -139,7 +139,7 @@ class _SearchPageState extends State<SearchPage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => PlayPage(nowPlay: true),
+                                        builder: (_) => PlayPage(nowPlay: true, songModel: songModel,index: index,),
                                       ),
                                     );
                                   }

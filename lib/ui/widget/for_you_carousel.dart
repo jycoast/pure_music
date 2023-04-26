@@ -143,6 +143,8 @@ class _ForYouCarouselState extends State<ForYouCarousel> {
                   MaterialPageRoute(
                     builder: (_) => PlayPage(
                       nowPlay: true,
+                      songModel: songModel,
+                      index: index,
                     ),
                   ),
                 );

@@ -123,6 +123,8 @@ class _SingerCarouselState extends State<SingerCarousel> {
                         MaterialPageRoute(
                           builder: (_) => PlayPage(
                             nowPlay: true,
+                            songModel: songModel,
+                            index: index,
                           ),
                         ),
                       );

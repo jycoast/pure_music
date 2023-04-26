@@ -56,6 +56,8 @@ class _SongListState extends State<SongList> {
                         MaterialPageRoute(
                           builder: (_) => PlayPage(
                             nowPlay: true,
+                            songModel: songModel,
+                            index: index,
                           ),
                         ),
                       );

@@ -169,6 +169,7 @@ class _ForYouCarouselState extends State<SongListCarousel> {
             onTap: () {
               if (data != null) {
                 _audioManager.skipToQueueItem(index);
+                _audioManager.play();
                 songModel.setCurrentIndex(index);
                 songModel.setPlayNow(true);
                 Future.delayed(new Duration(milliseconds: 100), () {

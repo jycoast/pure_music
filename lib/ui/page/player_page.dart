@@ -1,4 +1,6 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_music/anims/player_anim.dart';
 import 'package:pure_music/audio_service/audio_manager.dart';
@@ -12,20 +14,23 @@ import 'package:pure_music/ui/widget/song_list_carousel.dart';
 
 class PlayPage extends StatefulWidget {
   final bool nowPlay;
-
-  PlayPage({this.nowPlay});
+  SongModel songModel;
+  List<Song> songs;
+  int index;
+  PlayPage({this.nowPlay, this.songs, this.songModel, this.index});
 
   @override
   _PlayPageState createState() => _PlayPageState();
 }
 
 class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
-
   final _audioManager = getIt<AudioManager>();
   AnimationController controllerPlayer;
   Animation<double> animationPlayer;
   final _commonTween = new Tween<double>(begin: 0.0, end: 1.0);
-
+  SongModel songModel;
+  MediaItem mediaItem;
+  int index = 0;
   @override
   initState() {
     super.initState();
@@ -40,6 +45,24 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
         controllerPlayer.forward();
       }
     });
+    songModel = widget.songModel;
+    index = widget.index;
+    if (widget.nowPlay) {
+      initMediaItem(songModel, index);
+    }
+  }
+
+  void initMediaItem(SongModel songModel, int index) {
+    List<MediaItem> mediaItemList = [];
+    for (Song song in songModel.songs) {
+      MediaItem mediaItem = MediaItem(
+        id: song.songid,
+        title: song.title,
+        artUri: Uri.parse(song.pic),
+      );
+      mediaItemList.add(mediaItem);
+    }
+    _audioManager.updatePlayQueue(mediaItemList, index);
   }
 
   @override
@@ -50,8 +73,8 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    mediaItem = _audioManager.getCurretMedia();
     SongModel songModel = Provider.of(context);
-    _audioManager.addSongToQueue(songModel.songs.sublist(songModel.currentSongIndex),);
     DownloadModel downloadModel = Provider.of(context);
     FavoriteModel favouriteModel = Provider.of(context);
     if (songModel.isPlaying) {
@@ -91,16 +114,16 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                                 height:
                                     MediaQuery.of(context).size.height * 0.01),
                             Text(
-                              songModel.currentSong.title,
+                              mediaItem.title,
                               style: TextStyle(fontSize: 20.0),
                             ),
                             SizedBox(
                                 height:
-                                MediaQuery.of(context).size.height * 0.2),
+                                    MediaQuery.of(context).size.height * 0.2),
                             Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceAround,
+                                    MainAxisAlignment.spaceAround,
                                 children: <Widget>[
                                   IconButton(
                                     onPressed: () => songModel
@@ -122,36 +145,36 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                                     onPressed: () => favouriteModel
                                         .collect(songModel.currentSong),
                                     icon: favouriteModel.isCollect(
-                                        songModel.currentSong) ==
-                                        true
+                                                songModel.currentSong) ==
+                                            true
                                         ? Icon(
-                                      Icons.favorite,
-                                      size: 25.0,
-                                      color:
-                                      Theme.of(context).accentColor,
-                                    )
+                                            Icons.favorite,
+                                            size: 25.0,
+                                            color:
+                                                Theme.of(context).accentColor,
+                                          )
                                         : Icon(
-                                      Icons.favorite_border,
-                                      size: 25.0,
-                                      color: Colors.grey,
-                                    ),
+                                            Icons.favorite_border,
+                                            size: 25.0,
+                                            color: Colors.grey,
+                                          ),
                                   ),
                                   IconButton(
                                     onPressed: () => downloadModel
                                         .download(songModel.currentSong),
                                     icon: downloadModel
-                                        .isDownload(songModel.currentSong)
+                                            .isDownload(songModel.currentSong)
                                         ? Icon(
-                                      Icons.cloud_done,
-                                      size: 25.0,
-                                      color:
-                                      Theme.of(context).accentColor,
-                                    )
+                                            Icons.cloud_done,
+                                            size: 25.0,
+                                            color:
+                                                Theme.of(context).accentColor,
+                                          )
                                         : Icon(
-                                      Icons.cloud_download,
-                                      size: 25.0,
-                                      color: Colors.grey,
-                                    ),
+                                            Icons.cloud_download,
+                                            size: 25.0,
+                                            color: Colors.grey,
+                                          ),
                                   ),
                                 ]),
                           ],
