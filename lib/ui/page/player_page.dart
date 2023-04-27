@@ -30,7 +30,8 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
   final _commonTween = new Tween<double>(begin: 0.0, end: 1.0);
   SongModel songModel;
   MediaItem mediaItem;
-  int index = 0;
+  int globalIndex = 0;
+
   @override
   initState() {
     super.initState();
@@ -46,9 +47,9 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
       }
     });
     songModel = widget.songModel;
-    index = widget.index;
+    globalIndex = widget.index;
     if (widget.nowPlay) {
-      initMediaItem(songModel, index);
+      initMediaItem(songModel, globalIndex);
     }
   }
 
@@ -114,7 +115,7 @@ class _PlayPageState extends State<PlayPage> with TickerProviderStateMixin {
                                 height:
                                     MediaQuery.of(context).size.height * 0.01),
                             Text(
-                              mediaItem.title,
+                              mediaItem?.title ?? '',
                               style: TextStyle(fontSize: 20.0),
                             ),
                             SizedBox(

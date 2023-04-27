@@ -35,8 +35,9 @@ abstract class API {
     return getPlayUrl(song.songid);
   }
 
-  static Future<String> getLyric(Song song) {
-    return api.getLyric(song.songid);
+  /// 根据id查询歌词
+  static Future<String> getLyricBySongId(String songid) {
+    return api.getLyric(songid);
   }
 
   static Future<List<Song>> searchBykeyWord(String key,

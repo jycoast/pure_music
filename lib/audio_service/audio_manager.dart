@@ -180,7 +180,6 @@ class AudioManager {
     print(globalIndex);
     await _audioHandler.updateQueue(globalQueue);
     await _audioHandler.skipToQueueItem(globalIndex);
-    await _audioHandler.play();
   }
 
   void addSongToQueue(List<Song> songList) {

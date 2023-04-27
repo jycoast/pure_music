@@ -31,8 +31,7 @@ class _SongListState extends State<SongList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Colors.white,
+    return Expanded(
         child: Column(
           children: [
             AppBar(
@@ -40,8 +39,6 @@ class _SongListState extends State<SongList> {
             ),
             ListView.builder(
               shrinkWrap: true,
-              //解决无限高度问题
-              // physics: new NeverScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
               itemCount: songList.length,
               itemBuilder: (BuildContext context, int index) {

@@ -2,6 +2,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:pure_music/audio_service/notifiers/PlayButtonNotifier.dart';
 import 'package:pure_music/audio_service/services/service_locator.dart';
 import 'package:pure_music/config/apis/api.dart';
@@ -52,12 +53,22 @@ class PlayerCarouselState extends State<PlayerCarousel> {
   void initState() {
     _songData = widget.songData;
     if (widget.nowPlay) {
-      // _audioManager.skipToQueueItem(_songData.currentSongIndex);
+      playAudio();
     }
+    _songData.setPlaying(true);
     isPlaying = true;
     super.initState();
   }
 
+  void playAudio() async {
+    AudioManager _audioHandler = getIt<AudioManager>();
+    MediaItem mediaItem = _audioHandler.getCurretMedia();
+    String lyric = await API.getLyricBySongId(mediaItem.id);
+    print('获取歌词: $lyric');
+    await _audioHandler.play();
+    _songData.currentSong.lrc = lyric;
+    // Hive.box('recently played').put(mediaItem., s.toJson());
+  }
 
   @override
   void dispose() {
