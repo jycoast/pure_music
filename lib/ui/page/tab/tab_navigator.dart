@@ -1,6 +1,7 @@
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:getwidget/components/button/gf_icon_button.dart';
 import 'package:pure_music/generated/i18n.dart';
 import 'package:pure_music/model/download_model.dart';
 import 'package:pure_music/model/favorite_model.dart';
@@ -10,6 +11,7 @@ import 'package:pure_music/ui/page/tab/home_page.dart';
 import 'package:pure_music/ui/page/tab/mine_page.dart';
 import 'package:pure_music/ui/page/tab/music_page.dart';
 import 'package:provider/provider.dart';
+import 'package:pure_music/ui/page/tab/setting_page.dart';
 
 class TabNavigator extends StatefulWidget {
   @override
@@ -22,8 +24,6 @@ class _TabNavigatorState extends State<TabNavigator> {
 
   List<Widget> pages = <Widget>[
     HomePage(),
-    MusicPage(),
-    FavoritePage(),
     MinePage()
   ];
 
@@ -76,11 +76,11 @@ class _TabNavigatorState extends State<TabNavigator> {
             BubbleBottomBarItem(
               backgroundColor: Theme.of(context).primaryColorDark,
               icon: Icon(
-                Icons.search,
+                Icons.home,
                 size: 25.0,
               ),
               activeIcon: Icon(
-                Icons.search,
+                Icons.home,
                 size: 25.0,
                 color: Colors.white,
               ),
@@ -90,53 +90,34 @@ class _TabNavigatorState extends State<TabNavigator> {
               ),
             ),
             BubbleBottomBarItem(
-              backgroundColor: Theme.of(context).primaryColorDark,
-              icon: Icon(
-                Icons.cloud_download_rounded,
-                size: 25.0,
-              ),
-              activeIcon: Icon(
-                Icons.cloud_download_rounded,
-                size: 25.0,
-                color: Colors.white,
-              ),
-              title: Text(
-                S.of(context).localMusic,
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            BubbleBottomBarItem(
-              backgroundColor: Theme.of(context).primaryColorDark,
-              icon: Icon(
-                Icons.favorite,
-                size: 25.0,
-              ),
-              activeIcon: Icon(
-                Icons.favorite,
-                size: 25.0,
-                color: Colors.white,
-              ),
-              title: Text(
-                S.of(context).tabFavorite,
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            BubbleBottomBarItem(
-              backgroundColor: Theme.of(context).primaryColorDark,
-              icon: Icon(
-                Icons.person,
-                size: 25.0,
-              ),
-              activeIcon: Icon(
-                Icons.person,
-                size: 25.0,
-                color: Colors.white,
-              ),
-              title: Text(
-                S.of(context).tabUser,
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+                backgroundColor: Theme.of(context).primaryColorDark,
+                icon: Icon(
+                  Icons.person,
+                  size: 25.0,
+                ),
+                activeIcon: Icon(
+                  Icons.person,
+                  size: 25.0,
+                  color: Colors.white,
+                ),
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      S.of(context).tabFavorite,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    GFIconButton(
+                      onPressed: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => SettingPage()),
+                        ),
+                      },
+                      icon: Icon(Icons.settings),
+                    ),
+                  ],
+                )),
           ],
           opacity: 1,
           elevation: 0,
