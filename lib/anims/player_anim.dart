@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,10 @@ import 'package:pure_music/ui/widget/lyric.dart';
 import 'package:provider/provider.dart';
 
 class RotatePlayer extends AnimatedWidget {
-  RotatePlayer({Key key, Animation<double> animation})
+
+  MediaItem mediaItem;
+
+  RotatePlayer({Key key, Animation<double> animation, this.mediaItem})
       : super(key: key, listenable: animation);
 
   Widget build(BuildContext context) {
@@ -34,7 +38,7 @@ class RotatePlayer extends AnimatedWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
-              image: CachedNetworkImageProvider(songModel.currentSong.pic),
+              image: CachedNetworkImageProvider(mediaItem?.artUri.path ?? songModel.currentSong.pic),
             ),
           ),
         ),

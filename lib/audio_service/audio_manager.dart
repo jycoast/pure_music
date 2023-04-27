@@ -199,6 +199,10 @@ class AudioManager {
     return _audioHandler.mediaItem.value;
   }
 
+  Stream<MediaItem> mediaItemStream() {
+    return _audioHandler.mediaItem;
+  }
+
   void remove() {
     final lastIndex = _audioHandler.queue.value.length - 1;
     if (lastIndex < 0) return;
